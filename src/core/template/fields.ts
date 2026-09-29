@@ -1,0 +1,29 @@
+import type { ClassifiedParagraph, TagType } from '../tags/types';
+
+/** id -> declared tag type, for every `{{id:type}}` value tag used in the body. */
+export function collectFieldTypes(paragraphs: ClassifiedParagraph[]): Map<string, TagType> {
+  const types = new Map<string, TagType>();
+  for (const paragraph of paragraphs) {
+    for (const node of paragraph.nodes) {
+      if (node.kind === 'tag' && node.node.kind === 'value') {
+        types.set(node.node.id, node.node.type);
+      }
+    }
+  }
+  return types;
+}
+
+/** Every id used anywhere as a form field: value tags, and block/condition ids. */
+export function collectUsedFieldIds(paragraphs: ClassifiedParagraph[]): Set<string> {
+  const ids = new Set<string>();
+  for (const paragraph of paragraphs) {
+    for (const node of paragraph.nodes) {
+      if (node.kind !== 'tag') continue;
+      const t = node.node;
+      if (t.kind === 'value' || t.kind === 'blockOpen' || t.kind === 'condOpen') {
+        ids.add(t.id);
+      }
+    }
+  }
+  return ids;
+}
