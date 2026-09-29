@@ -9,11 +9,14 @@ export interface TagReplacement {
   start: number;
   end: number;
   value: string;
+  /** Preview/draft-only highlight: hex fill (e.g. "FFF59D"), applied via w:shd. Never set for final downloads. */
+  shadeFill?: string;
 }
 
 interface Segment {
   text: string;
   rPr: Element | null;
+  shadeFill?: string;
 }
 
 function emitRange(paragraph: DocxParagraph, from: number, to: number, out: Segment[]): void {
@@ -34,9 +37,17 @@ function firstOverlappingRPr(paragraph: DocxParagraph, start: number, end: numbe
   return null;
 }
 
-function buildRun(doc: Document, text: string, rPr: Element | null): Element {
+function buildRun(doc: Document, text: string, rPr: Element | null, shadeFill: string | undefined): Element {
   const r = doc.createElementNS(W_NS, 'w:r');
-  if (rPr) r.appendChild(rPr.cloneNode(true));
+  const finalRPr = rPr ? (rPr.cloneNode(true) as Element) : doc.createElementNS(W_NS, 'w:rPr');
+  if (shadeFill) {
+    const shd = doc.createElementNS(W_NS, 'w:shd');
+    shd.setAttributeNS(W_NS, 'w:val', 'clear');
+    shd.setAttributeNS(W_NS, 'w:color', 'auto');
+    shd.setAttributeNS(W_NS, 'w:fill', shadeFill);
+    finalRPr.appendChild(shd);
+  }
+  if (rPr || shadeFill) r.appendChild(finalRPr);
   const t = doc.createElementNS(W_NS, 'w:t');
   t.setAttributeNS(XML_NS, 'xml:space', 'preserve');
   t.appendChild(doc.createTextNode(text));
@@ -61,7 +72,8 @@ export function replaceTagsInParagraph(paragraph: DocxParagraph, replacements: T
   let pos = 0;
   for (const r of replacements) {
     emitRange(paragraph, pos, r.start, segments);
-    segments.push({ text: r.value, rPr: firstOverlappingRPr(paragraph, r.start, r.end) });
+    const rPr = firstOverlappingRPr(paragraph, r.start, r.end);
+    segments.push(r.shadeFill ? { text: r.value, rPr, shadeFill: r.shadeFill } : { text: r.value, rPr });
     pos = r.end;
   }
   emitRange(paragraph, pos, paragraph.text.length, segments);
@@ -75,7 +87,7 @@ export function replaceTagsInParagraph(paragraph: DocxParagraph, replacements: T
   }
   for (const segment of segments) {
     if (segment.text.length === 0) continue;
-    paragraph.element.insertBefore(buildRun(doc, segment.text, segment.rPr), insertBefore);
+    paragraph.element.insertBefore(buildRun(doc, segment.text, segment.rPr, segment.shadeFill), insertBefore);
   }
 }
 

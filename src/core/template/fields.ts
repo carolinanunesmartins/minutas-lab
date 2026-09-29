@@ -27,3 +27,9 @@ export function collectUsedFieldIds(paragraphs: ClassifiedParagraph[]): Set<stri
   }
   return ids;
 }
+
+/** SPEC.md §5: "Fields absent from meta get humanised labels." e.g. "vendedor_nome" -> "Vendedor nome". */
+export function humanizeFieldId(id: string): string {
+  const spaced = id.replace(/_/g, ' ');
+  return spaced.charAt(0).toLocaleUpperCase('pt-PT') + spaced.slice(1);
+}

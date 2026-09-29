@@ -10,11 +10,16 @@ AGENTS.md §3 states `src/core` must be "pure TS ... NO DOM". Read literally aga
 
 ## Decision
 - Write our own tag parser (`src/core/tags`) and DOCX run-map/replacement engine (`src/core/docx`), tailored to SPEC.md §3's exact grammar, instead of adopting docxtemplater.
-- Interpret AGENTS.md's "no DOM" as *no page DOM* (no `document`/`window`, no live-page coupling) — not a ban on the standalone `DOMParser`/`XMLSerializer` APIs, which construct detached documents and are available both on the main thread and inside Web Workers (where the actual DOCX build runs, per SPEC.md §7). `src/core/docx` uses `DOMParser`/`XMLSerializer` to parse/serialize `word/document.xml` and header/footer parts; it never touches the rendered page.
+- Interpret AGENTS.md's "no DOM" as *no page DOM* (no `document`/`window`, no live-page coupling) — not a ban on the standalone `DOMParser`/`XMLSerializer` APIs, which construct detached documents.
 - Zip container handling is a separate concern, covered by ADR-0007.
+
+## Amendment (M4): DOMParser/XMLSerializer are not actually available in Workers
+This ADR originally assumed `DOMParser`/`XMLSerializer` are available inside Web Workers, matching the spec ("DOM Parsing and Serialization" lists `Window` *and* `WorkerGlobalScope` as valid contexts). **That assumption was wrong in practice**: verified empirically in M4 (T4.2) that Chrome's dedicated Worker global scope does not expose either constructor (`typeof DOMParser === 'undefined'` inside a real worker). Node's `tsx`-run scripts have the same gap (no browser DOM at all), which M3's `lint-templates.ts` already worked around with a `jsdom`-sourced polyfill — jsdom itself isn't usable in a browser Worker (it depends on Node built-ins), so a different fix was needed there.
+
+Fix: `src/workers/build.worker.ts` polyfills `self.DOMParser`/`self.XMLSerializer` with `@xmldom/xmldom` (small, dependency-free, pure JS — works in any JS environment) before calling into `src/core/docx`. Verified compatible with everything `src/core/docx` uses (namespaced element/attribute access, `cloneNode`, `createTextNode`, `insertBefore`/`removeChild`, XML-escaping serialization). `src/core/docx` itself is unchanged — it still just calls the global `DOMParser`/`XMLSerializer`, unaware of which implementation is behind them.
 
 ## Consequences
 - Full control over the tag grammar (blocks alone in paragraph, `cl`/`pt`/`al` numbering, anchors/refs, error codes) without fighting a general-purpose templating library.
-- `src/core/docx` and `src/core/tags` remain runnable in a Web Worker (no page DOM dependency), matching the SPEC.md §7 preview pipeline.
+- `src/core/docx` and `src/core/tags` stay page-DOM-free and portable across Node (via a polyfill), the main thread, and a Worker — but *not* free of needing **some** DOMParser/XMLSerializer implementation supplied by the caller's environment, which turned out to require an explicit polyfill in two of those three environments, not just one.
 - Slightly more code to write and test ourselves (run-map extraction, span replacement, XML escaping) versus delegating to a library — accepted given the grammar is bespoke anyway.
-- If "no DOM" was intended more strictly (banning `DOMParser` too), this ADR is the place to revisit that: the alternative would be a hand-written streaming XML tokenizer for the small subset of WordprocessingML we touch.
+- New runtime dependency `@xmldom/xmldom` (AGENTS.md §4 rule 10 — this amendment is that ADR), scoped to the worker bundle only (never imported by `src/ui`, so it doesn't add weight to the main thread's initial load).
