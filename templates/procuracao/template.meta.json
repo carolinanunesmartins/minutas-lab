@@ -1,0 +1,43 @@
+{
+  "id": "procuracao",
+  "title": "Procuração",
+  "version": "0.1.0",
+  "groups": [
+    { "id": "Mandante", "label": "Mandante", "order": 0 },
+    { "id": "Mandatário", "label": "Mandatário", "order": 1 },
+    { "id": "Poderes", "label": "Poderes", "order": 2 },
+    { "id": "Prazo e formalidades", "label": "Prazo e formalidades", "order": 3 },
+    { "id": "Outorga", "label": "Outorga", "order": 4 }
+  ],
+  "fields": {
+    "mandante_nome": { "required": true, "label": "Nome do mandante", "group": "Mandante" },
+    "mandante_estado_civil": { "required": true, "label": "Estado civil (e regime de bens, se casado)", "group": "Mandante" },
+    "mandante_nif": { "required": true, "label": "NIF do mandante", "group": "Mandante" },
+    "mandante_cc": { "required": true, "label": "N.º do Cartão de Cidadão do mandante", "group": "Mandante" },
+    "mandante_cc_validade": { "required": true, "label": "Validade do Cartão de Cidadão do mandante", "group": "Mandante" },
+    "mandante_morada": { "required": true, "label": "Morada de residência do mandante", "group": "Mandante" },
+    "mandatario_nome": { "required": true, "label": "Nome do mandatário", "group": "Mandatário" },
+    "mandatario_estado_civil": { "required": true, "label": "Estado civil (e regime de bens, se casado)", "group": "Mandatário" },
+    "mandatario_nif": { "required": true, "label": "NIF do mandatário", "group": "Mandatário" },
+    "mandatario_cc": { "required": true, "label": "N.º do Cartão de Cidadão do mandatário", "group": "Mandatário" },
+    "mandatario_cc_validade": { "required": true, "label": "Validade do Cartão de Cidadão do mandatário", "group": "Mandatário" },
+    "mandatario_morada": { "required": true, "label": "Morada de residência do mandatário", "group": "Mandatário" },
+    "poderes_descricao": { "required": true, "label": "Descrição dos poderes conferidos", "group": "Poderes" },
+    "finalidade": { "label": "Há uma finalidade específica a declarar?", "group": "Poderes", "help": "Ativa ou desativa o bloco correspondente do contrato." },
+    "finalidade_descricao": { "label": "Descrição da finalidade específica", "group": "Poderes" },
+    "prazo_definido": { "required": true, "label": "A procuração tem prazo certo?", "group": "Prazo e formalidades", "help": "Ativa ou desativa o bloco correspondente do contrato." },
+    "prazo_data_fim": { "label": "Data de termo da procuração", "group": "Prazo e formalidades" },
+    "poderes_substabelecer": { "required": true, "label": "O mandatário pode substabelecer?", "group": "Prazo e formalidades", "help": "Ativa ou desativa o bloco correspondente do contrato." },
+    "reconhecimento": { "required": true, "label": "Há reconhecimento presencial da assinatura?", "group": "Prazo e formalidades", "help": "Ativa ou desativa o bloco correspondente do contrato." },
+    "reconhecimento_entidade": { "label": "Entidade que reconhece a assinatura", "group": "Prazo e formalidades" },
+    "contrato_local": { "required": true, "label": "Local de outorga", "group": "Outorga" },
+    "contrato_data": { "required": true, "label": "Data de outorga", "group": "Outorga" }
+  },
+  "rules": [
+    { "type": "differs", "a": "mandante_nif", "b": "mandatario_nif", "severity": "warning" },
+    { "type": "required_if", "field": "finalidade_descricao", "when": { "field": "finalidade", "nonEmpty": true } },
+    { "type": "required_if", "field": "prazo_data_fim", "when": { "field": "prazo_definido", "nonEmpty": true } },
+    { "type": "required_if", "field": "reconhecimento_entidade", "when": { "field": "reconhecimento", "nonEmpty": true } },
+    { "type": "date_after", "field": "prazo_data_fim", "than": "contrato_data", "severity": "error" }
+  ]
+}

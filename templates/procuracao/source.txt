@@ -1,0 +1,64 @@
+PROCURAÇÃO
+**{{mandante_nome}}**, {{mandante_estado_civil}}, contribuinte fiscal n.º {{mandante_nif:nif}}, titular do Cartão de Cidadão n.º {{mandante_cc:cc}}, válido até {{mandante_cc_validade:data}}, residente em {{mandante_morada}} (adiante, o Mandante), constitui seu bastante procurador **{{mandatario_nome}}**, {{mandatario_estado_civil}}, contribuinte fiscal n.º {{mandatario_nif:nif}}, titular do Cartão de Cidadão n.º {{mandatario_cc:cc}}, válido até {{mandatario_cc_validade:data}}, residente em {{mandatario_morada}} (adiante, o Mandatário), a quem confere os poderes constantes das cláusulas seguintes:
+CLÁUSULA {{cl}}
+(Poderes)
+{{pt}}. O Mandatário fica investido nos poderes necessários para, em nome e no interesse do Mandante, praticar os seguintes atos: {{poderes_descricao}}.
+{{#se finalidade}}
+{{pt}}. A presente procuração é outorgada para o seguinte efeito específico: {{finalidade_descricao}}.
+{{/se}}
+CLÁUSULA {{cl}}
+(Prazo e revogação)
+{{#se prazo_definido}}
+{{pt}}. A presente procuração vigora até {{prazo_data_fim:data}}, data a partir da qual caduca automaticamente, sem necessidade de qualquer comunicação.
+{{#senao}}
+{{pt}}. A presente procuração vigora por tempo indeterminado, mantendo-se em vigor até ser revogada pelo Mandante ou renunciada pelo Mandatário.
+{{/se}}
+{{pt}}. O Mandante pode, a todo o tempo, revogar a presente procuração, mediante comunicação escrita ao Mandatário e, sendo caso disso, a terceiros perante quem a procuração tenha sido exercida.
+CLÁUSULA {{cl}}
+(Substabelecimento)
+{{#se poderes_substabelecer}}
+{{pt}}. O Mandatário pode substabelecer, total ou parcialmente, os poderes conferidos por esta procuração, com ou sem reserva para si próprio, mediante comunicação ao Mandante.
+{{#senao}}
+{{pt}}. O Mandatário não pode substabelecer, total ou parcialmente, os poderes conferidos por esta procuração.
+{{/se}}
+CLÁUSULA {{cl}}
+(Reconhecimento)
+{{#se reconhecimento}}
+{{pt}}. A assinatura do Mandante é reconhecida presencialmente por {{reconhecimento_entidade}}.
+{{#senao}}
+{{pt}}. A presente procuração é outorgada por documento particular, sem reconhecimento presencial da assinatura do Mandante.
+{{/se}}
+{{contrato_local}}, {{contrato_data:data}}
+O Mandante
+---
+=== CAMPOS ===
+mandante_nome | texto | sim | Nome do mandante
+mandante_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+mandante_nif | nif | sim | NIF do mandante
+mandante_cc | cc | sim | N.º do Cartão de Cidadão do mandante
+mandante_cc_validade | data | sim | Validade do Cartão de Cidadão do mandante
+mandante_morada | texto | sim | Morada de residência do mandante
+mandatario_nome | texto | sim | Nome do mandatário
+mandatario_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+mandatario_nif | nif | sim | NIF do mandatário
+mandatario_cc | cc | sim | N.º do Cartão de Cidadão do mandatário
+mandatario_cc_validade | data | sim | Validade do Cartão de Cidadão do mandatário
+mandatario_morada | texto | sim | Morada de residência do mandatário
+poderes_descricao | texto | sim | Descrição dos poderes conferidos
+finalidade | bloco | não | Há uma finalidade específica a declarar?
+finalidade_descricao | texto | condicional | Descrição da finalidade específica
+prazo_definido | bloco (se/senão) | sim | A procuração tem prazo certo?
+prazo_data_fim | data | condicional | Data de termo da procuração
+poderes_substabelecer | bloco (se/senão) | sim | O mandatário pode substabelecer?
+reconhecimento | bloco (se/senão) | sim | Há reconhecimento presencial da assinatura?
+reconhecimento_entidade | texto | condicional | Entidade que reconhece a assinatura
+contrato_local | texto | sim | Local de outorga
+contrato_data | data | sim | Data de outorga
+=== ÂNCORAS ===
+(nenhuma)
+=== PONTOS A VALIDAR POR JURISTA ===
+1. Forma legalmente exigida consoante os poderes conferidos (ex.: procurações para atos sujeitos a escritura pública podem exigir forma mais solene do que documento particular com reconhecimento presencial).
+2. Poderes especiais que a lei exija sejam expressamente mencionados (ex.: poderes para confessar, desistir ou transigir em juízo, para alienar imóveis, para atos de mero expediente vs. atos de disposição).
+3. Caducidade por morte, interdição ou inabilitação do Mandante: confirmar se deve constar expressamente.
+4. Regime do substabelecimento (art. 264.º do Código Civil): confirmar formulação e responsabilidade do Mandatário por atos do substabelecido.
+5. Reconhecimento presencial: confirmar em que casos é legalmente exigido e se basta reconhecimento simples ou exige notário/advogado/solicitador.

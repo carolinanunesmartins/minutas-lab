@@ -1,8 +1,20 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-test('the form pane has zero serious/critical axe violations', async ({ page }) => {
+const CPCV_TITLE = 'Contrato-promessa de compra e venda de imóvel';
+
+test.beforeEach(async ({ page }) => {
   await page.goto('/');
+});
+
+test('the template picker has zero serious/critical axe violations', async ({ page }) => {
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+  expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
+});
+
+test('the form pane has zero serious/critical axe violations', async ({ page }) => {
+  await page.getByRole('button', { name: CPCV_TITLE }).click();
   await page.locator('#field-vendedor_nome').fill('Maria Exemplo Silva');
   await page.waitForTimeout(500);
 
@@ -12,7 +24,7 @@ test('the form pane has zero serious/critical axe violations', async ({ page }) 
 });
 
 test('keyboard navigation reaches the download buttons', async ({ page }) => {
-  await page.goto('/');
+  await page.getByRole('button', { name: CPCV_TITLE }).click();
   await page.locator('#field-vendedor_nome').focus();
   await page.keyboard.press('Tab');
   const active = await page.evaluate(() => document.activeElement?.tagName);

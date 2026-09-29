@@ -1,0 +1,126 @@
+CONTRATO DE ARRENDAMENTO URBANO PARA HABITAÇÃO
+ENTRE:
+**{{senhorio_nome}}**, {{senhorio_estado_civil}}, contribuinte fiscal n.º {{senhorio_nif:nif}}, com residência em {{senhorio_morada}}, doravante designado por **Senhorio**;
+E
+**{{arrendatario_nome}}**, {{arrendatario_estado_civil}}, contribuinte fiscal n.º {{arrendatario_nif:nif}}, com residência em {{arrendatario_morada_atual}}, doravante designado por **Arrendatário**;
+O Senhorio e o Arrendatário, adiante designados em conjunto por Partes, celebram, livre e conscientemente, o presente contrato de arrendamento urbano para habitação, nos termos do regime legal aplicável, o qual se rege pelas cláusulas seguintes:
+CLÁUSULA {{cl cl_locado}}
+(Objeto)
+{{pt}}. O Senhorio é dono e legítimo possuidor do imóvel destinado a habitação, de tipologia {{imovel_tipologia}}, fração {{imovel_fracao}}, situado em {{imovel_morada}}, freguesia de {{imovel_freguesia}}, concelho de {{imovel_concelho}}, descrito na Conservatória do Registo Predial de {{imovel_conservatoria}} sob o n.º {{imovel_descricao_registo}} e inscrito na matriz predial urbana sob o artigo {{imovel_artigo_matricial}} (adiante, o Locado).
+{{pt}}. O Locado dispõe de licença de utilização n.º {{imovel_licenca_utilizacao}} e de certificado de desempenho energético n.º {{imovel_certificado_energetico}}.
+{{#se mobilado}}
+{{pt}}. O Locado é dado de arrendamento mobilado e equipado, encontrando-se os bens móveis e equipamentos identificados no seguinte inventário: {{mobiliario_descricao}}, que as Partes reconhecem como fiel e assinam em anexo a este contrato.
+{{#senao}}
+{{pt}}. O Locado é dado de arrendamento sem mobiliário nem equipamentos.
+{{/se}}
+{{#se obras_previas}}
+{{pt}}. As Partes declaram que o Locado apresenta, à data da celebração deste contrato, o seguinte estado e eventuais defeitos ou obras pendentes: {{obras_previas_descricao}}, dos quais o Arrendatário declara ter tomado prévio conhecimento.
+{{/se}}
+Pelo presente contrato, o Senhorio dá de arrendamento ao Arrendatário, que aceita, o Locado identificado na {{ref:cl_locado}}, destinado exclusivamente a habitação permanente e própria do Arrendatário, nos termos e condições constantes das cláusulas seguintes.
+CLÁUSULA {{cl}}
+(Prazo e renovação)
+{{pt prazo_inicio}}. O presente contrato tem o seu início em {{data_inicio:data}} e a duração de {{prazo_meses:int}} meses.
+{{pt}}. Findo o prazo referido no {{ref:prazo_inicio}}, o contrato renova-se automaticamente por períodos sucessivos de igual duração, salvo oposição de qualquer das Partes comunicada à outra nos termos e prazos previstos na lei.
+{{pt}}. O Arrendatário pode denunciar o contrato a todo o tempo, mediante comunicação escrita ao Senhorio com a antecedência mínima legalmente exigida.
+CLÁUSULA {{cl}}
+(Renda)
+{{pt}}. A renda mensal é de {{renda_valor:eur}} ({{renda_valor:eur|extenso}}), a pagar até ao dia {{renda_dia_pagamento:int}} de cada mês, por transferência bancária para o IBAN {{senhorio_iban:iban}}, titulado pelo Senhorio junto do {{senhorio_banco}}.
+{{pt}}. A falta de pagamento pontual da renda, nos termos e prazos previstos na lei, confere ao Senhorio o direito de resolver o presente contrato.
+{{pt}}. A renda é atualizada anualmente de acordo com o coeficiente legal de atualização aplicável às rendas habitacionais, sem necessidade de acordo adicional entre as Partes, sendo a atualização comunicada por escrito pelo Senhorio.
+{{#se caucao}}
+CLÁUSULA {{cl}}
+(Caução)
+{{pt}}. A título de caução, destinada a garantir o cumprimento das obrigações do Arrendatário, este entrega ao Senhorio, nesta data, a quantia de {{caucao_valor:eur}} ({{caucao_valor:eur|extenso}}), a restituir no termo do contrato, deduzida de eventuais quantias em dívida ou de indemnizações por danos não imputáveis ao uso normal do Locado.
+{{/se}}
+CLÁUSULA {{cl}}
+(Utilização do locado)
+{{pt}}. O Arrendatário obriga-se a usar o Locado exclusivamente para habitação própria e permanente, não podendo dar-lhe outro destino sem o consentimento prévio e escrito do Senhorio.
+{{pt}}. É proibida a sublocação, total ou parcial, e a cessão da posição contratual sem o consentimento prévio e escrito do Senhorio, sob pena de resolução do contrato.
+{{#se animais_permitidos}}
+{{pt}}. É permitida a permanência de animais de companhia no Locado, desde que tal não afete a normal utilização do prédio por terceiros nem cause danos nas partes comuns ou no Locado.
+{{#senao}}
+{{pt}}. Não é permitida a permanência de animais de companhia no Locado.
+{{/se}}
+CLÁUSULA {{cl}}
+(Conservação e reparações)
+{{pt}}. O Senhorio é responsável pelas obras de conservação ordinária e extraordinária do Locado que não resultem de uso anormal por parte do Arrendatário.
+{{pt}}. O Arrendatário é responsável pelas pequenas reparações decorrentes do uso normal e corrente do Locado, bem como por quaisquer danos causados por si, por quem consigo habite ou por terceiros a seu convite.
+{{pt}}. O Arrendatário obriga-se a comunicar ao Senhorio, com a maior brevidade, qualquer avaria ou necessidade de reparação de que tenha conhecimento.
+CLÁUSULA {{cl cl_resolucao}}
+(Resolução e denúncia)
+{{pt}}. Sem prejuízo do disposto na {{ref:prazo_inicio}}, o presente contrato pode ser resolvido por qualquer das Partes com fundamento em incumprimento contratual grave ou reiterado pela outra, nos termos gerais do regime do arrendamento urbano.
+{{pt}}. Constituem, entre outras, causas de resolução pelo Senhorio a falta de pagamento pontual da renda, a utilização do Locado para fim diverso do previsto neste contrato e a sublocação ou cessão não consentidas.
+{{#se fiador}}
+CLÁUSULA {{cl}}
+(Fiança)
+{{pt}}. **{{fiador_nome}}**, contribuinte fiscal n.º {{fiador_nif:nif}}, com residência em {{fiador_morada}}, constitui-se fiador e principal pagador de todas as obrigações emergentes deste contrato para o Arrendatário, renunciando expressamente ao benefício da excussão prévia.
+{{pt}}. A fiança mantém-se em vigor durante toda a duração do contrato, incluindo eventuais renovações, nos termos da {{ref:prazo_inicio}}.
+{{/se}}
+CLÁUSULA {{cl}}
+(Comunicações e domicílio convencionado)
+{{pt}}. Para efeitos deste contrato, as Partes fixam como domicílio convencionado as moradas indicadas na sua identificação, sendo aí válidas todas as comunicações e notificações relativas ao arrendamento, incluindo para efeitos de resolução nos termos da {{ref:cl_resolucao}}.
+{{pt}}. Qualquer alteração de morada deve ser comunicada à outra Parte no prazo de 15 (quinze) dias, sob pena de se considerarem válidas as comunicações enviadas para a morada anteriormente indicada.
+{{pt}}. Sem prejuízo das comunicações que a lei exija por carta registada, as demais podem ser feitas para os seguintes endereços eletrónicos: Senhorio, {{senhorio_email}}; Arrendatário, {{arrendatario_email}}.
+CLÁUSULA {{cl}}
+(Foro)
+Para resolver qualquer litígio emergente deste contrato, as Partes escolhem o foro da comarca de {{foro_comarca}}, com renúncia a qualquer outro.
+O presente contrato é feito em duas vias, de igual valor, ficando um exemplar em poder de cada Parte.
+Depois de o lerem e por estarem de acordo com o seu conteúdo, as Partes assinam-no.
+{{contrato_local}}, {{contrato_data:data}}
+O Senhorio
+---
+O Arrendatário
+---
+=== CAMPOS ===
+senhorio_nome | texto | sim | Nome do senhorio
+senhorio_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+senhorio_nif | nif | sim | NIF do senhorio
+senhorio_morada | texto | sim | Morada de residência do senhorio
+senhorio_iban | iban | sim | IBAN para receber a renda
+senhorio_banco | texto | sim | Banco do IBAN
+senhorio_email | texto | sim | E-mail do senhorio
+arrendatario_nome | texto | sim | Nome do arrendatário
+arrendatario_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+arrendatario_nif | nif | sim | NIF do arrendatário
+arrendatario_morada_atual | texto | sim | Morada atual do arrendatário
+arrendatario_email | texto | sim | E-mail do arrendatário
+imovel_tipologia | texto | sim | Tipologia (ex.: T2)
+imovel_fracao | texto | sim | Fração (ex.: "B"; escrever "N/A" se não aplicável)
+imovel_morada | texto | sim | Morada do locado
+imovel_freguesia | texto | sim | Freguesia
+imovel_concelho | texto | sim | Concelho
+imovel_conservatoria | texto | sim | Conservatória do Registo Predial
+imovel_descricao_registo | texto | sim | N.º de descrição predial
+imovel_artigo_matricial | texto | sim | Artigo da matriz
+imovel_licenca_utilizacao | texto | sim | N.º da licença de utilização
+imovel_certificado_energetico | texto | sim | N.º do certificado energético
+mobilado | bloco (se/senão) | sim | O locado é arrendado mobilado?
+mobiliario_descricao | texto | condicional | Inventário de mobiliário e equipamentos
+obras_previas | bloco | não | Há defeitos ou obras pendentes a declarar?
+obras_previas_descricao | texto | condicional | Descrição do estado/defeitos/obras pendentes
+prazo_meses | int | sim | Duração inicial (meses)
+data_inicio | data | sim | Data de início do contrato
+renda_valor | eur | sim | Valor da renda mensal
+renda_dia_pagamento | int | sim | Dia de pagamento da renda
+caucao | bloco | não | Há lugar a caução?
+caucao_valor | eur | condicional | Valor da caução
+animais_permitidos | bloco (se/senão) | sim | São permitidos animais de companhia?
+fiador | bloco | não | Há fiador?
+fiador_nome | texto | condicional | Nome do fiador
+fiador_nif | nif | condicional | NIF do fiador
+fiador_morada | texto | condicional | Morada do fiador
+foro_comarca | texto | sim | Comarca do foro
+contrato_local | texto | sim | Local de assinatura
+contrato_data | data | sim | Data de assinatura
+=== ÂNCORAS ===
+cl_locado | Cláusula do Objeto/Locado | referida no Objeto, Comunicações
+prazo_inicio | ponto 1 da cláusula do Prazo | referida na Renda, Resolução, Fiança
+cl_resolucao | Cláusula da Resolução | referida nas Comunicações
+=== PONTOS A VALIDAR POR JURISTA ===
+1. Prazos e formalidades de denúncia/oposição à renovação por cada Parte (Código Civil / NRAU): confirmar antecedências mínimas atuais e se devem constar explicitamente no texto.
+2. Coeficiente de atualização da renda: confirmar mecanismo de publicação/comunicação exigido por lei e se a atualização automática sem acordo é suficiente.
+3. Regime da caução: confirmar limites legais ao valor (máximo de meses de renda) e forma de restituição.
+4. Fiança: confirmar requisitos de forma (redução a escrito, eventual intervenção do fiador na assinatura) e se a renúncia à excussão prévia carece de menção adicional.
+5. Regime de resolução por falta de pagamento: confirmar prazo de mora relevante e se é exigida interpelação admonitória prévia.
+6. Animais de companhia: confirmar se a cláusula proibitiva é oponível a título de exceção legalmente admitida (regulamento de condomínio, insalubridade, etc.).
+7. Licença de utilização/certificado energético: confirmar exigências de anexação de cópia ao contrato.

@@ -5,6 +5,14 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: './',
   plugins: [react()],
+  build: {
+    // Never inline assets as base64 data: URIs — the app's CSP meta tag
+    // (index.html) sets connect-src 'self', which blocks fetch() on data:
+    // URIs, and template.docx files are fetched at runtime (src/ui/App.tsx).
+    // Small templates (<4KB, Vite's default inline threshold) would
+    // otherwise silently fail to load in production builds only.
+    assetsInlineLimit: 0,
+  },
   test: {
     environment: 'jsdom',
     globals: true,

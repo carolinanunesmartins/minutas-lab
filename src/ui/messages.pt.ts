@@ -3,6 +3,10 @@ export const messages = {
   appTitle: 'minutas-lab',
   appTagline: 'Preencha o formulário e veja a pré-visualização da minuta em tempo real.',
 
+  pickTemplateTitle: 'Escolha uma minuta',
+  pickTemplateHint: 'Selecione o tipo de contrato que pretende preencher.',
+  changeTemplate: 'Escolher outra minuta',
+
   loading: 'A carregar a minuta…',
   loadError: 'Não foi possível carregar a minuta. Recarregue a página.',
 

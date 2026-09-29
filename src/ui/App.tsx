@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import templateUrl from '../../templates/cpcv/template.docx?url';
-import templateMetaRaw from '../../templates/cpcv/template.meta.json';
 import { readDocx } from '../core/docx/read';
 import { parseTemplate } from '../core/tags/parse';
 import { collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
@@ -15,8 +13,10 @@ import { buildFieldGroups } from './fieldModel';
 import type { FieldGroup } from './fieldModel';
 import { saveDocx } from './download';
 import { messages } from './messages.pt';
+import { TEMPLATE_MANIFEST } from './templateManifest';
+import type { TemplateManifestEntry } from './templateManifest';
 
-type AppState = 'loading' | 'error' | 'ready';
+type AppState = 'empty' | 'loading' | 'error' | 'ready';
 
 interface LoadedTemplate {
   templateBytes: ArrayBuffer;
@@ -33,7 +33,8 @@ function initialValues(meta: Meta): Record<string, string> {
 }
 
 function App() {
-  const [state, setState] = useState<AppState>('loading');
+  const [state, setState] = useState<AppState>('empty');
+  const [selected, setSelected] = useState<TemplateManifestEntry | null>(null);
   const [loaded, setLoaded] = useState<LoadedTemplate | null>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const [activeFieldId, setActiveFieldId] = useState<string | undefined>(undefined);
@@ -49,17 +50,20 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!selected) return;
     let cancelled = false;
+    setState('loading');
+    setPreviewBytes(null);
     void (async () => {
       try {
-        const response = await fetch(templateUrl);
+        const response = await fetch(selected.docxUrl);
         const templateBytes = await response.arrayBuffer();
         const doc = readDocx(new Uint8Array(templateBytes));
         const rawBody = doc.paragraphs.map((p) => ({ location: 'body' as const, text: p.text }));
         const { paragraphs } = parseTemplate(rawBody);
         const fieldTypes = collectFieldTypes(paragraphs);
         const usedIds = collectUsedFieldIds(paragraphs);
-        const { meta } = loadTemplateMeta(templateMetaRaw, usedIds);
+        const { meta } = loadTemplateMeta(selected.metaRaw, usedIds);
         if (!meta) throw new Error('invalid template.meta.json');
         const groups = buildFieldGroups(usedIds, fieldTypes, meta, messages.groupUnlabeled);
         if (cancelled) return;
@@ -73,7 +77,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [selected]);
 
   const validation = useMemo<ValidationResult | null>(() => {
     if (!loaded) return null;
@@ -125,6 +129,14 @@ function App() {
     setValues((prev) => ({ ...prev, [id]: value }));
   }
 
+  function handleChangeTemplate(): void {
+    setSelected(null);
+    setLoaded(null);
+    setValues({});
+    setPreviewBytes(null);
+    setState('empty');
+  }
+
   async function handleDownloadDraft(): Promise<void> {
     if (!loaded || !buildClientRef.current) return;
     const bytes = await buildClientRef.current.build({
@@ -148,6 +160,29 @@ function App() {
     setReviewOpen(false);
   }
 
+  if (state === 'empty') {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-6">
+        <h1 className="text-lg font-semibold">{messages.appTitle}</h1>
+        <h2 className="text-base font-medium">{messages.pickTemplateTitle}</h2>
+        <p className="text-sm text-slate-600">{messages.pickTemplateHint}</p>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {TEMPLATE_MANIFEST.map((entry) => (
+            <li key={entry.slug}>
+              <button
+                type="button"
+                onClick={() => setSelected(entry)}
+                className="w-full rounded border border-slate-300 px-4 py-3 text-left text-sm hover:border-slate-500"
+              >
+                {entry.title}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </main>
+    );
+  }
+
   if (state === 'loading') {
     return (
       <main className="flex min-h-screen items-center justify-center">
@@ -158,10 +193,13 @@ function App() {
 
   if (state === 'error' || !loaded || !validation) {
     return (
-      <main className="flex min-h-screen items-center justify-center">
+      <main className="flex min-h-screen flex-col items-center justify-center gap-4">
         <p role="alert" className="text-red-600">
           {messages.loadError}
         </p>
+        <button type="button" onClick={handleChangeTemplate} className="rounded border border-slate-300 px-3 py-1.5 text-sm">
+          {messages.changeTemplate}
+        </button>
       </main>
     );
   }
@@ -170,9 +208,14 @@ function App() {
 
   return (
     <main className="flex min-h-screen flex-col">
-      <header className="border-b border-slate-200 px-4 py-3">
-        <h1 className="text-lg font-semibold">{messages.appTitle}</h1>
-        <p className="text-sm text-slate-600">{messages.appTagline}</p>
+      <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+        <div>
+          <h1 className="text-lg font-semibold">{messages.appTitle}</h1>
+          <p className="text-sm text-slate-600">{loaded.meta.title}</p>
+        </div>
+        <button type="button" onClick={handleChangeTemplate} className="rounded border border-slate-300 px-3 py-1.5 text-sm">
+          {messages.changeTemplate}
+        </button>
       </header>
 
       <div className="flex flex-1 flex-col lg:flex-row">

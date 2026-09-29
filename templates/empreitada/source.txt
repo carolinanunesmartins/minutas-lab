@@ -1,0 +1,115 @@
+CONTRATO DE EMPREITADA
+ENTRE:
+**{{dono_obra_nome}}**, {{dono_obra_estado_civil}}, contribuinte fiscal n.º {{dono_obra_nif:nif}}, com residência em {{dono_obra_morada}}, doravante designado por **Dono da Obra**;
+E
+**{{empreiteiro_nome}}**, pessoa coletiva n.º {{empreiteiro_nipc:nipc}}, titular do alvará de construção n.º {{empreiteiro_alvara}}, com sede em {{empreiteiro_morada}}, doravante designado por **Empreiteiro**;
+O Dono da Obra e o Empreiteiro, adiante designados em conjunto por Partes, celebram, livre e conscientemente, o presente contrato de empreitada, que se rege pelas cláusulas seguintes:
+CLÁUSULA {{cl cl_obra}}
+(Objeto)
+{{pt}}. O Empreiteiro obriga-se a executar para o Dono da Obra, mediante retribuição, a obra a seguir descrita: {{obra_descricao}}, a realizar em {{obra_local}}, freguesia de {{obra_freguesia}}, concelho de {{obra_concelho}} (adiante, a Obra).
+{{pt}}. A Obra será executada de acordo com o projeto, caderno de encargos e demais elementos técnicos entregues pelo Dono da Obra ou aprovados por escrito por ambas as Partes, dos quais o Empreiteiro declara ter tomado conhecimento.
+CLÁUSULA {{cl}}
+(Preço)
+{{pt}}. O preço global da empreitada é de {{preco_total:eur}} ({{preco_total:eur|extenso}}).
+{{#se preco_iva_incluido}}
+{{pt}}. O preço referido no ponto anterior inclui o Imposto sobre o Valor Acrescentado (IVA) à taxa legal em vigor.
+{{#senao}}
+{{pt}}. Ao preço referido no ponto anterior acresce o Imposto sobre o Valor Acrescentado (IVA) à taxa legal em vigor.
+{{/se}}
+CLÁUSULA {{cl}}
+(Condições de pagamento)
+{{#se adiantamento}}
+{{pt}}. O Dono da Obra entrega ao Empreiteiro, nesta data, a título de adiantamento por conta do preço, a quantia de {{adiantamento_valor:eur}} ({{adiantamento_valor:eur|extenso}}), valendo este contrato como recibo e quitação dessa quantia.
+{{/se}}
+{{#se pagamento_faseado}}
+{{pt}}. O remanescente do preço é pago de forma faseada, em função do avanço dos trabalhos, nos seguintes termos: {{pagamento_condicoes}}.
+{{#senao}}
+{{pt}}. O remanescente do preço é pago integralmente após a receção provisória da Obra, mediante apresentação da respetiva fatura pelo Empreiteiro.
+{{/se}}
+{{#se retencao_garantia}}
+{{pt}}. O Dono da Obra reserva-se o direito de reter {{retencao_percentagem:int}}% de cada pagamento, a título de garantia de boa execução, quantia essa a liquidar no prazo de 30 (trinta) dias após a receção definitiva da Obra, salvo se subsistirem defeitos imputáveis ao Empreiteiro.
+{{/se}}
+CLÁUSULA {{cl prazo_execucao}}
+(Prazo de execução)
+{{pt}}. Os trabalhos têm início em {{data_inicio:data}} e um prazo de execução de {{prazo_dias:int}} dias, salvo motivo de força maior ou facto não imputável ao Empreiteiro devidamente comunicado ao Dono da Obra.
+{{pt}}. Qualquer alteração ao prazo referido no ponto anterior carece de acordo escrito entre as Partes.
+CLÁUSULA {{cl}}
+(Materiais e meios)
+{{pt}}. Os materiais, equipamentos e mão de obra necessários à execução da Obra são fornecidos por {{materiais_por_conta}}, salvo estipulação em contrário constante deste contrato ou de aditamento escrito.
+{{pt}}. O Empreiteiro obriga-se a assegurar a direção técnica da Obra, mantendo em obra os elementos habilitados exigidos por lei para o tipo de trabalhos em causa.
+{{#se seguro_obra}}
+CLÁUSULA {{cl}}
+(Seguro de obra)
+{{pt}}. O Empreiteiro obriga-se a contratar e a manter em vigor, durante a execução da Obra, um seguro de responsabilidade civil e de acidentes de trabalho junto da seguradora {{seguradora_nome}}, cujo comprovativo entrega ao Dono da Obra antes do início dos trabalhos.
+{{/se}}
+{{#se penalizacao_atraso}}
+CLÁUSULA {{cl}}
+(Penalização por atraso)
+{{pt}}. Sem prejuízo do disposto na {{ref:prazo_execucao}}, o atraso na conclusão da Obra imputável ao Empreiteiro confere ao Dono da Obra o direito a uma penalização de {{penalizacao_valor_dia:eur}} ({{penalizacao_valor_dia:eur|extenso}}) por cada dia de atraso, até ao limite do preço da empreitada.
+{{/se}}
+CLÁUSULA {{cl}}
+(Receção da obra)
+{{pt}}. Concluídos os trabalhos, o Empreiteiro comunica o facto ao Dono da Obra, procedendo-se à receção provisória da Obra mediante vistoria conjunta, da qual é lavrado auto com a identificação de eventuais defeitos ou trabalhos a corrigir.
+{{pt}}. Corrigidos os defeitos identificados na receção provisória, se os houver, procede-se à receção definitiva da Obra, também formalizada por auto assinado por ambas as Partes.
+CLÁUSULA {{cl}}
+(Garantia)
+{{pt}}. O Empreiteiro garante a boa execução dos trabalhos e responde pelos defeitos da Obra que se manifestem no prazo de {{garantia_anos:int}} anos a contar da receção definitiva, nos termos gerais do regime da empreitada.
+{{pt}}. Identificado um defeito abrangido pela garantia, o Empreiteiro obriga-se a proceder à sua reparação em prazo razoável, a acordar entre as Partes, contado da respetiva comunicação.
+CLÁUSULA {{cl}}
+(Comunicações)
+Sem prejuízo das comunicações que a lei ou este contrato exijam por carta registada, as demais podem ser feitas para os seguintes endereços eletrónicos: Dono da Obra, {{dono_obra_email}}; Empreiteiro, {{empreiteiro_email}}.
+CLÁUSULA {{cl}}
+(Foro)
+Para resolver qualquer litígio emergente deste contrato, as Partes escolhem o foro da comarca de {{foro_comarca}}, com renúncia a qualquer outro.
+O presente contrato é feito em duas vias, de igual valor, ficando um exemplar em poder de cada Parte.
+Depois de o lerem e por estarem de acordo com o seu conteúdo, as Partes assinam-no.
+{{contrato_local}}, {{contrato_data:data}}
+O Dono da Obra
+---
+O Empreiteiro
+---
+=== CAMPOS ===
+dono_obra_nome | texto | sim | Nome do dono da obra
+dono_obra_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+dono_obra_nif | nif | sim | NIF do dono da obra
+dono_obra_morada | texto | sim | Morada de residência do dono da obra
+dono_obra_email | texto | sim | E-mail do dono da obra
+empreiteiro_nome | texto | sim | Firma/nome do empreiteiro
+empreiteiro_nipc | nipc | sim | NIPC do empreiteiro
+empreiteiro_alvara | texto | sim | N.º do alvará de construção
+empreiteiro_morada | texto | sim | Sede/morada do empreiteiro
+empreiteiro_email | texto | sim | E-mail do empreiteiro
+obra_descricao | texto | sim | Descrição dos trabalhos
+obra_local | texto | sim | Local da obra
+obra_freguesia | texto | sim | Freguesia
+obra_concelho | texto | sim | Concelho
+preco_total | eur | sim | Preço global da empreitada
+preco_iva_incluido | bloco (se/senão) | sim | O preço inclui IVA?
+adiantamento | bloco | não | Há adiantamento?
+adiantamento_valor | eur | condicional | Valor do adiantamento
+pagamento_faseado | bloco (se/senão) | sim | O pagamento é faseado?
+pagamento_condicoes | texto | condicional | Condições do pagamento faseado
+retencao_garantia | bloco | não | Há retenção de garantia sobre os pagamentos?
+retencao_percentagem | int | condicional | Percentagem de retenção
+data_inicio | data | sim | Data de início dos trabalhos
+prazo_dias | int | sim | Prazo de execução (dias)
+materiais_por_conta | texto | sim | Quem fornece materiais e meios (ex.: "conta do Empreiteiro")
+seguro_obra | bloco | não | Há obrigação de seguro de obra?
+seguradora_nome | texto | condicional | Seguradora
+penalizacao_atraso | bloco | não | Há penalização por atraso?
+penalizacao_valor_dia | eur | condicional | Valor da penalização por dia de atraso
+garantia_anos | int | sim | Prazo de garantia (anos)
+foro_comarca | texto | sim | Comarca do foro
+contrato_local | texto | sim | Local de assinatura
+contrato_data | data | sim | Data de assinatura
+=== ÂNCORAS ===
+cl_obra | Cláusula do Objeto | não referida por outras (reservada)
+prazo_execucao | Cláusula do Prazo de execução | referida na Penalização por atraso
+=== PONTOS A VALIDAR POR JURISTA ===
+1. Regime da empreitada (Código Civil, arts. 1207.º e ss.): confirmar formulação das cláusulas de receção provisória/definitiva e articulação com o prazo de garantia.
+2. Retenção de garantia: confirmar limites e forma legalmente admitidos, e se carece de referência a conta-caução ou garantia bancária alternativa.
+3. Penalização por atraso (cláusula penal): confirmar se o valor/dia e o limite ao preço total são razoáveis e não desproporcionados (risco de redução judicial).
+4. Seguro de obra: confirmar exigências legais mínimas (responsabilidade civil, acidentes de trabalho) consoante o tipo e dimensão da obra.
+5. Direção técnica e alvará: confirmar categorias e classes de alvará exigidas em função do valor/tipo de obra.
+6. Suspensão/resolução do contrato por incumprimento: cláusula não incluída nesta minuta — confirmar se deve ser acrescentada.
+7. Dono da obra pessoa coletiva: esta minuta assume Dono da Obra pessoa singular; se for pessoa coletiva, adaptar campos (NIPC em vez de NIF, representação).

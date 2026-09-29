@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+const CPCV_TITLE = 'Contrato-promessa de compra e venda de imóvel';
+
 // SPEC.md §7: p95 edit->preview latency < 100 ms (CI gate 150 ms) on the
 // fixture template. Measured here end-to-end in a real browser (debounce +
 // worker round-trip + docx-preview render), which is the authoritative
@@ -7,6 +9,7 @@ import { expect, test } from '@playwright/test';
 // under jsdom, which is not representative of real browser DOM performance.
 test('edit -> preview latency is logged (see console for the measured baseline)', async ({ page }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: CPCV_TITLE }).click();
   const input = page.locator('#field-vendedor_nome');
   await input.fill('Maria');
   await expect(page.locator('.docx-preview-pane:not(.hidden)').first()).toContainText('Maria', { timeout: 5000 });
