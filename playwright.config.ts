@@ -8,7 +8,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chrome' } }],
+  // Playwright's own bundled Chromium (not the system Chrome channel) — portable
+  // to CI runners, which don't have a system browser preinstalled.
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npm run build && npm run preview -- --port 4173 --strictPort',
     url: 'http://localhost:4173',

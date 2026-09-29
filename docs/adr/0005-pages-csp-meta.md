@@ -10,7 +10,7 @@ Given ADR-0001 (client-only), hosting only needs to serve static files. GitHub P
 - Host on GitHub Pages, Pages source = GitHub Actions (HUMAN repo-settings step, see ROADMAP.md M0).
 - Deliver CSP via `<meta>` in `index.html`, per SPEC §9:
   `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src <LLM origin>; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'`.
-- At M0, `connect-src` is set to `'self'` as a placeholder since no LLM adapter exists yet; it will be updated to the real LLM origin(s) when the Anthropic adapter lands (M6, T6.1).
+- At M0, `connect-src` was `'self'` as a placeholder since no LLM adapter existed yet. **Update (M6)**: now `'self' https://api.anthropic.com`, per ADR-0004 — the Anthropic adapter landed.
 
 ## Consequences
 - `<meta>` CSP cannot express `frame-ancestors` or HSTS (SPEC §9 limits) — these protections are simply unavailable on this hosting choice. Accepted as a known limitation.
