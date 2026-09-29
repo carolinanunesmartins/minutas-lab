@@ -1,0 +1,202 @@
+CONTRATO-PROMESSA DE COMPRA E VENDA DE IMÓVEL
+ENTRE:
+**{{vendedor_nome}}**, {{vendedor_estado_civil}}, natural da freguesia de {{vendedor_freguesia_naturalidade}}, concelho de {{vendedor_concelho_naturalidade}}, contribuinte fiscal n.º {{vendedor_nif:nif}}, titular do Cartão de Cidadão n.º {{vendedor_cc:cc}}, válido até {{vendedor_cc_validade:data}}, com residência em {{vendedor_morada}}, doravante designado por **Promitente-Vendedor**;
+E
+**{{comprador_nome}}**, {{comprador_estado_civil}}, natural da freguesia de {{comprador_freguesia_naturalidade}}, concelho de {{comprador_concelho_naturalidade}}, contribuinte fiscal n.º {{comprador_nif:nif}}, titular do Cartão de Cidadão n.º {{comprador_cc:cc}}, válido até {{comprador_cc_validade:data}}, com residência em {{comprador_morada}}, doravante designado por **Promitente-Comprador**;
+O Promitente-Vendedor e o Promitente-Comprador, adiante designados em conjunto por Partes, celebram, livre e conscientemente, o presente contrato-promessa de compra e venda, que se rege pelas cláusulas seguintes:
+CLÁUSULA {{cl cl_imovel}}
+(Imóvel)
+{{pt}}. O Promitente-Vendedor é dono e legítimo possuidor da fração autónoma designada pela letra {{imovel_fracao}}, destinada a habitação e composta por {{imovel_composicao}}, situada em {{imovel_morada}}, freguesia de {{imovel_freguesia}}, concelho de {{imovel_concelho}}, descrita na Conservatória do Registo Predial de {{imovel_conservatoria}} sob o n.º {{imovel_descricao_registo}} e inscrita na matriz predial urbana da mesma freguesia sob o artigo {{imovel_artigo_matricial}} (adiante, o Imóvel).
+{{pt}}. O Imóvel dispõe de certificado de desempenho energético n.º {{imovel_certificado_energetico}}, válido até {{imovel_certificado_validade:data}}.
+{{pt licenca_utilizacao}}. O Imóvel dispõe de licença de utilização n.º {{imovel_licenca_utilizacao}}, emitida em {{imovel_licenca_data:data}} pela Câmara Municipal de {{imovel_licenca_camara}}.
+{{#se onus}}
+{{pt onus_lista}}. O Imóvel encontra-se onerado pelos seguintes ónus e encargos: {{onus_descricao}}.
+{{/se}}
+CLÁUSULA {{cl}}
+(Objeto)
+{{pt}}. Pelo presente contrato, o Promitente-Vendedor promete vender ao Promitente-Comprador, e este promete comprar-lhe, o Imóvel identificado na {{ref:cl_imovel}}, através de compra e venda a formalizar por escritura pública ou documento particular autenticado (adiante, o Contrato Definitivo).
+{{pt}}. O Imóvel será transmitido livre de ónus e encargos e, salvo estipulação em contrário, devoluto de pessoas e bens.
+{{#se onus}}
+{{pt}}. Quanto aos ónus e encargos indicados no {{ref:onus_lista}}, o Promitente-Vendedor obriga-se a diligenciar pelo seu cancelamento até à celebração do Contrato Definitivo, para que a transmissão ocorra livre de qualquer ónus ou encargo.
+{{/se}}
+{{pt}}. O Imóvel é vendido no estado físico e jurídico em que se encontra. O Promitente-Comprador declara que o visitou, que conhece o seu estado e que analisou a documentação que o Promitente-Vendedor previamente lhe facultou.
+{{pt}}. O Promitente-Comprador reconhece que o preço acordado tem em conta o estado atual do Imóvel. Por isso, não poderá invocar defeitos aparentes, nem divergências entre a composição do prédio nos documentos oficiais e a realidade existente, como motivo para recusar o Contrato Definitivo, pedir a redução do preço ou anular o negócio, ficando ressalvados os direitos que a lei lhe atribua em caso de dolo do Promitente-Vendedor e os direitos que possa exercer contra terceiros, designadamente os responsáveis pela construção.
+{{#se arrendado}}
+{{pt}}. O Promitente-Vendedor declara que, relativamente ao Imóvel, foi celebrado contrato de arrendamento em {{arrendamento_data:data}}, o qual pode condicionar o valor da renda inicial de novos arrendamentos nos termos do regime legal aplicável, e que as suas condições relevantes (arrendatário, tipo de contrato, prazo e valor da última renda) são as seguintes: {{arrendamento_condicoes}}.
+{{#senao}}
+{{pt}}. O Promitente-Vendedor declara que, relativamente ao Imóvel, não foi celebrado qualquer contrato de arrendamento que possa condicionar, nos termos do regime legal aplicável, o valor da renda inicial de novos arrendamentos.
+{{/se}}
+CLÁUSULA {{cl}}
+(Preço)
+{{pt}}. O preço da compra e venda é de {{preco_total:eur}} ({{preco_total:eur|extenso}}), a pagar do seguinte modo:
+{{al}}) a título de sinal e princípio de pagamento, {{sinal_valor:eur}} ({{sinal_valor:eur|extenso}}), que o Promitente-Comprador paga nesta data, por transferência bancária da conta com o IBAN {{comprador_iban:iban}}, do banco {{comprador_banco}}, para a conta do Promitente-Vendedor com o IBAN {{vendedor_iban:iban}}, do banco {{vendedor_banco}}, valendo este contrato como recibo e quitação dessa quantia;
+{{#se reforco}}
+{{al}}) a título de reforço do sinal, {{reforco_valor:eur}} ({{reforco_valor:eur|extenso}}), até ao dia {{reforco_data:data}}, pela mesma via da alínea anterior;
+{{/se}}
+{{al}}) o remanescente, no valor de {{remanescente_valor:eur}} ({{remanescente_valor:eur|extenso}}), no ato do Contrato Definitivo, por cheque bancário, cheque visado ou transferência bancária.
+{{#se financiamento}}
+{{pt}}. A celebração do Contrato Definitivo depende da aprovação, até ao dia {{financiamento_prazo:data}}, de financiamento bancário na modalidade de crédito à habitação, obrigando-se o Promitente-Comprador a apresentar o pedido com diligência e a informar o Promitente-Vendedor do respetivo resultado.
+{{pt}}. Se o financiamento for recusado ou não for concedido na modalidade referida, este contrato-promessa fica sem efeito e o Promitente-Vendedor restitui ao Promitente-Comprador, em singelo, o sinal e os reforços recebidos.
+{{pt}}. O contrato-promessa fica igualmente sem efeito, com restituição em singelo nos mesmos termos, se a avaliação bancária do Imóvel for inferior ao preço fixado neste contrato.
+{{/se}}
+CLÁUSULA {{cl}}
+(Prazo)
+{{pt prazo_escritura}}. O Contrato Definitivo será celebrado até ao dia {{escritura_data_limite:data}}.
+{{pt}}. O Promitente-Comprador comunica ao Promitente-Vendedor o dia, a hora e o local da celebração do Contrato Definitivo, por carta registada enviada para o domicílio convencionado, com a antecedência mínima de {{aviso_dias:int}} dias úteis. A comunicação considera-se recebida no terceiro dia útil seguinte ao do registo da expedição da carta.
+{{#se onus}}
+{{pt}}. Se, no termo do prazo previsto no {{ref:prazo_escritura}}, ainda subsistirem os ónus e encargos indicados no {{ref:onus_lista}}, o prazo é prorrogado por, no máximo, {{onus_prorrogacao_dias:int}} dias, para que o Promitente-Vendedor obtenha o respetivo cancelamento ou o documento que o permita. Terminado esse período sem cancelamento e por motivo que não lhe seja imputável, o Promitente-Vendedor restitui o sinal em singelo; se o motivo lhe for imputável, aplica-se a {{ref:cl_incumprimento}}.
+{{/se}}
+CLÁUSULA {{cl cl_incumprimento}}
+(Incumprimento)
+{{pt}}. Se o incumprimento definitivo for imputável ao Promitente-Vendedor, o Promitente-Comprador pode optar entre:
+{{al}}) exigir a restituição, em dobro, do sinal e dos reforços que tenha pago, nos termos do regime legal do sinal, nada mais podendo pedir a título de indemnização; ou
+{{al}}) requerer a execução específica, nos termos do {{ref:execucao_especifica}}.
+{{pt}}. Se o incumprimento definitivo for imputável ao Promitente-Comprador, o Promitente-Vendedor pode resolver o contrato, sem outras formalidades, e fazer seus o sinal e os reforços recebidos, desde que, depois de notificado por escrito para cumprir num prazo de {{incumprimento_prazo_dias:int}} dias, o Promitente-Comprador não regularize a situação.
+{{pt}}. Constituem, entre outras, situações de incumprimento definitivo:
+{{al}}) a falta injustificada de comparência de qualquer das Partes na celebração do Contrato Definitivo, devidamente convocada;
+{{al}}) a não apresentação, nessa data, dos documentos ou do meio de pagamento necessários à celebração;
+{{al}}) a recusa em celebrar o Contrato Definitivo.
+{{pt execucao_especifica}}. As Partes acordam expressamente que, em caso de incumprimento, pode ser requerida a execução específica do contrato prevista no artigo 830.º do Código Civil, afastando a presunção legal em contrário que decorreria da existência de sinal.
+CLÁUSULA {{cl}}
+(Tradição)
+{{pt}}. As Partes declaram que, na data deste contrato, não há tradição do Imóvel. A tradição só ocorrerá com a celebração do Contrato Definitivo e o pagamento integral do preço, mantendo-se o Imóvel, até lá, na posse do Promitente-Vendedor.
+{{pt}}. Se o Promitente-Comprador ocupar o Imóvel sem autorização, permitir a sua ocupação por terceiros, duplicar as chaves ou alterar ou forçar a fechadura, o Promitente-Vendedor pode substituir a fechadura e considerar o contrato definitivamente incumprido, ao abrigo da resolução convencionada nos termos do artigo 432.º do Código Civil, com as consequências previstas na {{ref:cl_incumprimento}} e sem prejuízo de outras, incluindo de natureza criminal.
+{{pt}}. O Promitente-Comprador fica informado de que o Imóvel foi visitado por outros interessados e de que podem existir outras cópias da chave, pelo que se recomenda a substituição da fechadura após a entrega das chaves.
+CLÁUSULA {{cl}}
+(Documentação)
+{{pt}}. O Promitente-Vendedor entrega ao Promitente-Comprador os documentos e as informações que lhe cabe fornecer para a celebração do Contrato Definitivo no prazo máximo de {{documentos_prazo_dias:int}} dias úteis a contar do pedido que este lhe faça.
+{{pt}}. O disposto no ponto anterior não se aplica quando o atraso se deva a entidades terceiras ou a outra causa que não seja imputável ao Promitente-Vendedor.
+CLÁUSULA {{cl}}
+(Impostos, Despesas e Encargos)
+{{pt}}. Ficam a cargo do Promitente-Comprador as despesas e os impostos relativos a este contrato e ao Contrato Definitivo, incluindo os atos notariais, registais e fiscais.
+{{pt}}. Excetuam-se as despesas com a obtenção dos documentos respeitantes ao Promitente-Vendedor, que ficam a seu cargo.
+{{#se onus}}
+{{pt}}. Ficam também a cargo do Promitente-Vendedor as despesas com o cancelamento dos ónus e encargos indicados no {{ref:onus_lista}}.
+{{/se}}
+CLÁUSULA {{cl}}
+(Cessão da posição)
+A posição contratual de qualquer das Partes não pode ser cedida a terceiro sem o acordo prévio e escrito da outra Parte.
+CLÁUSULA {{cl}}
+(Direito de preferência)
+Se algum titular de direito de preferência, legal ou convencional, o exercer relativamente ao Imóvel, este contrato fica sem efeito e o Promitente-Vendedor restitui ao Promitente-Comprador, em singelo, o sinal e os reforços recebidos, sem que qualquer das Partes possa exigir indemnização por esse facto, salvo dolo. O Promitente-Vendedor obriga-se a efetuar as notificações que a lei imponha aos titulares desse direito.
+CLÁUSULA {{cl}}
+(Condomínio)
+{{pt}}. O Promitente-Comprador suporta as despesas de conservação e fruição das partes comuns e as de pagamento de serviços de interesse comum do condomínio relativas ao período posterior à celebração do Contrato Definitivo.
+{{pt}}. O Promitente-Vendedor suporta as despesas de condomínio relativas ao período anterior a essa celebração.
+{{pt}}. Sendo o Imóvel fração de prédio em propriedade horizontal, o Promitente-Vendedor entrega ao Promitente-Comprador, no prazo máximo de {{condominio_prazo_dias:int}} dias a contar da data deste contrato, declaração escrita do administrador do condomínio que indique os encargos em vigor relativos à fração, com a sua natureza, montante e prazos de pagamento, e as dívidas existentes, com a sua natureza, montante e datas de constituição e vencimento, nos termos da lei aplicável.
+CLÁUSULA {{cl}}
+(Domicílio convencionado e comunicações)
+{{pt}}. Para todas as comunicações relativas a este contrato, as Partes fixam como domicílio convencionado as moradas indicadas na sua identificação.
+{{pt}}. O envio de carta registada para essas moradas constitui prova suficiente da comunicação, incluindo para efeitos de incumprimento definitivo.
+{{pt}}. A alteração de morada deve ser comunicada à outra Parte no prazo máximo de {{domicilio_prazo_dias:int}} dias seguidos; na falta de comunicação, são válidas e eficazes as comunicações enviadas para a morada anterior.
+{{pt}}. Sem prejuízo das comunicações que a lei ou este contrato exijam por carta registada, com ou sem aviso de receção, as restantes podem ser feitas para os seguintes endereços eletrónicos:
+{{al}}) Promitente-Vendedor: {{vendedor_email}};
+{{al}}) Promitente-Comprador: {{comprador_email}}.
+CLÁUSULA {{cl}}
+(Alterações ao contrato)
+Este contrato exprime o acordo integral das Partes quanto ao seu objeto e só pode ser alterado ou revogado por documento escrito e assinado por ambas. As suas cláusulas formam um todo e têm igual relevância para o cumprimento do contrato.
+{{#se mediacao}}
+CLÁUSULA {{cl}}
+(Mediação Imobiliária)
+As Partes declaram que este negócio contou com a intervenção da empresa de mediação imobiliária {{mediadora_nome}}, NIPC {{mediadora_nipc:nipc}}, titular da licença AMI n.º {{mediadora_licenca_ami}}.
+{{/se}}
+CLÁUSULA {{cl}}
+(Reconhecimento)
+{{pt}}. As Partes declaram ter sido informadas de que a lei exige, para a validade do contrato-promessa de compra e venda de imóvel, documento assinado pelos promitentes com reconhecimento presencial das assinaturas e certificação da existência da licença de utilização ou de construção.
+{{#se reconhecimento_presencial}}
+{{pt}}. As assinaturas deste contrato são reconhecidas presencialmente por {{reconhecimento_entidade}}, que certifica a licença de utilização referida no {{ref:licenca_utilizacao}}.
+{{#senao}}
+{{pt}}. Cientes da exigência legal referida no ponto anterior, as Partes acordam em não proceder ao reconhecimento presencial das assinaturas, ficando o contrato sujeito ao regime legal aplicável a essa omissão.
+{{/se}}
+CLÁUSULA {{cl}}
+(Foro)
+Para resolver qualquer litígio relativo à interpretação, validade, execução ou incumprimento deste contrato, as Partes escolhem o foro da comarca de {{foro_comarca}}, com renúncia a qualquer outro.
+O presente contrato é feito em duas vias, de igual valor, ficando um exemplar em poder de cada Parte.
+Depois de o lerem e por estarem de acordo com o seu conteúdo, as Partes assinam-no.
+{{contrato_local}}, {{contrato_data:data}}
+O Promitente-Vendedor
+---
+O Promitente-Comprador
+---
+=== CAMPOS ===
+vendedor_nome | texto | sim | Nome do promitente-vendedor
+vendedor_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+vendedor_freguesia_naturalidade | texto | sim | Freguesia de naturalidade
+vendedor_concelho_naturalidade | texto | sim | Concelho de naturalidade
+vendedor_nif | nif | sim | NIF
+vendedor_cc | cc | sim | N.º do Cartão de Cidadão
+vendedor_cc_validade | data | sim | Validade do Cartão de Cidadão
+vendedor_morada | texto | sim | Morada de residência
+vendedor_email | texto | sim | E-mail
+vendedor_iban | iban | sim | IBAN para receber o sinal
+vendedor_banco | texto | sim | Banco do IBAN
+comprador_nome | texto | sim | Nome do promitente-comprador
+comprador_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
+comprador_freguesia_naturalidade | texto | sim | Freguesia de naturalidade
+comprador_concelho_naturalidade | texto | sim | Concelho de naturalidade
+comprador_nif | nif | sim | NIF
+comprador_cc | cc | sim | N.º do Cartão de Cidadão
+comprador_cc_validade | data | sim | Validade do Cartão de Cidadão
+comprador_morada | texto | sim | Morada de residência
+comprador_email | texto | sim | E-mail
+comprador_iban | iban | sim | IBAN de origem do sinal
+comprador_banco | texto | sim | Banco do IBAN
+imovel_fracao | texto | sim | Letra da fração
+imovel_composicao | texto | sim | Composição (ex.: tipologia)
+imovel_morada | texto | sim | Morada do imóvel
+imovel_freguesia | texto | sim | Freguesia
+imovel_concelho | texto | sim | Concelho
+imovel_conservatoria | texto | sim | Conservatória do Registo Predial
+imovel_descricao_registo | texto | sim | N.º de descrição predial
+imovel_artigo_matricial | texto | sim | Artigo da matriz
+imovel_certificado_energetico | texto | sim | N.º do certificado energético
+imovel_certificado_validade | data | sim | Validade do certificado energético
+imovel_licenca_utilizacao | texto | sim | N.º da licença de utilização
+imovel_licenca_data | data | sim | Data de emissão da licença
+imovel_licenca_camara | texto | sim | Câmara Municipal emissora
+onus | bloco | não | Existem ónus ou encargos sobre o imóvel?
+onus_descricao | texto | condicional | Descrição dos ónus e encargos
+onus_prorrogacao_dias | int | condicional | Dias de prorrogação para cancelar ónus
+arrendado | bloco (se/senão) | sim | O imóvel foi objeto de arrendamento relevante?
+arrendamento_data | data | condicional | Data do contrato de arrendamento
+arrendamento_condicoes | texto | condicional | Arrendatário, tipo, prazo e última renda
+preco_total | eur | sim | Preço total
+sinal_valor | eur | sim | Valor do sinal
+reforco | bloco | não | Há reforço de sinal?
+reforco_valor | eur | condicional | Valor do reforço
+reforco_data | data | condicional | Data limite do reforço
+remanescente_valor | eur | sim | Remanescente a pagar na escritura
+financiamento | bloco | não | Condição de financiamento bancário?
+financiamento_prazo | data | condicional | Data limite de aprovação do financiamento
+escritura_data_limite | data | sim | Data limite do contrato definitivo
+aviso_dias | int | sim | Dias úteis de aviso da escritura
+incumprimento_prazo_dias | int | sim | Dias para sanar incumprimento após notificação
+documentos_prazo_dias | int | sim | Dias úteis para entregar documentos
+condominio_prazo_dias | int | sim | Dias para entregar declaração do condomínio
+domicilio_prazo_dias | int | sim | Dias para comunicar mudança de morada
+mediacao | bloco | não | Houve mediação imobiliária?
+mediadora_nome | texto | condicional | Nome da mediadora
+mediadora_nipc | nipc | condicional | NIPC da mediadora
+mediadora_licenca_ami | texto | condicional | N.º da licença AMI
+reconhecimento_presencial | bloco (se/senão) | sim | Assinaturas reconhecidas presencialmente?
+reconhecimento_entidade | texto | condicional | Entidade que reconhece as assinaturas
+foro_comarca | texto | sim | Comarca do foro
+contrato_local | texto | sim | Local de assinatura
+contrato_data | data | sim | Data de assinatura
+=== ÂNCORAS ===
+cl_imovel | Cláusula do Imóvel | referida no Objeto
+licenca_utilizacao | ponto 3 da cláusula do Imóvel | referida no Reconhecimento
+onus_lista | ponto dos ónus na cláusula do Imóvel | referida no Objeto, Prazo e Despesas (todos no mesmo bloco condicional)
+prazo_escritura | ponto 1 da cláusula do Prazo | referida no Prazo
+cl_incumprimento | Cláusula do Incumprimento | referida no Prazo e na Tradição
+=== PONTOS A VALIDAR POR JURISTA ===
+1. Exigência de reconhecimento presencial de assinaturas e certificação da licença de utilização no CPCV de imóvel (Código Civil, art. 410.º, n.º 3): confirmar formulação e consequências da omissão.
+2. Sinal em dobro, execução específica e presunção do art. 830.º, n.º 2: confirmar que a redação afasta corretamente a presunção.
+3. Limites à exclusão de responsabilidade por defeitos (ponto de risco do preço e estado do imóvel): confirmar carve-out de dolo.
+4. Declaração sobre arrendamento e limites legais à renda inicial: confirmar se o regime referido continua em vigor e se deve citar-se o diploma.
+5. Imóvel arrendado: articulação entre entrega devoluto de pessoas e bens e o contrato de arrendamento; direito de preferência do arrendatário.
+6. Estado civil e regime de bens: consentimento do cônjuge quando aplicável; vários promitentes.
+7. Foro: pode ter de coincidir com a comarca da situação do imóvel em ações relativas a imóveis.
+8. Declaração do administrador do condomínio: confirmar prazo e conteúdo à luz da lei em vigor.
+9. Pagamento do sinal por transferência e recibo: confirmar que o texto vale como quitação.
+10. Notificações aos titulares de direito de preferência: confirmar quem notifica e quando.

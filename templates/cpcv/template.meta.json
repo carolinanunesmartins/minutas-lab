@@ -1,0 +1,526 @@
+{
+  "id": "cpcv",
+  "title": "Contrato-promessa de compra e venda de imóvel",
+  "version": "0.1.0",
+  "groups": [
+    {
+      "id": "Promitente-Vendedor",
+      "label": "Promitente-Vendedor",
+      "order": 0
+    },
+    {
+      "id": "Promitente-Comprador",
+      "label": "Promitente-Comprador",
+      "order": 1
+    },
+    {
+      "id": "Imóvel",
+      "label": "Imóvel",
+      "order": 2
+    },
+    {
+      "id": "Ónus e encargos",
+      "label": "Ónus e encargos",
+      "order": 3
+    },
+    {
+      "id": "Arrendamento",
+      "label": "Arrendamento",
+      "order": 4
+    },
+    {
+      "id": "Preço e pagamento",
+      "label": "Preço e pagamento",
+      "order": 5
+    },
+    {
+      "id": "Financiamento",
+      "label": "Financiamento",
+      "order": 6
+    },
+    {
+      "id": "Prazos",
+      "label": "Prazos",
+      "order": 7
+    },
+    {
+      "id": "Mediação",
+      "label": "Mediação",
+      "order": 8
+    },
+    {
+      "id": "Reconhecimento",
+      "label": "Reconhecimento",
+      "order": 9
+    },
+    {
+      "id": "Foro e assinatura",
+      "label": "Foro e assinatura",
+      "order": 10
+    }
+  ],
+  "fields": {
+    "vendedor_nome": {
+      "label": "Nome do promitente-vendedor",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_estado_civil": {
+      "label": "Estado civil (e regime de bens, se casado)",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_freguesia_naturalidade": {
+      "label": "Freguesia de naturalidade",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_concelho_naturalidade": {
+      "label": "Concelho de naturalidade",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_nif": {
+      "label": "NIF",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_cc": {
+      "label": "N.º do Cartão de Cidadão",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_cc_validade": {
+      "label": "Validade do Cartão de Cidadão",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_morada": {
+      "label": "Morada de residência",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_email": {
+      "label": "E-mail",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_iban": {
+      "label": "IBAN para receber o sinal",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "vendedor_banco": {
+      "label": "Banco do IBAN",
+      "group": "Promitente-Vendedor",
+      "required": true
+    },
+    "comprador_nome": {
+      "label": "Nome do promitente-comprador",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_estado_civil": {
+      "label": "Estado civil (e regime de bens, se casado)",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_freguesia_naturalidade": {
+      "label": "Freguesia de naturalidade",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_concelho_naturalidade": {
+      "label": "Concelho de naturalidade",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_nif": {
+      "label": "NIF",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_cc": {
+      "label": "N.º do Cartão de Cidadão",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_cc_validade": {
+      "label": "Validade do Cartão de Cidadão",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_morada": {
+      "label": "Morada de residência",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_email": {
+      "label": "E-mail",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_iban": {
+      "label": "IBAN de origem do sinal",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "comprador_banco": {
+      "label": "Banco do IBAN",
+      "group": "Promitente-Comprador",
+      "required": true
+    },
+    "imovel_fracao": {
+      "label": "Letra da fração",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_composicao": {
+      "label": "Composição (ex.: tipologia)",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_morada": {
+      "label": "Morada do imóvel",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_freguesia": {
+      "label": "Freguesia",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_concelho": {
+      "label": "Concelho",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_conservatoria": {
+      "label": "Conservatória do Registo Predial",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_descricao_registo": {
+      "label": "N.º de descrição predial",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_artigo_matricial": {
+      "label": "Artigo da matriz",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_certificado_energetico": {
+      "label": "N.º do certificado energético",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_certificado_validade": {
+      "label": "Validade do certificado energético",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_licenca_utilizacao": {
+      "label": "N.º da licença de utilização",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_licenca_data": {
+      "label": "Data de emissão da licença",
+      "group": "Imóvel",
+      "required": true
+    },
+    "imovel_licenca_camara": {
+      "label": "Câmara Municipal emissora",
+      "group": "Imóvel",
+      "required": true
+    },
+    "onus": {
+      "label": "Existem ónus ou encargos sobre o imóvel?",
+      "group": "Ónus e encargos",
+      "required": false,
+      "help": "Ativa ou desativa o bloco correspondente do contrato."
+    },
+    "onus_descricao": {
+      "label": "Descrição dos ónus e encargos",
+      "group": "Ónus e encargos",
+      "required": false
+    },
+    "onus_prorrogacao_dias": {
+      "label": "Dias de prorrogação para cancelar ónus",
+      "group": "Ónus e encargos",
+      "required": false,
+      "default": "30"
+    },
+    "arrendado": {
+      "label": "O imóvel foi objeto de arrendamento relevante?",
+      "group": "Arrendamento",
+      "required": true,
+      "help": "Ativa ou desativa o bloco correspondente do contrato."
+    },
+    "arrendamento_data": {
+      "label": "Data do contrato de arrendamento",
+      "group": "Arrendamento",
+      "required": false
+    },
+    "arrendamento_condicoes": {
+      "label": "Arrendatário, tipo, prazo e última renda",
+      "group": "Arrendamento",
+      "required": false
+    },
+    "preco_total": {
+      "label": "Preço total",
+      "group": "Preço e pagamento",
+      "required": true
+    },
+    "sinal_valor": {
+      "label": "Valor do sinal",
+      "group": "Preço e pagamento",
+      "required": true
+    },
+    "reforco": {
+      "label": "Há reforço de sinal?",
+      "group": "Preço e pagamento",
+      "required": false,
+      "help": "Ativa ou desativa o bloco correspondente do contrato."
+    },
+    "reforco_valor": {
+      "label": "Valor do reforço",
+      "group": "Preço e pagamento",
+      "required": false
+    },
+    "reforco_data": {
+      "label": "Data limite do reforço",
+      "group": "Preço e pagamento",
+      "required": false
+    },
+    "remanescente_valor": {
+      "label": "Remanescente a pagar na escritura",
+      "group": "Preço e pagamento",
+      "required": true
+    },
+    "financiamento": {
+      "label": "Condição de financiamento bancário?",
+      "group": "Financiamento",
+      "required": false,
+      "help": "Ativa ou desativa o bloco correspondente do contrato."
+    },
+    "financiamento_prazo": {
+      "label": "Data limite de aprovação do financiamento",
+      "group": "Financiamento",
+      "required": false
+    },
+    "escritura_data_limite": {
+      "label": "Data limite do contrato definitivo",
+      "group": "Prazos",
+      "required": true
+    },
+    "aviso_dias": {
+      "label": "Dias úteis de aviso da escritura",
+      "group": "Prazos",
+      "required": true,
+      "default": "8"
+    },
+    "incumprimento_prazo_dias": {
+      "label": "Dias para sanar incumprimento após notificação",
+      "group": "Prazos",
+      "required": true,
+      "default": "10"
+    },
+    "documentos_prazo_dias": {
+      "label": "Dias úteis para entregar documentos",
+      "group": "Prazos",
+      "required": true,
+      "default": "2"
+    },
+    "condominio_prazo_dias": {
+      "label": "Dias para entregar declaração do condomínio",
+      "group": "Prazos",
+      "required": true,
+      "default": "20"
+    },
+    "domicilio_prazo_dias": {
+      "label": "Dias para comunicar mudança de morada",
+      "group": "Prazos",
+      "required": true,
+      "default": "15"
+    },
+    "mediacao": {
+      "label": "Houve mediação imobiliária?",
+      "group": "Mediação",
+      "required": false,
+      "help": "Ativa ou desativa o bloco correspondente do contrato."
+    },
+    "mediadora_nome": {
+      "label": "Nome da mediadora",
+      "group": "Mediação",
+      "required": false
+    },
+    "mediadora_nipc": {
+      "label": "NIPC da mediadora",
+      "group": "Mediação",
+      "required": false
+    },
+    "mediadora_licenca_ami": {
+      "label": "N.º da licença AMI",
+      "group": "Mediação",
+      "required": false
+    },
+    "reconhecimento_presencial": {
+      "label": "Assinaturas reconhecidas presencialmente?",
+      "group": "Reconhecimento",
+      "required": true,
+      "help": "Ativa ou desativa o bloco correspondente do contrato."
+    },
+    "reconhecimento_entidade": {
+      "label": "Entidade que reconhece as assinaturas",
+      "group": "Reconhecimento",
+      "required": false
+    },
+    "foro_comarca": {
+      "label": "Comarca do foro",
+      "group": "Foro e assinatura",
+      "required": true
+    },
+    "contrato_local": {
+      "label": "Local de assinatura",
+      "group": "Foro e assinatura",
+      "required": true
+    },
+    "contrato_data": {
+      "label": "Data de assinatura",
+      "group": "Foro e assinatura",
+      "required": true
+    }
+  },
+  "rules": [
+    {
+      "type": "sum_eq",
+      "fields": [
+        "sinal_valor",
+        "reforco_valor",
+        "remanescente_valor"
+      ],
+      "total": "preco_total",
+      "severity": "error"
+    },
+    {
+      "type": "date_after",
+      "field": "escritura_data_limite",
+      "than": "today",
+      "severity": "error"
+    },
+    {
+      "type": "date_after",
+      "field": "vendedor_cc_validade",
+      "than": "escritura_data_limite",
+      "severity": "warning"
+    },
+    {
+      "type": "date_after",
+      "field": "comprador_cc_validade",
+      "than": "escritura_data_limite",
+      "severity": "warning"
+    },
+    {
+      "type": "differs",
+      "a": "vendedor_nif",
+      "b": "comprador_nif",
+      "severity": "warning"
+    },
+    {
+      "type": "differs",
+      "a": "vendedor_iban",
+      "b": "comprador_iban",
+      "severity": "warning"
+    },
+    {
+      "type": "required_if",
+      "field": "onus_descricao",
+      "when": {
+        "field": "onus",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "onus_prorrogacao_dias",
+      "when": {
+        "field": "onus",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "arrendamento_data",
+      "when": {
+        "field": "arrendado",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "arrendamento_condicoes",
+      "when": {
+        "field": "arrendado",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "reforco_valor",
+      "when": {
+        "field": "reforco",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "reforco_data",
+      "when": {
+        "field": "reforco",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "financiamento_prazo",
+      "when": {
+        "field": "financiamento",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "mediadora_nome",
+      "when": {
+        "field": "mediacao",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "mediadora_nipc",
+      "when": {
+        "field": "mediacao",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "mediadora_licenca_ami",
+      "when": {
+        "field": "mediacao",
+        "nonEmpty": true
+      }
+    },
+    {
+      "type": "required_if",
+      "field": "reconhecimento_entidade",
+      "when": {
+        "field": "reconhecimento_presencial",
+        "nonEmpty": true
+      }
+    }
+  ]
+}
