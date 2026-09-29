@@ -52,4 +52,23 @@ export const messages = {
   uploadErrorGeneric: 'Não foi possível processar o ficheiro.',
 
   groupUnlabeled: 'Outros campos',
+
+  extractPanelToggleOpen: 'Preencher a partir de texto colado (com IA)',
+  extractPanelToggleClose: 'Fechar preenchimento por IA',
+  extractApiKeyLabel: 'Chave da API (Anthropic)',
+  extractApiKeyHelp: 'Fica apenas em memória enquanto esta página estiver aberta — nunca é guardada.',
+  extractApiKeyPlaceholder: 'sk-ant-…',
+  extractTextLabel: 'Texto a analisar',
+  extractTextHelp: 'Cole aqui o texto de onde quer extrair valores para os campos (máx. 20 000 carateres).',
+  extractSubmit: 'Extrair campos',
+  extractSubmitting: 'A extrair…',
+  extractDisclaimer: 'As propostas nunca são aplicadas automaticamente. Reveja cada uma e confirme campo a campo.',
+  extractNoProposals: 'Não foram propostos valores com fundamentação suficiente no texto.',
+  extractRejectedSummary: 'propostas rejeitadas por falta de fundamentação no texto (não são mostradas).',
+  extractAccept: 'Aceitar',
+  extractDiscard: 'Descartar',
+  extractAccepted: 'Aplicado',
+  extractOverwriteWarning: 'Este campo já tem um valor — aceitar substitui-o.',
+  extractQuoteLabel: 'Citação encontrada no texto:',
+  extractErrorGeneric: 'Não foi possível extrair valores. Verifique a chave da API e tente novamente.',
 } as const;

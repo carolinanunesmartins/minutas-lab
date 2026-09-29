@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- CSP per SPEC.md §9 / docs/adr/0005-pages-csp-meta.md. connect-src is 'self' until
-         the LLM adapter lands (M6); it must be updated to the real LLM origin then. -->
+    <!-- CSP per SPEC.md §9 / docs/adr/0005-pages-csp-meta.md. connect-src adds the
+         Anthropic API origin per docs/adr/0004-llm-interface.md (M6, BYOK direct-from-
+         browser calls) — CORS behaviour against the live API is HUMAN-verify (no key
+         available in this session). -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://api.anthropic.com; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <title>minutas-lab</title>
   </head>

@@ -1,6 +1,7 @@
 import { humanizeFieldId } from '../core/template/fields';
 import type { Meta } from '../core/template/meta';
 import type { TagType } from '../core/tags/types';
+import type { ExtractFieldSpec } from '../llm/types';
 
 export interface FieldDescriptor {
   id: string;
@@ -52,4 +53,21 @@ export function buildFieldGroups(
   }
 
   return ungrouped.fields.length > 0 ? [...groups, ungrouped] : groups;
+}
+
+/** Value-typed fields only (block/condition booleans have no `type` and aren't LLM-extractable). */
+export function toExtractFieldSpecs(groups: FieldGroup[]): ExtractFieldSpec[] {
+  const specs: ExtractFieldSpec[] = [];
+  for (const group of groups) {
+    for (const field of group.fields) {
+      if (field.type === undefined) continue;
+      specs.push({
+        id: field.id,
+        label: field.label,
+        type: field.type,
+        ...(field.help !== undefined && { help: field.help }),
+      });
+    }
+  }
+  return specs;
 }

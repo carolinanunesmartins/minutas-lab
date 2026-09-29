@@ -7,9 +7,10 @@ import type { Meta } from '../core/template/meta';
 import { validateTemplateValues } from '../core/template/validate';
 import type { ValidationResult } from '../core/template/validate';
 import { BuildClient } from './buildClient';
+import { ExtractPanel } from './ExtractPanel';
 import { Form } from './Form';
 import { Preview } from './Preview';
-import { buildFieldGroups } from './fieldModel';
+import { buildFieldGroups, toExtractFieldSpecs } from './fieldModel';
 import type { FieldGroup } from './fieldModel';
 import { saveDocx } from './download';
 import { messages } from './messages.pt';
@@ -89,6 +90,8 @@ function App() {
     const todayIso = new Date().toISOString().slice(0, 10);
     return validateTemplateValues({ paragraphs, meta: loaded.meta, fieldTypes, values, todayIso, tagErrors: errors });
   }, [loaded, values]);
+
+  const extractFields = useMemo(() => (loaded ? toExtractFieldSpecs(loaded.groups) : []), [loaded]);
 
   // Debounced live preview (SPEC.md §7: 50-100ms).
   useEffect(() => {
@@ -228,6 +231,7 @@ function App() {
               {messages.structuralErrorsTitle}
             </p>
           )}
+          <ExtractPanel templateId={loaded.meta.id} fields={extractFields} currentValues={values} onAcceptField={handleChange} />
           <Form
             groups={loaded.groups}
             values={values}
