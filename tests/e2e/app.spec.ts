@@ -9,7 +9,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('picking a template loads its form and shows the live preview', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'minutas-lab' })).toBeVisible();
+  // The h1 on the working screen is the loaded document's own title (the thing
+  // being edited), not the app wordmark — that's a <p> in the header instead.
+  await expect(page.getByRole('heading', { name: CPCV_TITLE })).toBeVisible();
   await expect(page.locator('#field-vendedor_nome')).toBeVisible();
 });
 
@@ -23,13 +25,13 @@ test('the template picker lists all 4 templates', async ({ page }) => {
 
 test('filling a field updates the live preview with the value', async ({ page }) => {
   await page.locator('#field-vendedor_nome').fill('Maria Exemplo Silva');
-  const preview = page.locator('.docx-preview-pane:not(.hidden)').first();
+  const preview = page.locator('.docx-preview-pane[data-active="true"]').first();
   await expect(preview).toContainText('Maria Exemplo Silva', { timeout: 5000 });
 });
 
 test('empty required fields render as bracketed placeholders in the preview', async ({ page }) => {
   await page.locator('#field-vendedor_nome').fill('Maria Exemplo Silva');
-  const preview = page.locator('.docx-preview-pane:not(.hidden)').first();
+  const preview = page.locator('.docx-preview-pane[data-active="true"]').first();
   await expect(preview).toContainText('[vendedor_nif]', { timeout: 5000 });
 });
 

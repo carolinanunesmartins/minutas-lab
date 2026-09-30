@@ -25,10 +25,12 @@ export function Form({ groups, values, fieldIssues, activeFieldId, onChange, onF
   }
 
   return (
-    <form className="space-y-6" aria-label={messages.formTitle} onSubmit={(e) => e.preventDefault()}>
+    <form className="space-y-7" aria-label={messages.formTitle} onSubmit={(e) => e.preventDefault()}>
       {groups.map((group) => (
         <fieldset key={group.id} className="space-y-3">
-          <legend className="text-sm font-semibold text-slate-700">{group.label}</legend>
+          <legend className="mb-3 w-full border-b border-line pb-1.5 font-display text-sm font-semibold text-white/80">
+            {group.label}
+          </legend>
           {group.fields.map((field) => {
             const issues = issuesByField.get(field.id) ?? [];
             const hasError = issues.some((i) => i.severity === 'error');
@@ -40,7 +42,7 @@ export function Form({ groups, values, fieldIssues, activeFieldId, onChange, onF
             if (field.type === undefined) {
               // Boolean block/condition toggle.
               return (
-                <div key={field.id} className="flex items-center gap-2">
+                <div key={field.id} className="flex items-center gap-2.5 py-1">
                   <input
                     id={inputId}
                     type="checkbox"
@@ -48,9 +50,9 @@ export function Form({ groups, values, fieldIssues, activeFieldId, onChange, onF
                     onChange={(e) => onChange(field.id, e.target.checked ? 'true' : '')}
                     onFocus={() => onFocusField(field.id)}
                     onBlur={() => onFocusField(undefined)}
-                    className="h-4 w-4"
+                    className="h-4 w-4 accent-brass-500"
                   />
-                  <label htmlFor={inputId} className="text-sm text-slate-800">
+                  <label htmlFor={inputId} className="text-sm text-white/80">
                     {field.label}
                   </label>
                 </div>
@@ -58,17 +60,22 @@ export function Form({ groups, values, fieldIssues, activeFieldId, onChange, onF
             }
 
             return (
-              <div key={field.id} className={`rounded-md p-2 ${isActive ? 'bg-blue-50' : value ? 'bg-slate-50' : ''}`}>
-                <label htmlFor={inputId} className="block text-sm font-medium text-slate-800">
+              <div
+                key={field.id}
+                className={`rounded-md p-2.5 transition-colors duration-150 ease-out-quart ${
+                  isActive ? 'bg-brass-500/10' : value ? 'bg-white/[0.03]' : ''
+                }`}
+              >
+                <label htmlFor={inputId} className="block text-sm font-medium text-white/85">
                   {field.label}
                   {field.required && (
-                    <span aria-hidden="true" className="text-red-600">
+                    <span aria-hidden="true" className="text-white/35">
                       {' '}
                       *
                     </span>
                   )}
                 </label>
-                {field.help && <p className="text-xs text-slate-500">{field.help}</p>}
+                {field.help && <p className="mt-0.5 text-xs text-white/40">{field.help}</p>}
                 <input
                   id={inputId}
                   type="text"
@@ -79,10 +86,12 @@ export function Form({ groups, values, fieldIssues, activeFieldId, onChange, onF
                   onChange={(e) => onChange(field.id, e.target.value)}
                   onFocus={() => onFocusField(field.id)}
                   onBlur={() => onFocusField(undefined)}
-                  className={`mt-1 w-full rounded border px-2 py-1 text-sm ${hasError ? 'border-red-500' : 'border-slate-300'}`}
+                  className={`mt-1.5 w-full rounded border bg-ink-900 px-2.5 py-1.5 text-sm text-white transition-colors duration-150 ease-out-quart placeholder:text-white/30 ${
+                    hasError ? 'border-rubric-500/60' : 'border-line focus:border-brass-400'
+                  }`}
                 />
                 {issues.length > 0 && (
-                  <p id={errorId} role="alert" className={`mt-1 text-xs ${hasError ? 'text-red-600' : 'text-amber-600'}`}>
+                  <p id={errorId} role="alert" className={`mt-1.5 text-xs ${hasError ? 'text-rubric-400' : 'text-brass-300'}`}>
                     {issues.map(issueMessage).join(' ')}
                   </p>
                 )}

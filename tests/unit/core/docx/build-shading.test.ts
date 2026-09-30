@@ -52,7 +52,7 @@ describe('buildDocx — shading (preview/draft only)', () => {
 
     const shades = findRunShades(rebuilt.documentXmlDoc).filter(Boolean);
     expect(shades).toContain('FFF59D'); // empty
-    expect(shades).toContain('EDEFF7'); // filled
+    expect(shades).toContain('F4F1E9'); // filled
   });
 
   it('highlights the active field more strongly', () => {
@@ -65,8 +65,8 @@ describe('buildDocx — shading (preview/draft only)', () => {
     });
     const rebuilt = readDocx(bytes);
     const shades = findRunShades(rebuilt.documentXmlDoc).filter(Boolean);
-    expect(shades).toContain('BBDEFB'); // active
-    expect(shades).toContain('EDEFF7'); // filled (preco, not active)
+    expect(shades).toContain('F2C879'); // active
+    expect(shades).toContain('F4F1E9'); // filled (preco, not active)
   });
 
   it('appends a draft note in addition to the disclaimer', () => {

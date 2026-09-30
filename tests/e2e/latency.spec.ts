@@ -12,14 +12,14 @@ test('edit -> preview latency is logged (see console for the measured baseline)'
   await page.getByRole('button', { name: CPCV_TITLE }).click();
   const input = page.locator('#field-vendedor_nome');
   await input.fill('Maria');
-  await expect(page.locator('.docx-preview-pane:not(.hidden)').first()).toContainText('Maria', { timeout: 5000 });
+  await expect(page.locator('.docx-preview-pane[data-active="true"]').first()).toContainText('Maria', { timeout: 5000 });
 
   const samples: number[] = [];
   for (let i = 0; i < 8; i += 1) {
     const value = `Maria ${i}`;
     const start = Date.now();
     await input.fill(value);
-    await expect(page.locator('.docx-preview-pane:not(.hidden)').first()).toContainText(value, { timeout: 5000 });
+    await expect(page.locator('.docx-preview-pane[data-active="true"]').first()).toContainText(value, { timeout: 5000 });
     samples.push(Date.now() - start);
   }
   samples.sort((a, b) => a - b);

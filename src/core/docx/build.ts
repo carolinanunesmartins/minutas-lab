@@ -16,9 +16,12 @@ export interface ShadingOptions {
   activeFieldId?: string;
 }
 
+// Warm highlighter-pen family, on brand with the app chrome's brass accent
+// (src/index.css --brass-*) — distinct enough from each other to read at a
+// glance: bright yellow (needs input) > warm gold (editing now) > faint tint (filled).
 const SHADE_EMPTY = 'FFF59D';
-const SHADE_FILLED = 'EDEFF7';
-const SHADE_ACTIVE = 'BBDEFB';
+const SHADE_FILLED = 'F4F1E9';
+const SHADE_ACTIVE = 'F2C879';
 
 function renderValue(raw: string, type: TagType, modifier: TagModifier | undefined): string {
   if (!raw) return '';

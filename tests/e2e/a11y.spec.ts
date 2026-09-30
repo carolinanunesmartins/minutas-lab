@@ -8,6 +8,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('the template picker has zero serious/critical axe violations', async ({ page }) => {
+  await page.waitForTimeout(700); // let the staggered card entrance animation settle before scanning colors
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
   expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);

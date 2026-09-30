@@ -10,13 +10,15 @@ import procuracaoMeta from '../../templates/procuracao/template.meta.json';
 export interface TemplateManifestEntry {
   slug: string;
   title: string;
+  /** Short filing reference shown on the template picker card (e.g. a cartório dossier tab). */
+  code: string;
   docxUrl: string;
   metaRaw: unknown;
 }
 
 export const TEMPLATE_MANIFEST: TemplateManifestEntry[] = [
-  { slug: 'cpcv', title: cpcvMeta.title, docxUrl: cpcvUrl, metaRaw: cpcvMeta },
-  { slug: 'arrendamento', title: arrendamentoMeta.title, docxUrl: arrendamentoUrl, metaRaw: arrendamentoMeta },
-  { slug: 'empreitada', title: empreitadaMeta.title, docxUrl: empreitadaUrl, metaRaw: empreitadaMeta },
-  { slug: 'procuracao', title: procuracaoMeta.title, docxUrl: procuracaoUrl, metaRaw: procuracaoMeta },
+  { slug: 'cpcv', title: cpcvMeta.title, code: 'CPCV', docxUrl: cpcvUrl, metaRaw: cpcvMeta },
+  { slug: 'arrendamento', title: arrendamentoMeta.title, code: 'ARR', docxUrl: arrendamentoUrl, metaRaw: arrendamentoMeta },
+  { slug: 'empreitada', title: empreitadaMeta.title, code: 'EMP', docxUrl: empreitadaUrl, metaRaw: empreitadaMeta },
+  { slug: 'procuracao', title: procuracaoMeta.title, code: 'PROC', docxUrl: procuracaoUrl, metaRaw: procuracaoMeta },
 ];

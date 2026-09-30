@@ -7,6 +7,7 @@ import type { Meta } from '../core/template/meta';
 import { validateTemplateValues } from '../core/template/validate';
 import type { ValidationResult } from '../core/template/validate';
 import { BuildClient } from './buildClient';
+import { buttonPrimary, buttonSecondary } from './buttonStyles';
 import { ExtractPanel } from './ExtractPanel';
 import { Form } from './Form';
 import { Preview } from './Preview';
@@ -165,19 +166,25 @@ function App() {
 
   if (state === 'empty') {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-6">
-        <h1 className="text-lg font-semibold">{messages.appTitle}</h1>
-        <h2 className="text-base font-medium">{messages.pickTemplateTitle}</h2>
-        <p className="text-sm text-slate-600">{messages.pickTemplateHint}</p>
-        <ul className="grid gap-2 sm:grid-cols-2">
-          {TEMPLATE_MANIFEST.map((entry) => (
-            <li key={entry.slug}>
+      <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
+          <h2 className="font-display text-lg text-white/80">{messages.pickTemplateTitle}</h2>
+          <p className="max-w-sm text-sm text-white/50">{messages.pickTemplateHint}</p>
+        </div>
+        <ul className="grid w-full max-w-2xl gap-3 sm:grid-cols-2">
+          {TEMPLATE_MANIFEST.map((entry, i) => (
+            <li key={entry.slug} className="animate-rise-in" style={{ animationDelay: `${i * 60}ms` }}>
               <button
                 type="button"
                 onClick={() => setSelected(entry)}
-                className="w-full rounded border border-slate-300 px-4 py-3 text-left text-sm hover:border-slate-500"
+                className="group flex w-full flex-col items-start gap-2 rounded-md border border-paper-line bg-paper p-5 text-left shadow-[0_1px_3px_rgba(0,0,0,0.5)] transition-transform duration-200 ease-out-quart hover:-translate-y-0.5 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
               >
-                {entry.title}
+                <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-ink">
+                  {entry.code}
+                </span>
+                <span className="font-display text-lg font-semibold leading-snug text-paper-ink">{entry.title}</span>
+                <span className="mt-1 h-px w-8 bg-brass-500 transition-all duration-200 ease-out-quart group-hover:w-16" />
               </button>
             </li>
           ))}
@@ -189,7 +196,7 @@ function App() {
   if (state === 'loading') {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p>{messages.loading}</p>
+        <p className="font-display text-white/70">{messages.loading}</p>
       </main>
     );
   }
@@ -197,10 +204,10 @@ function App() {
   if (state === 'error' || !loaded || !validation) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-rubric-400">
           {messages.loadError}
         </p>
-        <button type="button" onClick={handleChangeTemplate} className="rounded border border-slate-300 px-3 py-1.5 text-sm">
+        <button type="button" onClick={handleChangeTemplate} className={buttonSecondary}>
           {messages.changeTemplate}
         </button>
       </main>
@@ -210,24 +217,24 @@ function App() {
   const canDownloadFinal = !validation.hasBlockingError;
 
   return (
-    <main className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+    <main className="flex min-h-screen flex-col bg-ink-950">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
         <div>
-          <h1 className="text-lg font-semibold">{messages.appTitle}</h1>
-          <p className="text-sm text-slate-600">{loaded.meta.title}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass-400">{messages.appTitle}</p>
+          <h1 className="font-display text-lg font-semibold text-white">{loaded.meta.title}</h1>
         </div>
-        <button type="button" onClick={handleChangeTemplate} className="rounded border border-slate-300 px-3 py-1.5 text-sm">
+        <button type="button" onClick={handleChangeTemplate} className={buttonSecondary}>
           {messages.changeTemplate}
         </button>
       </header>
 
       <div className="flex flex-1 flex-col lg:flex-row">
-        <section className="lg:w-1/2 overflow-auto p-4" aria-labelledby="form-heading">
+        <section className="lg:w-1/2 overflow-auto bg-ink-950 p-4 sm:p-6" aria-labelledby="form-heading">
           <h2 id="form-heading" className="sr-only">
             {messages.formTitle}
           </h2>
           {validation.structuralErrors.length > 0 && (
-            <p role="alert" className="mb-4 rounded bg-red-50 p-2 text-sm text-red-700">
+            <p role="alert" className="mb-4 rounded border border-rubric-500/40 bg-rubric-tint p-3 text-sm text-rubric-400">
               {messages.structuralErrorsTitle}
             </p>
           )}
@@ -242,21 +249,26 @@ function App() {
           />
         </section>
 
-        <section className="lg:w-1/2 border-t border-slate-200 lg:border-l lg:border-t-0" aria-labelledby="preview-heading">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-2">
-            <h2 id="preview-heading" className="text-sm font-semibold">
+        <section
+          className="flex flex-col border-t border-line bg-ink-900 lg:w-1/2 lg:border-l lg:border-t-0"
+          aria-labelledby="preview-heading"
+        >
+          <div className="flex items-center justify-between border-b border-line px-4 py-2.5 sm:px-6">
+            <h2 id="preview-heading" className="font-display text-sm font-semibold text-white/90">
               {messages.previewTitle}
             </h2>
-            <p className="text-xs text-slate-500">{messages.previewApprox}</p>
+            <p className="text-xs text-white/40">{messages.previewApprox}</p>
           </div>
-          <div className="h-[60vh] lg:h-[calc(100vh-8rem)]">
-            <Preview bytes={previewBytes} />
+          <div className="h-[60vh] flex-1 overflow-hidden bg-ink-900 p-3 sm:p-6 lg:h-[calc(100vh-8rem)]">
+            <div className="h-full overflow-hidden rounded-sm shadow-[0_8px_30px_rgba(0,0,0,0.55)]">
+              <Preview bytes={previewBytes} />
+            </div>
           </div>
         </section>
       </div>
 
-      <footer className="flex items-center justify-end gap-2 border-t border-slate-200 px-4 py-3">
-        <button type="button" onClick={() => void handleDownloadDraft()} className="rounded border border-slate-300 px-3 py-1.5 text-sm">
+      <footer className="flex items-center justify-end gap-2 border-t border-line bg-ink-950 px-4 py-3 sm:px-6">
+        <button type="button" onClick={() => void handleDownloadDraft()} className={buttonSecondary}>
           {messages.downloadDraft}
         </button>
         <button
@@ -264,28 +276,29 @@ function App() {
           disabled={!canDownloadFinal}
           title={canDownloadFinal ? undefined : messages.downloadDisabledReason}
           onClick={() => setReviewOpen(true)}
-          className="rounded bg-slate-900 px-3 py-1.5 text-sm text-white disabled:cursor-not-allowed disabled:bg-slate-300"
+          className={buttonPrimary}
         >
           {messages.downloadFinal}
         </button>
       </footer>
 
       {reviewOpen && (
-        <div role="dialog" aria-modal="true" aria-labelledby="review-heading" className="fixed inset-0 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-md rounded bg-white p-4">
-            <h2 id="review-heading" className="text-base font-semibold">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="review-heading"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink-950/70 backdrop-blur-sm"
+        >
+          <div className="animate-pop-in w-full max-w-md rounded-md border border-line bg-ink-900 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            <h2 id="review-heading" className="font-display text-lg font-semibold text-white">
               {messages.reviewTitle}
             </h2>
-            <p className="mt-2 text-sm text-slate-700">{messages.reviewBody}</p>
-            <div className="mt-4 flex justify-end gap-2">
-              <button type="button" onClick={() => setReviewOpen(false)} className="rounded border border-slate-300 px-3 py-1.5 text-sm">
+            <p className="mt-2 text-sm text-white/60">{messages.reviewBody}</p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button type="button" onClick={() => setReviewOpen(false)} className={buttonSecondary}>
                 {messages.reviewCancel}
               </button>
-              <button
-                type="button"
-                onClick={() => void handleConfirmDownloadFinal()}
-                className="rounded bg-slate-900 px-3 py-1.5 text-sm text-white"
-              >
+              <button type="button" onClick={() => void handleConfirmDownloadFinal()} className={buttonPrimary}>
                 {messages.reviewConfirm}
               </button>
             </div>

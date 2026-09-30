@@ -1,3 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Self-hosted (CSP: font-src 'self'; AGENTS.md — no third-party runtime requests).
+   Fraunces variable, latin subset only — Portuguese diacritics live in U+0000-00FF. */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('./assets/fonts/fraunces-variable-latin.woff2') format('woff2');
+}
+
+:root {
+  /* "Cartório" palette — ink + brass + paper. OKLCH throughout. */
+  --ink-950: oklch(0.16 0.03 255);
+  --ink-900: oklch(0.20 0.03 255);
+  --ink-800: oklch(0.26 0.03 255);
+  --ink-700: oklch(0.34 0.025 255);
+  --ink-line: oklch(1 0 0 / 10%);
+  --ink-line-strong: oklch(1 0 0 / 18%);
+
+  --paper: oklch(0.985 0.004 90);
+  --paper-dim: oklch(0.95 0.006 90);
+  --paper-ink: oklch(0.23 0.02 255);
+  --paper-ink-dim: oklch(0.42 0.02 255);
+  --paper-line: oklch(0.23 0.02 255 / 12%);
+
+  --brass-300: oklch(0.86 0.08 80);
+  --brass-400: oklch(0.76 0.12 76);
+  --brass-500: oklch(0.68 0.14 73);
+  --brass-600: oklch(0.58 0.13 70);
+  --brass-ink: oklch(0.2 0.02 70);
+
+  --rubric-400: oklch(0.62 0.16 27);
+  --rubric-500: oklch(0.53 0.18 27);
+  --rubric-tint: oklch(0.53 0.18 27 / 10%);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--ink-950);
+    color: oklch(0.93 0.01 90);
+    font-family: ui-sans-serif, -apple-system, 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--brass-500);
+    color: var(--brass-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brass-400);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-rise-in {
+    animation: rise-in 420ms var(--ease-out-quart) both;
+  }
+  .animate-pop-in {
+    animation: pop-in 180ms var(--ease-out-quart) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

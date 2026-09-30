@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AnthropicProvider } from '../llm/anthropicProvider';
 import { runExtraction } from '../llm/extract';
 import type { ExtractFieldSpec, ExtractResult, GroundedField } from '../llm/types';
+import { buttonGhost, buttonPrimary, buttonSecondary } from './buttonStyles';
 import { messages } from './messages.pt';
 
 interface ExtractPanelProps {
@@ -13,6 +14,8 @@ interface ExtractPanelProps {
 }
 
 const MAX_TEXT_CHARS = 20_000;
+const inputStyles =
+  'mb-1 w-full rounded border border-line bg-ink-900 px-2.5 py-1.5 text-sm text-white transition-colors duration-150 ease-out-quart placeholder:text-white/30 focus:border-brass-400';
 
 function labelFor(fields: ExtractFieldSpec[], id: string): string {
   return fields.find((f) => f.id === id)?.label ?? id;
@@ -52,24 +55,29 @@ export function ExtractPanel({ templateId, fields, currentValues, onAcceptField 
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="mb-4 text-sm text-blue-700 underline">
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mb-5 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide text-brass-400 transition-colors duration-150 ease-out-quart hover:text-brass-300"
+      >
+        <span aria-hidden="true">+</span>
         {messages.extractPanelToggleOpen}
       </button>
     );
   }
 
   return (
-    <section className="mb-4 rounded border border-slate-300 p-3" aria-label={messages.extractPanelToggleOpen}>
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">{messages.extractPanelToggleOpen}</h3>
-        <button type="button" onClick={() => setOpen(false)} className="text-xs text-slate-500 underline">
+    <section className="animate-rise-in mb-5 rounded-md border border-line bg-ink-900 p-4" aria-label={messages.extractPanelToggleOpen}>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="font-display text-sm font-semibold text-white/90">{messages.extractPanelToggleOpen}</h3>
+        <button type="button" onClick={() => setOpen(false)} className={buttonGhost}>
           {messages.extractPanelToggleClose}
         </button>
       </div>
 
-      <p className="mb-2 text-xs text-slate-600">{messages.extractDisclaimer}</p>
+      <p className="mb-3 text-xs text-white/50">{messages.extractDisclaimer}</p>
 
-      <label htmlFor="extract-api-key" className="block text-xs font-medium">
+      <label htmlFor="extract-api-key" className="block text-xs font-medium text-white/70">
         {messages.extractApiKeyLabel}
       </label>
       <input
@@ -79,11 +87,11 @@ export function ExtractPanel({ templateId, fields, currentValues, onAcceptField 
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
         placeholder={messages.extractApiKeyPlaceholder}
-        className="mb-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
+        className={inputStyles}
       />
-      <p className="mb-2 text-xs text-slate-500">{messages.extractApiKeyHelp}</p>
+      <p className="mb-3 text-xs text-white/40">{messages.extractApiKeyHelp}</p>
 
-      <label htmlFor="extract-text" className="block text-xs font-medium">
+      <label htmlFor="extract-text" className="block text-xs font-medium text-white/70">
         {messages.extractTextLabel}
       </label>
       <textarea
@@ -92,53 +100,43 @@ export function ExtractPanel({ templateId, fields, currentValues, onAcceptField 
         onChange={(e) => setText(e.target.value)}
         maxLength={MAX_TEXT_CHARS}
         rows={6}
-        className="mb-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
+        className={inputStyles}
       />
-      <p className="mb-2 text-xs text-slate-500">{messages.extractTextHelp}</p>
+      <p className="mb-3 text-xs text-white/40">{messages.extractTextHelp}</p>
 
-      <button
-        type="button"
-        disabled={!apiKey || !text || status === 'loading'}
-        onClick={() => void handleSubmit()}
-        className="rounded bg-slate-900 px-3 py-1.5 text-sm text-white disabled:cursor-not-allowed disabled:bg-slate-300"
-      >
+      <button type="button" disabled={!apiKey || !text || status === 'loading'} onClick={() => void handleSubmit()} className={buttonPrimary}>
         {status === 'loading' ? messages.extractSubmitting : messages.extractSubmit}
       </button>
 
       {status === 'error' && (
-        <p role="alert" className="mt-2 text-sm text-red-600">
+        <p role="alert" className="mt-3 text-sm text-rubric-400">
           {errorMessage || messages.extractErrorGeneric}
         </p>
       )}
 
       {status === 'done' && result && (
-        <div className="mt-3 space-y-2">
+        <div className="mt-4 space-y-2.5">
           {result.rejectedCount > 0 && (
-            <p className="text-xs text-amber-700">
+            <p className="text-xs text-brass-300">
               {result.rejectedCount} {messages.extractRejectedSummary}
             </p>
           )}
-          {proposals.length === 0 && <p className="text-sm text-slate-600">{messages.extractNoProposals}</p>}
+          {proposals.length === 0 && <p className="text-sm text-white/50">{messages.extractNoProposals}</p>}
           {proposals.map((field) => {
             const isAccepted = accepted.has(field.id);
             const hasExistingValue = Boolean(currentValues[field.id]);
             return (
-              <div key={field.id} className="rounded border border-slate-200 p-2">
-                <p className="text-sm font-medium">{labelFor(fields, field.id)}</p>
-                <p className="text-sm">{field.value}</p>
+              <div key={field.id} className="animate-rise-in rounded border border-line bg-ink-800 p-3">
+                <p className="text-sm font-medium text-white/85">{labelFor(fields, field.id)}</p>
+                <p className="text-sm text-white">{field.value}</p>
                 {field.quote && (
-                  <blockquote className="mt-1 border-l-2 border-amber-400 bg-amber-50 px-2 py-1 text-xs italic text-slate-700">
-                    {messages.extractQuoteLabel} “{field.quote}”
+                  <blockquote className="mt-1.5 rounded border border-brass-500/25 bg-brass-500/[0.07] px-2.5 py-1.5 text-xs italic text-white/60">
+                    {messages.extractQuoteLabel} "{field.quote}"
                   </blockquote>
                 )}
-                {hasExistingValue && !isAccepted && <p className="mt-1 text-xs text-amber-700">{messages.extractOverwriteWarning}</p>}
-                <div className="mt-2 flex gap-2">
-                  <button
-                    type="button"
-                    disabled={isAccepted}
-                    onClick={() => handleAccept(field)}
-                    className="rounded border border-slate-300 px-2 py-1 text-xs disabled:cursor-not-allowed disabled:opacity-50"
-                  >
+                {hasExistingValue && !isAccepted && <p className="mt-1.5 text-xs text-brass-300">{messages.extractOverwriteWarning}</p>}
+                <div className="mt-2.5 flex gap-2">
+                  <button type="button" disabled={isAccepted} onClick={() => handleAccept(field)} className={buttonSecondary}>
                     {isAccepted ? messages.extractAccepted : messages.extractAccept}
                   </button>
                 </div>
