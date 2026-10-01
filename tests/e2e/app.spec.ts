@@ -216,7 +216,6 @@ test('example data asks before replacing what was already typed', async ({ page 
 
 test('the example-data button is not offered for an imported template', async ({ page }) => {
   await page.getByRole('button', { name: 'Escolher outra minuta' }).click();
-  await page.getByRole('button', { name: /Importar minuta com lacunas/i }).click();
   await page.locator('input[type=file]').setInputFiles({
     name: 'minuta.docx',
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

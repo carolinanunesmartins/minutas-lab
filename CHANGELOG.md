@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Landing page is now import-first: a large drop zone (drag and drop or file picker) with a three-step explanation leads the page; the four bundled templates move to a quieter "modelos de demonstração" section. The "fill with example data" button is hidden on imported templates (no example data exists for them).
+
 ### Added
 - "Preencher com dados de exemplo" button is now available in every build (was dev/`?teste` only): fills all fields with fictitious data for the four templates, asks before replacing typed values, and does not trigger the unsaved-data warning. e2e tests cover filling, downloading and the confirmation.
 

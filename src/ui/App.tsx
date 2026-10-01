@@ -321,31 +321,37 @@ function App() {
 
   if (state === 'empty') {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16">
-        <div className="flex flex-col items-center gap-3 text-center">
+      <main className="flex min-h-screen flex-col items-center gap-12 px-6 py-12 sm:py-16">
+        <header className="flex max-w-xl flex-col items-center gap-3 text-center">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
-          <h2 className="font-display text-lg text-white/80">{messages.pickTemplateTitle}</h2>
-          <p className="max-w-sm text-sm text-white/60">{messages.pickTemplateHint}</p>
-          <p className="max-w-md text-xs leading-relaxed text-white/60">{messages.privacyNote}</p>
-        </div>
-        <ul className="grid w-full max-w-2xl gap-3 sm:grid-cols-2">
-          {TEMPLATE_MANIFEST.map((entry, i) => (
-            <li key={entry.slug} className="animate-rise-in" style={{ animationDelay: `${i * 60}ms` }}>
-              <button
-                type="button"
-                onClick={() => setSelected(entry)}
-                className="group flex w-full flex-col items-start gap-2 rounded-md border border-paper-line bg-paper p-5 text-left shadow-[0_1px_3px_rgba(0,0,0,0.5)] transition-transform duration-200 ease-out-quart hover:-translate-y-0.5 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
-              >
-                <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-ink">
-                  {entry.code}
-                </span>
-                <span className="font-display text-lg font-semibold leading-snug text-paper-ink">{entry.title}</span>
-                <span className="mt-1 h-px w-8 bg-brass-500 transition-all duration-200 ease-out-quart group-hover:w-16" />
-              </button>
-            </li>
-          ))}
-        </ul>
+          <p className="text-base text-white/80">{messages.importTagline}</p>
+          <p className="text-xs leading-relaxed text-white/50">{messages.privacyNote}</p>
+        </header>
+
         <ImportPanel onUse={setSelected} />
+
+        <section aria-labelledby="demo-heading" className="w-full max-w-3xl border-t border-line pt-8">
+          <h2 id="demo-heading" className="font-display text-base font-semibold text-white/70">
+            {messages.pickTemplateTitle}
+          </h2>
+          <p className="mt-1 text-xs text-white/50">{messages.pickTemplateHint}</p>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            {TEMPLATE_MANIFEST.map((entry) => (
+              <li key={entry.slug}>
+                <button
+                  type="button"
+                  onClick={() => setSelected(entry)}
+                  className="flex min-h-11 w-full items-center gap-3 rounded border border-line px-3 py-2 text-left text-sm text-white/80 transition-colors duration-150 ease-out-quart hover:border-line-strong hover:bg-white/5 hover:text-white active:scale-[0.99]"
+                >
+                  <span aria-hidden="true" className="w-12 shrink-0 font-mono text-[10px] uppercase tracking-wider text-brass-400">
+                    {entry.code}
+                  </span>
+                  <span>{entry.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
     );
   }

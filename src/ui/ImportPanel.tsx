@@ -8,7 +8,7 @@ import type { InferredBlank, InferredField } from '../core/import/infer';
 import { findSensitive, looksFilled } from '../core/import/safeguard';
 import { TAG_TYPES } from '../core/tags/types';
 import type { TagType } from '../core/tags/types';
-import { buttonGhost, buttonPrimary, buttonSecondary } from './buttonStyles';
+import { buttonPrimary, buttonSecondary } from './buttonStyles';
 import { saveDocx } from './download';
 import { saveJson } from './draft';
 import { messages } from './messages.pt';
@@ -41,7 +41,7 @@ function slugify(s: string): string {
 }
 
 export function ImportPanel({ onUse }: ImportPanelProps) {
-  const [open, setOpen] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [status, setStatus] = useState<'idle' | 'reading' | 'error' | 'ready'>('idle');
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [fields, setFields] = useState<InferredField[]>([]);
@@ -132,30 +132,31 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
     saveJson(JSON.stringify(built.meta, null, 2), `${built.meta.id}.meta.json`);
   }
 
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="font-mono text-xs uppercase tracking-wide text-brass-400 transition-colors duration-150 ease-out-quart hover:text-brass-300"
-      >
-        + {messages.importOpen}
-      </button>
-    );
-  }
-
   const includedCount = fields.filter((f) => !excluded.has(f.key)).length;
 
   return (
-    <section className="animate-rise-in w-full max-w-2xl rounded-md border border-line bg-ink-900 p-4" aria-label={messages.importTitle}>
-      <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-display text-base font-semibold text-white">{messages.importTitle}</h2>
-        <button type="button" onClick={() => setOpen(false)} className={buttonGhost}>
-          {messages.importClose}
-        </button>
-      </div>
-      <p className="mb-1 text-xs text-white/60">{messages.importHint}</p>
-      <p className="mb-3 text-xs text-white/40">{messages.importLocalOnly}</p>
+    <section
+      className="animate-rise-in w-full max-w-3xl rounded-lg border border-brass-500/40 bg-ink-900 p-5 shadow-[0_0_0_1px_rgba(201,154,92,0.08),0_20px_60px_-30px_rgba(201,154,92,0.35)] sm:p-8"
+      aria-labelledby="import-heading"
+    >
+      <h2 id="import-heading" className="font-display text-2xl font-semibold text-white sm:text-3xl">
+        {messages.importTitle}
+      </h2>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/70">{messages.importHint}</p>
+
+      <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+        {[messages.importStep1, messages.importStep2, messages.importStep3].map((step, i) => (
+          <li key={step} className="flex items-start gap-3 text-sm text-white/80">
+            <span
+              aria-hidden="true"
+              className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-brass-400 font-mono text-xs text-brass-300"
+            >
+              {i + 1}
+            </span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
 
       <input
         ref={fileInputRef}
@@ -169,9 +170,35 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
           e.target.value = '';
         }}
       />
-      <button type="button" onClick={() => fileInputRef.current?.click()} className={buttonSecondary}>
-        {messages.importChooseFile}
-      </button>
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          const file = e.dataTransfer.files[0];
+          if (!file) return;
+          if (/\.docx$/i.test(file.name)) {
+            void handleFile(file);
+          } else {
+            setStatus('error');
+            setProblems([{ code: 'WRONG_TYPE', message: messages.importWrongType }]);
+          }
+        }}
+        className={`mt-6 flex flex-col items-center gap-3 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors duration-150 ease-out-quart ${
+          dragging ? 'border-brass-400 bg-brass-500/10' : 'border-line-strong bg-ink-950/40'
+        }`}
+      >
+        <p className="font-display text-lg text-white">{messages.importDropTitle}</p>
+        <button type="button" onClick={() => fileInputRef.current?.click()} className={buttonPrimary}>
+          {messages.importChooseFile}
+        </button>
+        <p className="font-mono text-xs text-white/50">{messages.importExample}</p>
+        <p className="text-xs text-white/50">{messages.importLocalOnly}</p>
+      </div>
 
       {status === 'reading' && <p className="mt-3 text-sm text-white/70">{messages.importReading}</p>}
 
