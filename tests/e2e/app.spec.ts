@@ -66,9 +66,10 @@ test('final download review screen appears once all fields are validly filled', 
 
 test('focusing an input scrolls the preview to that field, even while it is still empty', async ({ page }) => {
   const preview = page.locator('.docx-preview-pane[data-active="true"]').first();
-  await expect(preview.locator('[data-field="preco_total"]').first()).toBeAttached({ timeout: 5000 });
+  // foro_comarca appears once, in the last clause (other fields now also appear in the summary at the top).
+  await expect(preview.locator('[data-field="foro_comarca"]').first()).toBeAttached({ timeout: 5000 });
   expect(await preview.evaluate((el) => el.scrollTop)).toBe(0);
-  await page.locator('#field-preco_total').focus();
+  await page.locator('#field-foro_comarca').focus();
   await expect.poll(() => preview.evaluate((el) => el.scrollTop), { timeout: 5000 }).toBeGreaterThan(500);
 });
 
@@ -94,9 +95,9 @@ test('ticking a checkbox adds its clause to the preview at once and scrolls to i
   expect(await preview.evaluate((el) => el.scrollTop)).toBe(0);
 
   const checkbox = page.getByLabel('Existem ónus ou encargos sobre o imóvel?');
-  await expect(page.getByText('Cláusula não incluída na minuta').first()).toBeVisible();
+  await expect(page.getByText('Cláusula não incluída').first()).toBeVisible();
   await checkbox.check(); // no blur: the change itself must refresh the preview
-  await expect(page.getByText(/Cláusula incluída na minuta/).first()).toBeVisible();
+  await expect(page.getByText('Cláusula incluída').first()).toBeVisible();
   await expect.poll(async () => (await preview.textContent())?.length ?? 0, { timeout: 5000 }).toBeGreaterThan(before);
   await expect(preview.locator('[data-blocks~="onus"]')).toBeAttached();
   await expect.poll(() => preview.evaluate((el) => el.scrollTop), { timeout: 5000 }).toBeGreaterThan(300);
@@ -212,4 +213,69 @@ test('example data asks before replacing what was already typed', async ({ page 
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: 'Preencher com dados de exemplo' }).click();
   await expect(page.locator('#field-vendedor_nome')).toHaveValue('Maria Exemplo Silva');
+});
+
+test('the example-data button is not offered for an imported template', async ({ page }) => {
+  await page.getByRole('button', { name: 'Escolher outra minuta' }).click();
+  await page.locator('input[type=file]:not([multiple])').setInputFiles({
+    name: 'minuta.docx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    buffer: await (await import('node:fs/promises')).readFile('fixtures/blank-minuta.docx'),
+  });
+  await page.getByRole('button', { name: 'Usar esta minuta' }).click();
+  await expect(page.getByRole('heading', { name: 'minuta' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Preencher com dados de exemplo' })).toHaveCount(0);
+});
+
+test('a field that appears several times says so, and one value fills them all in the preview', async ({ page }) => {
+  await expect(page.getByText(/Aparece em \d+ sítios do documento/).first()).toBeVisible();
+  await page.locator('#field-vendedor_nome').fill('Zacarias Teste Unico');
+  await page.locator('#field-vendedor_nome').blur();
+  await expect
+    .poll(async () => (await page.locator('.docx-wrapper').first().innerText()).split('Zacarias Teste Unico').length - 1, { timeout: 8000 })
+    .toBeGreaterThanOrEqual(5);
+});
+
+test.describe('landing page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByRole('button', { name: 'Escolher outra minuta' }).click();
+  });
+
+  test('the sample minuta shows what the importer found, in numbers', async ({ page }) => {
+    await page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' }).click();
+    await expect(page.getByText('O que encontrámos')).toBeVisible();
+    await expect(page.getByText('repetições, preenchidas de uma vez')).toBeVisible();
+    await expect(page.getByText('campos com validação automática')).toBeVisible();
+    await expect(page.getByText(/Verifica o dígito de controlo do NIF/).first()).toBeVisible();
+    await expect(page.getByText(/Nesta versão: só campos simples/)).toBeVisible();
+  });
+
+  test('a created minuta can be saved and opened again without importing it', async ({ page }, testInfo) => {
+    await page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' }).click();
+    const downloads: string[] = [];
+    page.on('download', async (d) => {
+      const target = testInfo.outputPath(d.suggestedFilename());
+      await d.saveAs(target);
+      downloads.push(target);
+    });
+    await page.getByRole('button', { name: /Descarregar minuta/ }).click();
+    await expect.poll(() => downloads.length, { timeout: 8000 }).toBe(2);
+
+    await page.reload();
+    await page.locator('input[type=file][multiple]').setInputFiles(downloads);
+    await expect(page.locator('#field-prestador_nome')).toBeVisible();
+    await expect(page.getByText(/Aparece em \d+ sítios do documento/).first()).toBeVisible();
+  });
+
+  test('keeps the value claims to one short line each', async ({ page }) => {
+    await expect(page.getByText('Preenche uma vez')).toBeVisible();
+    await expect(page.getByText('Valida NIF, IBAN e datas')).toBeVisible();
+  });
+
+  test('the sample is the primary action', async ({ page }) => {
+    const sample = page.getByRole('button', { name: /Experimentar com uma minuta de exemplo/ });
+    const file = page.locator('button', { hasText: 'Escolher ficheiro .docx' });
+    const [a, b] = await Promise.all([sample.boundingBox(), file.boundingBox()]);
+    expect(a && b && a.height > b.height && a.y < b.y).toBe(true);
+  });
 });

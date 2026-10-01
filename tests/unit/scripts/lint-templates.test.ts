@@ -50,7 +50,7 @@ describe('lint:templates CLI', () => {
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
-  }, 30000);
+  }, 120000);
 
   it('exits non-zero and reports REF_UNKNOWN for a dangling ref', () => {
     const tmp = mkdtempSync(join(tmpdir(), 'minutas-lint-bad-'));
@@ -66,5 +66,5 @@ describe('lint:templates CLI', () => {
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
-  }, 30000);
+  }, 120000);
 });

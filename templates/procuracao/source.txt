@@ -1,4 +1,8 @@
 PROCURAÇÃO
+**RESUMO**
+Mandante: {{mandante_nome}}, NIF {{mandante_nif:nif}}.
+Mandatário: {{mandatario_nome}}, NIF {{mandatario_nif:nif}}.
+Outorgada em {{contrato_local}}, a {{contrato_data:data}}.
 **{{mandante_nome}}**, {{mandante_estado_civil}}, contribuinte fiscal n.º {{mandante_nif:nif}}, titular do Cartão de Cidadão n.º {{mandante_cc:cc}}, válido até {{mandante_cc_validade:data}}, residente em {{mandante_morada}} (adiante, o Mandante), constitui seu bastante procurador **{{mandatario_nome}}**, {{mandatario_estado_civil}}, contribuinte fiscal n.º {{mandatario_nif:nif}}, titular do Cartão de Cidadão n.º {{mandatario_cc:cc}}, válido até {{mandatario_cc_validade:data}}, residente em {{mandatario_morada}} (adiante, o Mandatário), a quem confere os poderes constantes das cláusulas seguintes:
 CLÁUSULA {{cl}}
 (Poderes)
@@ -22,6 +26,13 @@ CLÁUSULA {{cl}}
 {{pt}}. O Mandatário não pode substabelecer, total ou parcialmente, os poderes conferidos por esta procuração.
 {{/se}}
 CLÁUSULA {{cl}}
+(Identificação e aceitação)
+{{pt}}. O Mandante, {{mandante_nome}}, contribuinte fiscal n.º {{mandante_nif:nif}}, residente em {{mandante_morada}}, declara que outorga a presente procuração a favor do Mandatário, {{mandatario_nome}}, contribuinte fiscal n.º {{mandatario_nif:nif}}.
+{{pt}}. O Mandatário, {{mandatario_nome}}, residente em {{mandatario_morada}}, aceita a procuração e obriga-se a exercer os poderes nela conferidos no interesse do Mandante, {{mandante_nome}}, prestando-lhe contas sempre que este o solicite.
+CLÁUSULA {{cl}}
+(Comunicações)
+{{pt}}. As comunicações ao Mandante são enviadas para {{mandante_morada}} e as comunicações ao Mandatário para {{mandatario_morada}}.
+CLÁUSULA {{cl}}
 (Reconhecimento)
 {{#se reconhecimento}}
 {{pt}}. A assinatura do Mandante é reconhecida presencialmente por {{reconhecimento_entidade}}.
@@ -31,6 +42,10 @@ CLÁUSULA {{cl}}
 {{contrato_local}}, {{contrato_data:data}}
 O Mandante
 ---
+{{mandante_nome}}
+O Mandatário
+---
+{{mandatario_nome}}
 === CAMPOS ===
 mandante_nome | texto | sim | Nome do mandante
 mandante_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
@@ -62,3 +77,4 @@ contrato_data | data | sim | Data de outorga
 3. Caducidade por morte, interdição ou inabilitação do Mandante: confirmar se deve constar expressamente.
 4. Regime do substabelecimento (art. 264.º do Código Civil): confirmar formulação e responsabilidade do Mandatário por atos do substabelecido.
 5. Reconhecimento presencial: confirmar em que casos é legalmente exigido e se basta reconhecimento simples ou exige notário/advogado/solicitador.
+6. Quadro-resumo e cláusulas de declarações/identificação foram acrescentados para repetir os mesmos dados em vários pontos do texto (um só campo preenchido várias vezes); avaliar se se mantêm, ou se são redundantes para o caso concreto.

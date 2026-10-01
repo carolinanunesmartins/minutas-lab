@@ -155,3 +155,19 @@ describe('security hardening', () => {
     expect(() => readDocxArchive(macro)).toThrow(/not allowed/);
   });
 });
+
+describe('signature lines and repeated blanks', () => {
+  it('does not treat a signature line as a blank', () => {
+    const r = detectBlanks(['____________________', '[Nome do Cliente]', '____________________ (assinatura)', 'Nome: ____________']);
+    expect(r.skippedSignatures).toBe(2);
+    expect(r.blanks.map((b) => b.raw)).toEqual(['[Nome do Cliente]', '____________']);
+  });
+
+  it('gives generic parties (prestador/cliente) their own ids and merges repeats', () => {
+    const { blanks, fields } = inferFields(
+      detectBlanks(['[Nome do Prestador] e [Nome do Cliente]. [Nome do Prestador] paga a [Nome do Cliente].']).blanks,
+    );
+    expect(fields.map((f) => f.id).sort()).toEqual(['cliente_nome', 'prestador_nome']);
+    expect(blanks).toHaveLength(4);
+  });
+});

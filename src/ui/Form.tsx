@@ -185,6 +185,11 @@ export function Form({ groups, values, fieldIssues, activeFieldId, showErrors, t
                   )}
                 </label>
                 {field.help && <p className="mt-0.5 text-xs text-white/55">{field.help}</p>}
+                {field.occurrences !== undefined && field.occurrences > 1 && (
+                  <p className="mt-0.5 text-xs text-brass-300">
+                    {messages.fieldUsedIn} {field.occurrences} {messages.fieldUsedPlaces}
+                  </p>
+                )}
                 <div className="relative mt-1.5">
                   {isSelectField(field) ? (
                     <select

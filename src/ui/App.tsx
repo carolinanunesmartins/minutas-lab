@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { readDocx } from '../core/docx/read';
 import { parseTemplate } from '../core/tags/parse';
-import { collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
+import { collectFieldCounts, collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
 import { loadTemplateMeta } from '../core/template/meta';
 import type { Meta } from '../core/template/meta';
 import { validateTemplateValues } from '../core/template/validate';
@@ -83,7 +84,7 @@ function App() {
         const usedIds = collectUsedFieldIds(paragraphs);
         const { meta } = loadTemplateMeta(selected.metaRaw, usedIds);
         if (!meta) throw new Error('invalid template.meta.json');
-        const groups = buildFieldGroups(usedIds, fieldTypes, meta, messages.groupUnlabeled);
+        const groups = buildFieldGroups(usedIds, fieldTypes, meta, messages.groupUnlabeled, collectFieldCounts(paragraphs));
         if (cancelled) return;
         setLoaded({ templateBytes, groups, meta });
         setValues(initialValues(meta));
@@ -321,31 +322,74 @@ function App() {
 
   if (state === 'empty') {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16">
-        <div className="flex flex-col items-center gap-3 text-center">
+      <main className="flex min-h-screen flex-col items-center gap-14 px-6 py-14 sm:py-20">
+        <header className="flex flex-col items-center gap-3 text-center">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
-          <h2 className="font-display text-lg text-white/80">{messages.pickTemplateTitle}</h2>
-          <p className="max-w-sm text-sm text-white/60">{messages.pickTemplateHint}</p>
-          <p className="max-w-md text-xs leading-relaxed text-white/60">{messages.privacyNote}</p>
-        </div>
-        <ul className="grid w-full max-w-2xl gap-3 sm:grid-cols-2">
-          {TEMPLATE_MANIFEST.map((entry, i) => (
-            <li key={entry.slug} className="animate-rise-in" style={{ animationDelay: `${i * 60}ms` }}>
-              <button
-                type="button"
-                onClick={() => setSelected(entry)}
-                className="group flex w-full flex-col items-start gap-2 rounded-md border border-paper-line bg-paper p-5 text-left shadow-[0_1px_3px_rgba(0,0,0,0.5)] transition-transform duration-200 ease-out-quart hover:-translate-y-0.5 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
-              >
-                <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-ink">
-                  {entry.code}
-                </span>
-                <span className="font-display text-lg font-semibold leading-snug text-paper-ink">{entry.title}</span>
-                <span className="mt-1 h-px w-8 bg-brass-500 transition-all duration-200 ease-out-quart group-hover:w-16" />
-              </button>
+          <p className="max-w-md text-base text-white/70">{messages.importTagline}</p>
+          <p
+            aria-hidden="true"
+            className="mt-4 max-w-sm rounded-sm border border-paper-line bg-paper px-5 py-4 text-left font-display text-[15px] leading-relaxed text-paper-ink shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)]"
+          >
+            {messages.heroDocA}
+            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
+              {messages.heroDocSeller}
+            </span>
+            {messages.heroDocB}
+            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
+              {messages.heroDocBuyer}
+            </span>
+            {messages.heroDocC}
+            <span className="echo" style={{ '--echo-delay': '1300ms' } as CSSProperties}>
+              {messages.heroDocPrice}
+            </span>
+            {messages.heroDocD}
+            <br />
+            {messages.heroDocE}
+            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
+              {messages.heroDocSeller}
+            </span>
+            {messages.heroDocF}
+            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
+              {messages.heroDocBuyer}
+            </span>
+            {messages.heroDocG}
+          </p>
+        </header>
+
+        <ImportPanel onUse={setSelected}>
+          <section aria-labelledby="demo-heading" className="flex w-full flex-col gap-3">
+            <h2 id="demo-heading" className="text-center font-display text-lg font-semibold text-white">
+              {messages.pickTemplateTitle}
+            </h2>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {TEMPLATE_MANIFEST.map((entry) => (
+                <li key={entry.slug}>
+                  <button
+                    type="button"
+                    onClick={() => setSelected(entry)}
+                    className="group flex min-h-20 w-full flex-col items-start justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-900 px-4 py-3 text-left transition-[transform,border-color,background-color] duration-150 ease-out-quart hover:-translate-y-0.5 hover:border-brass-400 hover:bg-ink-800 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+                  >
+                    <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-400">
+                      {entry.code}
+                    </span>
+                    <span className="font-display text-base font-semibold leading-snug text-white">{entry.title}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </ImportPanel>
+
+        <ul className="flex max-w-xl flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/60">
+          {[messages.why1Title, messages.why2Title, messages.why3Title, messages.why4Title].map((claim) => (
+            <li key={claim} className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-brass-500" />
+              {claim}
             </li>
           ))}
         </ul>
-        <ImportPanel onUse={setSelected} />
+
+        <p className="max-w-md text-center text-xs text-white/60">{messages.privacyNote}</p>
       </main>
     );
   }
@@ -371,6 +415,8 @@ function App() {
     );
   }
 
+  // Only the bundled templates have example data; imported ones don't.
+  const hasExampleData = Object.keys(dummyValuesFor(loaded.meta.id)).length > 0;
   const canDownloadFinal = !validation.hasBlockingError;
   const requiredFields = loaded.groups.flatMap((g) => g.fields).filter((f) => f.required && f.type !== undefined);
   const requiredFilled = requiredFields.filter((f) => (values[f.id] ?? '').trim() !== '').length;
@@ -417,9 +463,11 @@ function App() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
-            {messages.fillDummy}
-          </button>
+          {hasExampleData && (
+            <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
+              {messages.fillDummy}
+            </button>
+          )}
           <button type="button" onClick={handleExportDraft} className={buttonSecondary} title={messages.draftSaveHint}>
             {messages.draftSave}
           </button>
@@ -509,7 +557,7 @@ function App() {
                       className="text-left text-sm text-white/90 underline decoration-rubric-400/60 underline-offset-2 hover:decoration-rubric-400"
                     >
                       {e.label}
-                      {e.label ? ' — ' : ''}
+                      {e.label ? ': ' : ''}
                       {e.text}
                     </button>
                   </li>
@@ -612,7 +660,7 @@ function App() {
                             }}
                           >
                             {messages.reviewChange}
-                            <span className="sr-only"> — {f.label}</span>
+                            <span className="sr-only">: {f.label}</span>
                           </button>
                         </span>
                       </li>

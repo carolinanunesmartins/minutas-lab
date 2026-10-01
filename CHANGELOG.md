@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security
+- Dev toolchain upgraded to clear all `npm audit` findings (6 in dev dependencies, 2 critical, 1 high; production dependencies were already clean): vite 5 to 7.3, vitest 2 to 4.1, @vitest/coverage-v8 to 4.1, @vitejs/plugin-react 4 to 5.2 (this also pulls esbuild to 0.28). Node engines are now `^20.19.0 || >=22.12.0` (vite 7). The slow lint:templates CLI test got a 120 s timeout.
+
+### Changed
+- UI copy pass (pt-PT): shorter, more direct wording, no em dashes, "pré-visualização" instead of "preview", "Aparece em N sítios do documento" on repeated fields, clearer errors and importer messages.
+- Landing: a small contract excerpt shows the product idea (the same value appears in several places and lights up once on load); removed the arrow on the main button and the card stagger; hover effects only where hover exists; the review block eases in; the sample button shows a busy state while reading; entrance animation 420 ms to 300 ms.
+
+### Changed
+- Minimal landing page: the sample minuta is the single primary call to action; file import is a compact secondary row; value claims are one short line each; the bundled templates are small "modelos de demonstração" pills. Far less copy (hero steps, long hints and the "why not Word" paragraphs removed). Low-contrast text raised to pass axe.
+
+### Added (making the value clear)
+- Landing page: "Experimentar com uma minuta de exemplo" (built-in sample, `fixtures/sample-minuta-lacunas.docx`), a "Porquê isto em vez de editar no Word?" section, and "Abrir minuta já criada" to reopen a downloaded `.docx` + `.json`.
+- Import review: a summary of what was found (blanks, fields, repeated blanks filled at once, validated fields), an explanation of what each field type validates, and a limits note.
+- Form: fields that appear more than once in the document say so ("Preenche N sítios do documento de uma só vez").
+- Templates (cpcv, arrendamento, empreitada, procuração): added a summary block, declaration/identification/payment/communications clauses and named signature blocks that reuse existing fields (no new inputs), so one value fills 3 to 6 places. The four `template.docx` are now all built with `scripts/build-template-docx.ts` (the CPCV changes visual style to match the others).
+- Importer: signature lines (`____`) are no longer taken for blanks; nearest-role detection, payee detection ("IBAN para receber…"), and generic parties (prestador, cliente, fornecedor). `npm run eval:import` is 100% on 526 occurrences (was 294).
+
+### Changed
+- Landing page is now import-first: a large drop zone (drag and drop or file picker) with a three-step explanation leads the page; the four bundled templates move to a quieter "modelos de demonstração" section. The "fill with example data" button is hidden on imported templates (no example data exists for them).
+
 ### Added
 - "Preencher com dados de exemplo" button is now available in every build (was dev/`?teste` only): fills all fields with fictitious data for the four templates, asks before replacing typed values, and does not trigger the unsaved-data warning. e2e tests cover filling, downloading and the confirmation.
 

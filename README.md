@@ -60,7 +60,7 @@ npm run test:e2e   # end-to-end + accessibility (axe)
 ## Features
 
 **Fill in a contract**
-- Four ready-made templates (original drafts, see [Templates](#templates)).
+- Four ready-made templates (original drafts, see [Templates](#templates)). Each has a summary block and declaration/identification clauses that repeat the same data, so one input fills many places; the form shows how many ("Preenche 6 sítios do documento de uma só vez").
 - **"Preencher com dados de exemplo"** fills every field with fictitious, format-valid data so you can see a finished document in one click (it asks before replacing what you typed).
 - Form generated from the template: grouped fields, dropdowns for closed choices, native date inputs, typed inputs for amounts, tax numbers and day counts.
 - Validation as you go: format and checksum checks (NIF/NIPC, IBAN PT, dates, euro amounts), conditional required fields and cross-field rules (for example deposit + remainder = price, dates in the right order). Errors are explained in Portuguese, with the fix.
@@ -72,6 +72,8 @@ npm run test:e2e   # end-to-end + accessibility (axe)
 - Save the form data to a JSON file and load it back later. Nothing is stored in the browser between visits.
 
 **Create your own template**
+- Try it in seconds with the built-in sample minuta, no file needed. The review step tells you what it found (blanks, fields, repeated blanks filled at once, fields with automatic validation).
+- Reopen a template you created earlier by choosing its downloaded `.docx` and `.json` together.
 - Upload a `.docx` with blanks and the app finds them, proposes a field for each one (name, type, group, options), lets you review and edit everything, and generates a tagged template that you can use immediately or download (`.docx` + `.json`).
 - Blanks it understands: `[text in brackets]` (the text becomes the field label), `__/__/____` (a date), `____` and `....`. `[escolher uma: …]` instruction brackets are skipped.
 - Works offline and deterministically (no AI, no API key). It warns you when a document looks already filled in (valid-looking NIF, IBAN or email), because it is meant for blank minutas only.

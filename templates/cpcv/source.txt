@@ -1,4 +1,10 @@
 CONTRATO-PROMESSA DE COMPRA E VENDA DE IMÓVEL
+**QUADRO-RESUMO**
+Promitente-Vendedor: {{vendedor_nome}}, NIF {{vendedor_nif:nif}}.
+Promitente-Comprador: {{comprador_nome}}, NIF {{comprador_nif:nif}}.
+Imóvel: fração {{imovel_fracao}}, {{imovel_morada}}, freguesia de {{imovel_freguesia}}, concelho de {{imovel_concelho}}.
+Preço: {{preco_total:eur}} ({{preco_total:eur|extenso}}), dos quais {{sinal_valor:eur}} ({{sinal_valor:eur|extenso}}) a título de sinal.
+Escritura até: {{escritura_data_limite:data}}.
 ENTRE:
 **{{vendedor_nome}}**, {{vendedor_estado_civil}}, natural da freguesia de {{vendedor_freguesia_naturalidade}}, concelho de {{vendedor_concelho_naturalidade}}, contribuinte fiscal n.º {{vendedor_nif:nif}}, titular do Cartão de Cidadão n.º {{vendedor_cc:cc}}, válido até {{vendedor_cc_validade:data}}, com residência em {{vendedor_morada}}, doravante designado por **Promitente-Vendedor**;
 E
@@ -26,7 +32,7 @@ CLÁUSULA {{cl}}
 {{#senao}}
 {{pt}}. O Promitente-Vendedor declara que, relativamente ao Imóvel, não foi celebrado qualquer contrato de arrendamento que possa condicionar, nos termos do regime legal aplicável, o valor da renda inicial de novos arrendamentos.
 {{/se}}
-CLÁUSULA {{cl}}
+CLÁUSULA {{cl cl_preco}}
 (Preço)
 {{pt}}. O preço da compra e venda é de {{preco_total:eur}} ({{preco_total:eur|extenso}}), a pagar do seguinte modo:
 {{al}}) a título de sinal e princípio de pagamento, {{sinal_valor:eur}} ({{sinal_valor:eur|extenso}}), que o Promitente-Comprador paga nesta data, por transferência bancária da conta com o IBAN {{comprador_iban:iban}}, do banco {{comprador_banco}}, para a conta do Promitente-Vendedor com o IBAN {{vendedor_iban:iban}}, do banco {{vendedor_banco}}, valendo este contrato como recibo e quitação dessa quantia;
@@ -93,6 +99,16 @@ CLÁUSULA {{cl}}
 {{al}}) Promitente-Vendedor: {{vendedor_email}};
 {{al}}) Promitente-Comprador: {{comprador_email}}.
 CLÁUSULA {{cl}}
+(Obrigações essenciais das Partes)
+{{pt}}. O Promitente-Vendedor, {{vendedor_nome}}, obriga-se a vender ao Promitente-Comprador, {{comprador_nome}}, o Imóvel situado em {{imovel_morada}}, freguesia de {{imovel_freguesia}}, concelho de {{imovel_concelho}}, pelo preço de {{preco_total:eur}} ({{preco_total:eur|extenso}}).
+{{pt}}. O Promitente-Comprador, {{comprador_nome}}, obriga-se a comprar o Imóvel ao Promitente-Vendedor, {{vendedor_nome}}, e a pagar o preço nos termos da {{ref:cl_preco}}, designadamente o remanescente de {{remanescente_valor:eur}} ({{remanescente_valor:eur|extenso}}) na data da escritura, que deve realizar-se até {{escritura_data_limite:data}}.
+CLÁUSULA {{cl}}
+(Identificação para efeitos fiscais e de registo)
+{{pt}}. Para efeitos fiscais e de registo predial, as Partes identificam-se do seguinte modo:
+{{al}}) Promitente-Vendedor: {{vendedor_nome}}, contribuinte fiscal n.º {{vendedor_nif:nif}}, com residência em {{vendedor_morada}};
+{{al}}) Promitente-Comprador: {{comprador_nome}}, contribuinte fiscal n.º {{comprador_nif:nif}}, com residência em {{comprador_morada}}.
+{{pt}}. O Imóvel é identificado pela fração {{imovel_fracao}}, sita em {{imovel_morada}}, descrita na Conservatória do Registo Predial de {{imovel_conservatoria}} sob o n.º {{imovel_descricao_registo}} e inscrita na matriz predial sob o artigo {{imovel_artigo_matricial}}.
+CLÁUSULA {{cl}}
 (Alterações ao contrato)
 Este contrato exprime o acordo integral das Partes quanto ao seu objeto e só pode ser alterado ou revogado por documento escrito e assinado por ambas. As suas cláusulas formam um todo e têm igual relevância para o cumprimento do contrato.
 {{#se mediacao}}
@@ -116,8 +132,10 @@ Depois de o lerem e por estarem de acordo com o seu conteúdo, as Partes assinam
 {{contrato_local}}, {{contrato_data:data}}
 O Promitente-Vendedor
 ---
+{{vendedor_nome}}
 O Promitente-Comprador
 ---
+{{comprador_nome}}
 === CAMPOS ===
 vendedor_nome | texto | sim | Nome do promitente-vendedor
 vendedor_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
@@ -188,6 +206,7 @@ cl_imovel | Cláusula do Imóvel | referida no Objeto
 licenca_utilizacao | ponto 3 da cláusula do Imóvel | referida no Reconhecimento
 onus_lista | ponto dos ónus na cláusula do Imóvel | referida no Objeto, Prazo e Despesas (todos no mesmo bloco condicional)
 prazo_escritura | ponto 1 da cláusula do Prazo | referida no Prazo
+cl_preco | Cláusula do Preço | referida nas Obrigações essenciais
 cl_incumprimento | Cláusula do Incumprimento | referida no Prazo e na Tradição
 === PONTOS A VALIDAR POR JURISTA ===
 1. Exigência de reconhecimento presencial de assinaturas e certificação da licença de utilização no CPCV de imóvel (Código Civil, art. 410.º, n.º 3): confirmar formulação e consequências da omissão.
@@ -200,3 +219,4 @@ cl_incumprimento | Cláusula do Incumprimento | referida no Prazo e na Tradiçã
 8. Declaração do administrador do condomínio: confirmar prazo e conteúdo à luz da lei em vigor.
 9. Pagamento do sinal por transferência e recibo: confirmar que o texto vale como quitação.
 10. Notificações aos titulares de direito de preferência: confirmar quem notifica e quando.
+11. Quadro-resumo e cláusulas de declarações/identificação foram acrescentados para repetir os mesmos dados em vários pontos do texto (um só campo preenchido várias vezes); avaliar se se mantêm, ou se são redundantes para o caso concreto.

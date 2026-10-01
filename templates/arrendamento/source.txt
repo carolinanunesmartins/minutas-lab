@@ -1,4 +1,10 @@
 CONTRATO DE ARRENDAMENTO URBANO PARA HABITAÇÃO
+**QUADRO-RESUMO**
+Senhorio: {{senhorio_nome}}, NIF {{senhorio_nif:nif}}.
+Arrendatário: {{arrendatario_nome}}, NIF {{arrendatario_nif:nif}}.
+Locado: {{imovel_tipologia}}, fração {{imovel_fracao}}, {{imovel_morada}}, freguesia de {{imovel_freguesia}}, concelho de {{imovel_concelho}}.
+Prazo: {{prazo_meses:int}} ({{prazo_meses:int|extenso}}) meses, com início em {{data_inicio:data}}.
+Renda mensal: {{renda_valor:eur}} ({{renda_valor:eur|extenso}}), paga até ao dia {{renda_dia_pagamento:int}} de cada mês.
 ENTRE:
 **{{senhorio_nome}}**, {{senhorio_estado_civil}}, contribuinte fiscal n.º {{senhorio_nif:nif}}, com residência em {{senhorio_morada}}, doravante designado por **Senhorio**;
 E
@@ -57,6 +63,14 @@ CLÁUSULA {{cl}}
 {{pt}}. A fiança mantém-se em vigor durante toda a duração do contrato, incluindo eventuais renovações, nos termos da {{ref:prazo_inicio}}.
 {{/se}}
 CLÁUSULA {{cl}}
+(Declarações das Partes)
+{{pt}}. O Senhorio, {{senhorio_nome}}, contribuinte fiscal n.º {{senhorio_nif:nif}}, declara que dá de arrendamento ao Arrendatário o locado identificado na {{ref:cl_locado}}, sito em {{imovel_morada}}, e que tem legitimidade para o fazer.
+{{pt}}. O Arrendatário, {{arrendatario_nome}}, contribuinte fiscal n.º {{arrendatario_nif:nif}}, declara que visitou o locado, sito em {{imovel_morada}}, que o aceita no estado em que se encontra e que o destina a sua habitação permanente.
+CLÁUSULA {{cl}}
+(Pagamento da renda)
+{{pt}}. A renda mensal de {{renda_valor:eur}} ({{renda_valor:eur|extenso}}) é paga pelo Arrendatário, {{arrendatario_nome}}, ao Senhorio, {{senhorio_nome}}, por transferência bancária para o IBAN {{senhorio_iban:iban}}, junto do {{senhorio_banco}}, até ao dia {{renda_dia_pagamento:int}} de cada mês.
+{{pt}}. O comprovativo da transferência vale como recibo de quitação da renda relativa ao mês a que respeite.
+CLÁUSULA {{cl}}
 (Comunicações e domicílio convencionado)
 {{pt}}. Para efeitos deste contrato, as Partes fixam como domicílio convencionado as moradas indicadas na sua identificação, sendo aí válidas todas as comunicações e notificações relativas ao arrendamento, incluindo para efeitos de resolução nos termos da {{ref:cl_resolucao}}.
 {{pt}}. Qualquer alteração de morada deve ser comunicada à outra Parte no prazo de 15 (quinze) dias, sob pena de se considerarem válidas as comunicações enviadas para a morada anteriormente indicada.
@@ -69,8 +83,10 @@ Depois de o lerem e por estarem de acordo com o seu conteúdo, as Partes assinam
 {{contrato_local}}, {{contrato_data:data}}
 O Senhorio
 ---
+{{senhorio_nome}}
 O Arrendatário
 ---
+{{arrendatario_nome}}
 === CAMPOS ===
 senhorio_nome | texto | sim | Nome do senhorio
 senhorio_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
@@ -124,3 +140,4 @@ cl_resolucao | Cláusula da Resolução | referida nas Comunicações
 5. Regime de resolução por falta de pagamento: confirmar prazo de mora relevante e se é exigida interpelação admonitória prévia.
 6. Animais de companhia: confirmar se a cláusula proibitiva é oponível a título de exceção legalmente admitida (regulamento de condomínio, insalubridade, etc.).
 7. Licença de utilização/certificado energético: confirmar exigências de anexação de cópia ao contrato.
+8. Quadro-resumo e cláusulas de declarações/identificação foram acrescentados para repetir os mesmos dados em vários pontos do texto (um só campo preenchido várias vezes); avaliar se se mantêm, ou se são redundantes para o caso concreto.

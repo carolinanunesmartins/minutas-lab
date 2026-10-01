@@ -13,6 +13,19 @@ export function collectFieldTypes(paragraphs: ClassifiedParagraph[]): Map<string
   return types;
 }
 
+/** id -> how many times its value tag appears in the body (one input, many places). */
+export function collectFieldCounts(paragraphs: ClassifiedParagraph[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const paragraph of paragraphs) {
+    for (const node of paragraph.nodes) {
+      if (node.kind === 'tag' && node.node.kind === 'value') {
+        counts.set(node.node.id, (counts.get(node.node.id) ?? 0) + 1);
+      }
+    }
+  }
+  return counts;
+}
+
 /** Every id used anywhere as a form field: value tags, and block/condition ids. */
 export function collectUsedFieldIds(paragraphs: ClassifiedParagraph[]): Set<string> {
   const ids = new Set<string>();
