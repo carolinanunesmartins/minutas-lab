@@ -61,6 +61,7 @@ npm run test:e2e   # end-to-end + accessibility (axe)
 
 **Fill in a contract**
 - Four ready-made templates (original drafts, see [Templates](#templates)).
+- **"Preencher com dados de exemplo"** fills every field with fictitious, format-valid data so you can see a finished document in one click (it asks before replacing what you typed).
 - Form generated from the template: grouped fields, dropdowns for closed choices, native date inputs, typed inputs for amounts, tax numbers and day counts.
 - Validation as you go: format and checksum checks (NIF/NIPC, IBAN PT, dates, euro amounts), conditional required fields and cross-field rules (for example deposit + remainder = price, dates in the right order). Errors are explained in Portuguese, with the fix.
 - Live preview that updates after each edit, with filled and empty fields highlighted. Click a field in the preview to jump to its input, or focus an input to scroll the preview to it. Optional clauses can be switched on and off.

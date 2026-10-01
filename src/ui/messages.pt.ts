@@ -5,7 +5,10 @@ export const messages = {
 
   pickTemplateTitle: 'Escolha uma minuta',
   pickTemplateHint: 'Selecione o tipo de contrato que pretende preencher.',
-  fillDummy: 'Preencher com dados de teste',
+  fillDummy: 'Preencher com dados de exemplo',
+  fillDummyHint: 'Preenche todos os campos com dados fictícios, só para ver como fica a minuta.',
+  fillDummyConfirm: 'Já há campos preenchidos. Substituir tudo por dados de exemplo fictícios?',
+  fillDummyDone: 'Campos preenchidos com dados de exemplo fictícios.',
   changeTemplate: 'Escolher outra minuta',
 
   loading: 'A carregar a minuta…',

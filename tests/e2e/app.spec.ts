@@ -191,3 +191,25 @@ test('the review dialog lists optional clauses, links back to them, and closes w
   await expect(dialog).toBeHidden();
   await expect(page.locator('#field-onus')).toBeFocused();
 });
+
+test('"Preencher com dados de exemplo" fills every field and the filled form can be downloaded', async ({ page }) => {
+  await page.getByRole('button', { name: 'Preencher com dados de exemplo' }).click();
+  await expect(page.locator('#field-vendedor_nome')).toHaveValue('Maria Exemplo Silva');
+  await expect(page.getByRole('button', { name: 'Descarregar minuta' })).toBeEnabled({ timeout: 5000 });
+  await page.getByRole('button', { name: 'Descarregar minuta' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Confirmar e descarregar' }).click();
+  expect((await downloadPromise).suggestedFilename()).toMatch(/\.docx$/);
+});
+
+test('example data asks before replacing what was already typed', async ({ page }) => {
+  await page.locator('#field-vendedor_nome').fill('Nome já escrito');
+  page.once('dialog', (dialog) => void dialog.dismiss());
+  await page.getByRole('button', { name: 'Preencher com dados de exemplo' }).click();
+  await expect(page.locator('#field-vendedor_nome')).toHaveValue('Nome já escrito');
+
+  page.once('dialog', (dialog) => void dialog.accept());
+  await page.getByRole('button', { name: 'Preencher com dados de exemplo' }).click();
+  await expect(page.locator('#field-vendedor_nome')).toHaveValue('Maria Exemplo Silva');
+});
