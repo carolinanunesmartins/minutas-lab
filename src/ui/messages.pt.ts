@@ -91,7 +91,7 @@ export const messages = {
   reviewChange: 'Alterar',
   templateVersion: 'Versão do modelo',
   privacyNote:
-    'Tudo corre no seu navegador: os dados que introduz não são enviados nem guardados pela aplicação (exceto se usar o preenchimento por IA, que envia o texto colado ao serviço que configurar). As minutas são modelos de trabalho para revisão e não constituem aconselhamento jurídico.',
+    'Tudo corre no seu navegador: os dados que introduz não são enviados nem guardados pela aplicação. As minutas são modelos de trabalho para revisão e não constituem aconselhamento jurídico.',
   skipToForm: 'Saltar para o formulário',
   progressLabel: 'Campos obrigatórios preenchidos',
   fieldsToFix: 'campo(s) por corrigir antes de descarregar a versão final.',

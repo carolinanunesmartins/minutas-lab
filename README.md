@@ -4,6 +4,8 @@ Fill in Portuguese legal contract templates in your browser. Pick a template, co
 
 Everything runs locally in the browser. There is no backend, no database, no analytics and no account.
 
+**Live demo:** <https://carolinanunesmartins.github.io/minutas-lab/>
+
 > **This is an MVP / hobby project.** The templates are drafts and nothing here is legal advice. Read the [legal disclaimer](#legal-disclaimer) before using any generated document.
 
 ---
