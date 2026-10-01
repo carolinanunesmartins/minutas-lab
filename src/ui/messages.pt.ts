@@ -124,7 +124,7 @@ export const messages = {
   importProblemsHeading: 'Corrija antes de continuar:',
   importNoFields: 'Nenhum campo selecionado.',
   importCustomCode: 'NOVA',
-  pickTemplateTitle: 'Modelos de demonstração',
+  pickTemplateTitle: 'Ou abra um modelo de demonstração',
   importTagline: 'Transforme uma minuta com lacunas num formulário.',
   privacyNote: 'Tudo corre no seu navegador. Rascunhos de exemplo, não constituem aconselhamento jurídico.',
   importSampleHint: 'Em segundos, sem ficheiros.',

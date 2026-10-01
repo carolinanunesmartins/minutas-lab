@@ -327,7 +327,29 @@ function App() {
           <p className="max-w-md text-base text-white/70">{messages.importTagline}</p>
         </header>
 
-        <ImportPanel onUse={setSelected} />
+        <ImportPanel onUse={setSelected}>
+          <section aria-labelledby="demo-heading" className="flex w-full flex-col gap-3">
+            <h2 id="demo-heading" className="text-center font-display text-lg font-semibold text-white">
+              {messages.pickTemplateTitle}
+            </h2>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {TEMPLATE_MANIFEST.map((entry) => (
+                <li key={entry.slug}>
+                  <button
+                    type="button"
+                    onClick={() => setSelected(entry)}
+                    className="group flex min-h-20 w-full flex-col items-start justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-900 px-4 py-3 text-left transition-[transform,border-color,background-color] duration-150 ease-out-quart hover:-translate-y-0.5 hover:border-brass-400 hover:bg-ink-800 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+                  >
+                    <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-400">
+                      {entry.code}
+                    </span>
+                    <span className="font-display text-base font-semibold leading-snug text-white">{entry.title}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </ImportPanel>
 
         <ul className="flex max-w-xl flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/60">
           {[messages.why1Title, messages.why2Title, messages.why3Title, messages.why4Title].map((claim) => (
@@ -338,25 +360,7 @@ function App() {
           ))}
         </ul>
 
-        <section aria-labelledby="demo-heading" className="flex w-full max-w-xl flex-col items-center gap-3 text-center">
-          <h2 id="demo-heading" className="text-xs font-medium uppercase tracking-[0.18em] text-white/65">
-            {messages.pickTemplateTitle}
-          </h2>
-          <ul className="flex flex-wrap justify-center gap-2">
-            {TEMPLATE_MANIFEST.map((entry) => (
-              <li key={entry.slug}>
-                <button
-                  type="button"
-                  onClick={() => setSelected(entry)}
-                  className="min-h-11 rounded-full border border-line px-4 py-2 text-sm text-white/70 transition-colors duration-150 ease-out-quart hover:border-line-strong hover:bg-white/5 hover:text-white sm:min-h-0"
-                >
-                  {entry.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className="text-xs text-white/60">{messages.privacyNote}</p>
-        </section>
+        <p className="max-w-md text-center text-xs text-white/60">{messages.privacyNote}</p>
       </main>
     );
   }

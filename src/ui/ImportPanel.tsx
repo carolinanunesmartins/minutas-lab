@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { readDocx } from '../core/docx/read';
 import { detectBlanks } from '../core/import/detect';
 import { generateTemplate } from '../core/import/generate';
@@ -21,6 +22,8 @@ import type { TemplateManifestEntry } from './templateManifest';
 interface ImportPanelProps {
   /** Hands the generated template to the normal fill-in flow (never persisted). */
   onUse: (entry: TemplateManifestEntry) => void;
+  /** Rendered right under the sample call to action (the demo templates). */
+  children?: ReactNode;
 }
 
 interface Analysis {
@@ -55,7 +58,7 @@ function slugify(s: string): string {
   return slug || 'minuta';
 }
 
-export function ImportPanel({ onUse }: ImportPanelProps) {
+export function ImportPanel({ onUse, children }: ImportPanelProps) {
   const [dragging, setDragging] = useState(false);
   const [status, setStatus] = useState<'idle' | 'reading' | 'error' | 'ready'>('idle');
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -195,7 +198,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
   const includedCount = fields.filter((f) => !excluded.has(f.key)).length;
 
   return (
-    <section className="animate-rise-in flex w-full max-w-xl flex-col items-center gap-6" aria-labelledby="import-heading">
+    <section className="animate-rise-in flex w-full max-w-2xl flex-col items-center gap-8" aria-labelledby="import-heading">
       <h2 id="import-heading" className="sr-only">
         {messages.importTitle}
       </h2>
@@ -211,6 +214,8 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
         </button>
         <p className="text-sm text-white/65">{messages.importSampleHint}</p>
       </div>
+
+      {children}
 
       <input
         ref={fileInputRef}
