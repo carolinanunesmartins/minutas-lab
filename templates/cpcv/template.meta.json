@@ -68,7 +68,16 @@
     "vendedor_estado_civil": {
       "label": "Estado civil (e regime de bens, se casado)",
       "group": "Promitente-Vendedor",
-      "required": true
+      "required": true,
+      "options": [
+        "Solteiro(a), maior",
+        "Casado(a) em comunhão de adquiridos",
+        "Casado(a) em comunhão geral de bens",
+        "Casado(a) em separação de bens",
+        "Divorciado(a)",
+        "Viúvo(a)",
+        "União de facto"
+      ]
     },
     "vendedor_freguesia_naturalidade": {
       "label": "Freguesia de naturalidade",
@@ -123,7 +132,16 @@
     "comprador_estado_civil": {
       "label": "Estado civil (e regime de bens, se casado)",
       "group": "Promitente-Comprador",
-      "required": true
+      "required": true,
+      "options": [
+        "Solteiro(a), maior",
+        "Casado(a) em comunhão de adquiridos",
+        "Casado(a) em comunhão geral de bens",
+        "Casado(a) em separação de bens",
+        "Divorciado(a)",
+        "Viúvo(a)",
+        "União de facto"
+      ]
     },
     "comprador_freguesia_naturalidade": {
       "label": "Freguesia de naturalidade",

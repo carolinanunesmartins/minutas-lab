@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Removed (ADR-0009)
+- All LLM features (extraction panel, LLM refinement in the import panel, `src/llm/`, LLM eval and the `eval`/`eval:record`/`eval:live` scripts) and the Anthropic origin from the CSP: the API key is a paid product and does not fit a free MVP. The blank-minuta importer is unchanged and fully deterministic.
+
+### Added (M8: import a minuta with blanks)
+- Upload a `.docx` with blanks (`[Nome do Vendedor]`, `__/__/____`, `____`, `....`); the importer detects them (`src/core/import/detect.ts`), infers id/type/role/group/options with pt-PT heuristics (`infer.ts`), lets the user review and edit every field, and generates a tagged `template.docx` + `template.meta.json` linted with the same engine as `lint:templates` (`generate.ts`). No data leaves the browser.
+- Safeguard: a document containing checksum-valid NIF/IBAN or emails is flagged as probably filled and LLM suggestions are disabled for it.
+- Optional LLM refinement (only an API key needed): `src/llm/classify.ts` + `prompts/classify.v1.md` propose better ids, labels, types, groups and options; answers are Zod-validated and invalid entries fall back to the local heuristics.
+- `npm run eval:import`: blanks every value tag of the 4 shipped templates (two label styles), re-imports them and requires 100% of inputs recovered with the same type, modifier and id grouping (also enforced by a unit test).
+- Anthropic default model id updated to `claude-sonnet-5-5`.
+
+### Added (UX pass, from `reports/Melhorias de fluxo e visual.md`)
+- Form: dropdowns for closed-choice fields (estado civil, tipologia), native date inputs, typed inputs (numeric NIF/NIPC, e-mail, day counts, `€` amounts), card-style collapsible groups with per-group and global required-field progress.
+- Validation: format errors show when a field is left; empty-required stays quiet until a download attempt, which shows an error summary that links to each problem (field and cross-field rule issues) with pt-PT cause+fix messages.
+- Preview: fits its pane width (CSS `zoom`, ± controls), bookmark anchors map preview text <-> inputs both ways (focus scrolls the preview, clicking preview text focuses the input, checkboxes flash their clause), dashed underline on empty placeholders, clause spacing, A4 print stylesheet.
+- Checkbox fields explain their effect ("Cláusula incluída/não incluída") and refresh the preview immediately.
+- Save/open form data as a JSON file (Zod-validated, size-capped) and warn before leaving with unsaved data; enriched review dialog listing optional clauses with "Alterar" links; privacy/framing note and template version.
+- Mobile: collapsible sticky preview, 44 px touch targets, skip link; dev/`?teste` "fill with test data" button.
+- `docx-preview` pinned to an exact version.
+
 ### Added
 - M0 scaffold: Vite + React + TypeScript (strict) + Tailwind, ESLint (flat config, `src/core` import boundary), Prettier, Vitest.
 - Repo meta files: README, LICENSE (MIT), SECURITY.md, CONTRIBUTING.md, issue/PR templates, CODEOWNERS, Dependabot config.

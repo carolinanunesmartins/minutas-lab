@@ -1,7 +1,7 @@
 // Shared button treatments — keeps press/focus feedback consistent without a
 // component wrapper (Emil Kowalski: buttons must feel responsive to press).
 const base =
-  'inline-flex items-center justify-center gap-2 rounded font-medium transition-transform duration-150 ease-out-quart active:scale-[0.97] disabled:cursor-not-allowed disabled:active:scale-100';
+  'inline-flex min-h-11 items-center justify-center gap-2 rounded font-medium sm:min-h-0 transition-transform duration-150 ease-out-quart active:scale-[0.97] disabled:cursor-not-allowed disabled:active:scale-100';
 
 export const buttonPrimary = `${base} bg-brass-500 px-4 py-2 text-sm text-brass-ink hover:bg-brass-400 disabled:bg-ink-700 disabled:text-white/40`;
 

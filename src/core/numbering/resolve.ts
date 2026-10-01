@@ -11,7 +11,7 @@ function isEntrySatisfied(entry: StackEntry, values: BlockValues): boolean {
   return entry.branch === 'then' ? Boolean(values[entry.id]) : !values[entry.id];
 }
 
-function isBlockMarkerParagraph(paragraph: ClassifiedParagraph): TagNode | null {
+export function isBlockMarkerParagraph(paragraph: ClassifiedParagraph): TagNode | null {
   const tagNodes = paragraph.nodes.filter((n) => n.kind === 'tag');
   if (tagNodes.length !== 1) return null;
   const node = (tagNodes[0] as Extract<(typeof tagNodes)[number], { kind: 'tag' }>).node;

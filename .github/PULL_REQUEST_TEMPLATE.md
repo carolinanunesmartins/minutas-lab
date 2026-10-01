@@ -7,6 +7,9 @@
 
 ## Definition of Done (AGENTS.md §5)
 - [ ] `npm run verify` green
+- [ ] `npm run eval:import` green (100% round-trip) if the importer or templates changed
+- [ ] `npm run test:e2e` green if the UI changed
+- [ ] `npm run check:policy` green (no `.docx` outside `templates/`/`fixtures/`, no secrets)
 - [ ] New logic has unit tests (property tests for validators/extenso/tag parser where relevant)
 - [ ] Docs updated (`docs/`, ADR if a decision was made, CHANGELOG entry)
 - [ ] No `any`, no `// @ts-ignore`, no skipped tests, no TODO without an issue link

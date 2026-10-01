@@ -6,7 +6,7 @@ Normative. MUST/SHOULD per RFC 2119. IDs are referenced from ROADMAP and tests (
 minuta = contract template · cláusula (cl) · ponto/número (pt) · alínea (al) · extenso = amount/number written in words · NIF/NIPC = tax IDs · CC = Cartão de Cidadão · CPCV = contrato-promessa de compra e venda · sinal = deposit · escritura = deed.
 
 ## 2. Requirements index
-REQ-TAG (§3) · REQ-NUM (§4) · REQ-VAL (§5–6) · REQ-PRV (§8) · REQ-DL (§8) · REQ-LLM (§10) · REQ-SEC (§9) · REQ-UI (§7) · REQ-EVAL (§11) · REQ-REPO (§12).
+REQ-TAG (§3) · REQ-NUM (§4) · REQ-VAL (§5–6) · REQ-PRV (§8) · REQ-DL (§8) · REQ-SEC (§9) · REQ-UI (§7) · REQ-REPO (§12).
 
 ## 3. Tag grammar (REQ-TAG)
 ```
@@ -82,28 +82,15 @@ Test vectors (synthetic; may coincide with real IDs — fixtures only):
 - Input guard defaults (calibrate later, record in ADR-0007): file ≤ 5 MiB; ≤ 200 entries; total uncompressed ≤ 25 MiB; per-entry ≤ 15 MiB; bounded inflation (JSZip alone is insufficient: measured 41 KB → 40 MiB in ~0.9 s); reject encrypted, `vbaProject`, path traversal.
 - Sanitise relationships: keep `http/https/mailto` only; strip external relationships. (Spike: `javascript:` hyperlink rendered active.)
 - Wrap parse/render in try/catch → clear pt-PT error.
-- CSP meta: `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src <LLM origin>; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'`. Limits: no `frame-ancestors`/HSTS via meta.
+- CSP meta: `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'`. Limits: no `frame-ancestors`/HSTS via meta.
 - Repo: see AGENTS §4 + §12.
 
-## 10. LLM (REQ-LLM)
-- Role: extract values only.
-- Request: `{templateId, fields:[{id,label,type,help}], text}` with `text ≤ 20,000` chars.
-- Output (Zod): `{fields: {[id]: {value: string|null, quote: string|null}}}`.
-- Grounding: `quote` MUST be a substring of input after whitespace normalisation; for typed fields, digits(value) MUST appear in digits(quote); otherwise proposal rejected and counted.
-- Proposals appear in a review panel with quote highlighted; never auto-applied; never overwrite a filled field silently.
-- temperature 0; timeout; ≤ 1 retry. Prompt in `src/llm/prompts/extract.v1.md` (versioned).
-- BYOK: key in memory only. Adapter behind `LlmProvider` interface; first adapter Anthropic; verify provider CORS from browser (HUMAN).
-- ReplayProvider: fixtures keyed by sha256 of canonical request JSON.
-
-## 11. Evaluation (REQ-EVAL)
-- ≥ 15 cases in `eval/cases/`: incl. absent fields, conflicting values, noisy formatting, ≥ 2 prompt-injection, ≥ 2 no-data.
-- Metrics: precision, recall, F1, abstention rate, fabrication count, quote rejections, latency.
-- Gate: accepted fabrications = 0 (hard). All other metrics: baseline-regression only (no invented thresholds).
-- `eval` offline via replay; `eval:record`/`eval:live` human-run.
+## 10-11. Removed
+The optional LLM extraction (REQ-LLM) and its evaluation (REQ-EVAL) were removed from the MVP (ADR-0009). Section numbers are kept so references elsewhere stay stable. The blank-minuta importer is specified by ADR-0008 and gated by `npm run eval:import`.
 
 ## 12. Repo & CI (REQ-REPO)
 - CI: lint, typecheck, unit + property tests (fast-check), coverage, template lint, build, e2e (Playwright + axe), CodeQL, Scorecard, `npm audit --omit=dev`, Dependabot.
-- Conventional Commits, squash merges, ADRs (seeds: client-only; own tag replacement instead of docxtemplater; docx-preview; LLM behind interface + quote grounding + replay; Pages + meta CSP; computed numbering; bounded zip reading).
+- Conventional Commits, squash merges, ADRs (seeds: client-only; own tag replacement instead of docxtemplater; docx-preview; Pages + meta CSP; computed numbering; bounded zip reading).
 - Skip: SBOM, Docker, Husky, i18n, mutation testing, mandatory signed commits, release automation.
 
 ## 13. Open items and defaults
@@ -111,7 +98,6 @@ Test vectors (synthetic; may coincide with real IDs — fixtures only):
 |---|---|
 | Repo name | `minutas-lab` |
 | License | MIT |
-| First LLM adapter | Anthropic |
 | Zip library | decide via ADR (JSZip vs fflate + bounded inflation) |
 | CC validator | experimental/warning |
 | NIF prefix list | not enforced |

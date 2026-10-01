@@ -1,4 +1,4 @@
-import { ID_PATTERN, TAG_MODIFIERS, TAG_TYPES } from './types';
+import { ID_PATTERN, TAG_MODIFIERS, TAG_TYPES, isValidFieldId } from './types';
 import type { TagErrorCode, TagModifier, TagNode, TagType } from './types';
 
 const REF = /^ref:([a-z][a-z0-9_]*)$/;
@@ -29,7 +29,7 @@ function isTagModifier(value: string): value is TagModifier {
 }
 
 /** Classify one `{{...}}` tag's trimmed raw inner content per SPEC.md §3. */
-export function classifyTag(raw: string): ClassifyResult {
+function classifyTagUnchecked(raw: string): ClassifyResult {
   let m: RegExpExecArray | null;
 
   if ((m = REF.exec(raw))) {
@@ -119,6 +119,16 @@ export function classifyTag(raw: string): ClassifyResult {
     node: { kind: 'invalid' },
     issues: [{ code: 'TAG_SYNTAX', message: `Malformed tag: "{{${raw}}}"` }],
   };
+}
+
+/** Rejects ids that would resolve to Object.prototype members when looked up in a values map. */
+export function classifyTag(raw: string): ClassifyResult {
+  const result = classifyTagUnchecked(raw);
+  const node = result.node;
+  if ('id' in node && !isValidFieldId(node.id)) {
+    return { node: { kind: 'invalid' }, issues: [{ code: 'TAG_SYNTAX', message: `Reserved field id: "${node.id}"` }] };
+  }
+  return result;
 }
 
 export { ID_PATTERN };

@@ -8,6 +8,8 @@ export interface FieldMeta {
   required?: boolean;
   default?: string;
   emptyText?: string;
+  /** Closed set of choices — rendered as a <select> instead of a free-text input. */
+  options?: string[];
 }
 
 export interface GroupMeta {
@@ -80,6 +82,12 @@ function parseFieldMeta(v: unknown): FieldMeta | null {
   if (v.emptyText !== undefined) {
     if (typeof v.emptyText !== 'string') return null;
     out.emptyText = v.emptyText;
+  }
+  if (v.options !== undefined) {
+    if (!Array.isArray(v.options) || !v.options.every((o) => typeof o === 'string') || v.options.length === 0) {
+      return null;
+    }
+    out.options = v.options;
   }
   return out;
 }

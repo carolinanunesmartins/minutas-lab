@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build a styled, tagged contract template (.docx) from the plain-text output
-of the drafting prompt (see prompt-cpcv-limpo.md).
+of a drafted contract.
 
 Usage: build_template_docx.py input.txt out_dir [--title "..."]
 

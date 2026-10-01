@@ -48,27 +48,21 @@ Status values: `todo | doing | done | blocked`. Estimates are [Guessing] and wer
 - T5.2 Each passes `lint:templates`; golden-output tests.
 - Accept: ≥3 templates selectable; golden tests green.
 
-## M6 — LLM extraction (4h) · todo · deps: M4
-- T6.1 Provider interface + Anthropic adapter (BYOK, memory only).
-- T6.2 `extract.v1.md`, Zod schema, grounding (quote substring + digit check).
-- T6.3 Review panel: proposal + highlighted quote, per-field accept, no silent overwrite.
-- T6.4 ReplayProvider + eval harness + ≥15 cases (SPEC §11).
-- HUMAN: `eval:record` once; commit recordings.
-- Accept: `npm run eval` offline green; accepted fabrications = 0; injection cases pass.
+## M6 — LLM extraction · removed from the MVP (ADR-0009)
+The API key needed for LLM features is a paid, separate product; the MVP stays free, offline and key-less. T6.1-T6.4 were deleted from the code (`src/llm/`, extraction panel, LLM eval). Revisit only via a new ADR.
 
-## M7 — Polish ★ (4h) · todo · deps: M6
+## M7 — Polish ★ (4h) · todo · deps: M4, M5
 - README with GIF, architecture diagram, ADRs finalised, Scorecard badge, coverage badge, e2e in CI.
 - HUMAN: 2-minute video.
 - Accept: fresh clone → `npm ci && npm run verify` green; README quickstart verified.
 
-## M8 — Raw import extractor (stretch, minimal 4h / full 7h) · todo · deps: M7
-- T8.1 Deterministic blank detectors (brackets, `___`, date blanks, valor/extenso pairs, "escolher uma" blocks, signature-line exclusion).
-- T8.2 LLM only names/types remaining blanks (one batched call, short context).
-- T8.3 Review editor; (full) generate tagged template.
-- Accept: on raw versions of tagged templates, recall of blanks measured and reported (baseline, no invented target).
+## M8 — Blank-minuta import (see ADR-0008) · doing · deps: M7
+- Done on `agent/m8-blank-import`: T8.1 deterministic blank detectors (brackets, `___`, date blanks, valor/extenso pairs, choice instructions skipped), heuristic inference of id/type/role/group/options, review UI, generation with in-browser lint, filled-document warning, `npm run eval:import` 100% round-trip on the 4 shipped templates (two label styles).
+- Remaining: e2e upload test; import of an already-tagged `.docx`; widen the round-trip eval when new minuta styles appear.
+- Out of scope: conditional blocks, automatic clause numbering, PDF, headers/footers, any AI/LLM step.
 
 ## Optional
 - Upload of user-provided tagged template (~1h, after M4), subject to input guard and `lint` in-browser.
 
 ## Cumulative [Guessing]
-M0 3 · M1 7 · M2 9 · M3 14 · M4 21★ · M5 24 · M6 28★ · M7 32★ · M8 +4/7.
+M0 3 · M1 7 · M2 9 · M3 14 · M4 21★ · M5 24 · M7 28★ · M8 +4.

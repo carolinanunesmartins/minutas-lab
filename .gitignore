@@ -11,3 +11,37 @@ private/
 .env
 .env.*
 !.env.example
+
+# Agent/operational state (oh-my-claudecode)
+.omc/
+
+# Local tooling and agent state
+.omc/
+.claude/
+CLAUDE.local.md
+
+# Internal notes and research (not part of the product)
+reports/
+research_notes/
+private/
+tmp/
+
+# Test, build and coverage output
+coverage/
+dist/
+test-results/
+playwright-report/
+*.tsbuildinfo
+vite.config.*.timestamp-*
+
+# Editors, OS and logs
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Python (template tooling)
+__pycache__/
+*.pyc

@@ -1,75 +1,157 @@
 # minutas-lab
 
-<!-- HUMAN: replace TODO-set-repo-owner below (matches .github/CODEOWNERS) once the repo exists on GitHub, so these badges resolve. -->
-[![CI](https://github.com/TODO-set-repo-owner/minutas-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/TODO-set-repo-owner/minutas-lab/actions/workflows/ci.yml)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TODO-set-repo-owner/minutas-lab/badge)](https://scorecard.dev/viewer/?uri=github.com/TODO-set-repo-owner/minutas-lab)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+Fill in Portuguese legal contract templates in your browser. Pick a template, complete a validated form, watch a Word-like preview update as you type, and download the finished `.docx`. You can also turn your own minuta with blanks (`[Nome do Vendedor]`, `__/__/____`) into a new template.
 
-Browser-only web app for filling Portuguese legal contract templates (DOCX with `{{tags}}`): pick a template, fill a validated form, see a live Word-like preview, download the complete DOCX. Optional LLM-assisted extraction of field values from pasted text (proposals only, never auto-applied, never overwrites a filled field silently). No backend, no database, no analytics — everything runs in your browser.
+Everything runs locally in the browser. There is no backend, no database, no analytics and no account.
 
-<!-- HUMAN: record a ~30s GIF of pick template -> fill a few fields -> live preview update -> download, and embed it here. -->
+> **This is an MVP / hobby project.** The templates are drafts and nothing here is legal advice. Read the [legal disclaimer](#legal-disclaimer) before using any generated document.
 
-See [`AGENTS.md`](./AGENTS.md) for the full contributor/agent contract, [`SPEC.md`](./SPEC.md) for normative requirements, and [`ROADMAP.md`](./ROADMAP.md) for milestones.
+---
 
-## AI-assisted development
+## Get started
 
-This project is built with substantial AI (LLM agent) assistance under human review — commits authored by an agent carry a co-author trailer, and every change must pass `npm run verify` before merge. See `AGENTS.md` for the autonomous workflow rules agents follow in this repo.
+### Prerequisites
 
-## Features
+- [Node.js](https://nodejs.org/) 20 or newer (the repo pins `20` in `.nvmrc`)
+- npm (bundled with Node.js)
+- Git
 
-- **4 contract templates**: contrato-promessa de compra e venda, arrendamento urbano para habitação, empreitada, procuração — each a synthetic, original drafting (never a copy of a real firm's document, see `docs/templates.md`).
-- **Live preview**: a Web Worker builds the actual `.docx` on every edit (debounced) and renders it via `docx-preview`, double-buffered so there's no flash/scroll-jump. Filled/empty fields are shaded directly in the preview.
-- **Validation**: format/checksum (NIF, NIPC, IBAN, dates, amounts), conditional-required fields, cross-field rules (sums, date ordering, "must differ"), and structural checks (dangling references, duplicate anchors) — all defined per-template in `template.meta.json`.
-- **Download**: final (blocked while any validation error remains, with a review-screen confirmation) or draft (always available, empty fields highlighted, "RASCUNHO" watermark) — both are the exact same render pipeline as the preview, so what you see is what you get.
-- **Optional LLM-assisted extraction** (bring your own Anthropic API key, kept in memory only): paste text, review proposed field values against the exact quote they were grounded in, accept field-by-field. A proposal whose quote isn't a verbatim substring of the pasted text — or whose value doesn't match the quote's digits, for typed fields — is rejected before you ever see it.
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Browser["Browser — everything runs here (no backend)"]
-        UI["src/ui (React)\nform · preview pane · download"]
-        Worker["src/workers\nWeb Worker: builds the .docx"]
-        Core["src/core (pure TS)\ntag engine · numbering · validators · extenso"]
-        LLM["src/llm\nprovider interface · grounding\n(optional, BYOK)"]
-        UI -- "field values" --> Worker
-        Worker -- "built .docx bytes" --> UI
-        Worker --> Core
-        UI --> Core
-        UI -. "paste text, review proposals" .-> LLM
-    end
-    Template[("templates/&lt;slug&gt;/\ntemplate.docx + template.meta.json")] --> Worker
-    LLM -. "BYOK, direct call" .-> Anthropic[("Anthropic API")]
-```
-
-`src/core` never touches the page DOM or the network — it's pure TypeScript, which is what lets the same tag-replacement/numbering/validation code run identically on the main thread (for live validation) and inside the Web Worker (for the actual build), and be unit-tested without a browser.
-
-## Quickstart
+### Install
 
 ```bash
+git clone https://github.com/carolinanunesmartins/minutas-lab.git
+cd minutas-lab
 npm ci
+```
+
+`npm ci` installs exactly what is in `package-lock.json`.
+
+### Run locally
+
+```bash
 npm run dev
 ```
 
-Open the printed local URL, pick a template, and start filling it in.
+Open the URL Vite prints (by default <http://localhost:5173>). Pick a template and start filling it in.
+
+### Production build
+
+```bash
+npm run build      # type-check + bundle into dist/
+npm run preview    # serve dist/ locally (default http://localhost:4173)
+```
+
+The build is a static site (`base: './'`), so `dist/` can be hosted on any static host, including GitHub Pages.
+
+### Run the checks
+
+```bash
+npm run verify     # typecheck + lint + unit tests + template lint + build
+npm run eval:import   # importer round-trip on the bundled templates (must be 100%)
+
+npx playwright install chromium   # once
+npm run test:e2e   # end-to-end + accessibility (axe)
+```
+
+---
+
+## Features
+
+**Fill in a contract**
+- Four ready-made templates (original drafts, see [Templates](#templates)).
+- Form generated from the template: grouped fields, dropdowns for closed choices, native date inputs, typed inputs for amounts, tax numbers and day counts.
+- Validation as you go: format and checksum checks (NIF/NIPC, IBAN PT, dates, euro amounts), conditional required fields and cross-field rules (for example deposit + remainder = price, dates in the right order). Errors are explained in Portuguese, with the fix.
+- Live preview that updates after each edit, with filled and empty fields highlighted. Click a field in the preview to jump to its input, or focus an input to scroll the preview to it. Optional clauses can be switched on and off.
+- Amounts and numbers can be written out in words ("por extenso") automatically; clauses and cross-references are numbered automatically.
+
+**Download and keep your data**
+- Final download (blocked while there are validation errors, with a review screen) or draft download (always available, empty fields highlighted and marked "RASCUNHO"). The preview and the download come from the same document.
+- Save the form data to a JSON file and load it back later. Nothing is stored in the browser between visits.
+
+**Create your own template**
+- Upload a `.docx` with blanks and the app finds them, proposes a field for each one (name, type, group, options), lets you review and edit everything, and generates a tagged template that you can use immediately or download (`.docx` + `.json`).
+- Blanks it understands: `[text in brackets]` (the text becomes the field label), `__/__/____` (a date), `____` and `....`. `[escolher uma: …]` instruction brackets are skipped.
+- Works offline and deterministically (no AI, no API key). It warns you when a document looks already filled in (valid-looking NIF, IBAN or email), because it is meant for blank minutas only.
+- Uploaded files are size-limited and sanitised before use (see [Privacy and security](#privacy-and-security)).
+
+**Quality**
+- Accessible interface (keyboard navigation, labelled inputs, error summary), responsive layout, Portuguese (pt-PT) user interface.
+- Unit, property-based and end-to-end tests; a round-trip evaluation proves the importer can rebuild all inputs of the bundled templates.
+
+---
+
+## Templates
+
+| Template | Slug |
+|---|---|
+| Contrato-promessa de compra e venda de imóvel (CPCV) | `cpcv` |
+| Contrato de arrendamento urbano para habitação | `arrendamento` |
+| Contrato de empreitada | `empreitada` |
+| Procuração | `procuracao` |
+
+Each lives in `templates/<slug>/` as `template.docx` (the text with `{{tags}}`) plus `template.meta.json` (labels, groups, options, rules). The tag syntax and how to add a template are documented in [`docs/templates.md`](./docs/templates.md).
+
+---
+
+## Privacy and security
+
+- **Client-side only.** Documents, form values and uploaded files never leave your browser. The app makes no third-party network requests (the Content Security Policy only allows its own origin).
+- **No persistence.** Values are kept in memory only; the browser warns before you leave with unsaved data.
+- **Hostile files.** Uploads are size-bounded; archives with macros, path traversal or external relationships are rejected or stripped; inserted values are XML-escaped; links in the preview are restricted to `http(s)` and `mailto`.
+- Do not upload documents that contain real personal data to the template importer. Use blank minutas.
+
+To report a vulnerability see [`SECURITY.md`](./SECURITY.md).
+
+---
+
+## Legal disclaimer
+
+- **Not legal advice.** The application and the templates do not provide legal, tax or notarial advice and do not create a lawyer–client relationship. Have a qualified professional review any document before you sign or rely on it.
+- **Templates are drafts.** They are original, synthetic drafts that have **not** been reviewed by a lawyer. Each template's source lists points a jurist should confirm (`=== PONTOS A VALIDAR POR JURISTA ===`). Laws and formal requirements (for example signature recognition, certificates, registrations, deeds) change and depend on the case.
+- **No validity claims.** "Format valid" ("formato válido") means a value passes a syntax or checksum test, nothing more. It does not mean the number exists, belongs to the person, or is legally valid.
+- **Approximate preview.** The preview approximates the final document. The downloaded `.docx` is authoritative, and you should open and check it in a word processor.
+- **Your responsibility.** You are responsible for the data you enter and for how you use the generated documents, including compliance with data protection law (GDPR/RGPD) for any personal data you handle.
+- **No warranty.** The software is provided "as is" under the MIT licence, without warranty of any kind. The authors are not liable for any loss arising from its use.
+- **No affiliation.** This is an independent project, not affiliated with or endorsed by any law firm, notary, registry or public authority. Templates contain no third-party material.
+
+---
+
+## Tech stack
+
+React 18 · TypeScript (strict) · Vite · Tailwind CSS · `docx-preview` (rendering) · `fflate` (zip) · `zod` · Vitest + fast-check · Playwright + axe-core.
+
+## Project layout
+
+```
+src/core/       pure TypeScript: tag parser, numbering, validators, extenso, DOCX read/write, template importer
+src/workers/    Web Worker that builds the DOCX for the preview
+src/ui/         React components; all user-facing strings in messages.pt.ts
+templates/      the bundled templates (template.docx + template.meta.json)
+fixtures/       synthetic .docx files used by tests
+tests/          unit, property and end-to-end tests
+docs/           architecture, template authoring guide, architecture decision records
+scripts/        template linting, fixture generation, importer evaluation, repo policy check
+```
+
+See [`docs/architecture.md`](./docs/architecture.md) for the module map and [`SPEC.md`](./SPEC.md) for the detailed requirements.
 
 ## Commands
 
 | Command | Purpose |
 |---|---|
-| `npm ci` | install (lockfile only) |
-| `npm run dev` | Vite dev server |
-| `npm run verify` | typecheck + lint + unit tests + template lint + build — must pass before every commit/PR |
-| `npm run test:cov` | unit tests with coverage |
-| `npm run test:e2e` | Playwright + axe (needs `npx playwright install chromium` once) |
-| `npm run lint:templates` | validates every `templates/*/template.docx` + `template.meta.json` |
-| `npm run eval` | LLM eval with ReplayProvider (offline, deterministic) — not yet built, see ROADMAP M6 |
-| `npm run eval:record` / `eval:live` | human-run only, need `LLM_API_KEY` |
+| `npm ci` | install from the lockfile |
+| `npm run dev` | development server |
+| `npm run build` / `npm run preview` | production build / serve it locally |
+| `npm run verify` | typecheck + lint + unit tests + template lint + build |
+| `npm run test` / `test:cov` / `test:e2e` | unit tests / with coverage / Playwright + axe |
+| `npm run lint:templates` | validate every bundled template and its metadata |
+| `npm run eval:import` | importer round-trip evaluation (must be 100%) |
+| `npm run check:policy` | repository policy guard (no stray `.docx`, no secrets) |
 
-## Status
+## Contributing
 
-M0-M6 (T6.1-T6.3) done — see [`ROADMAP.md`](./ROADMAP.md) for exact milestone status. Not yet deployed anywhere (local-only development phase; see `AGENTS.md` §6).
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md). The project was built with substantial AI-agent assistance under human review; [`AGENTS.md`](./AGENTS.md) describes the rules every change follows.
 
-## License
+## Licence
 
-MIT — see [`LICENSE`](./LICENSE).
+MIT, see [`LICENSE`](./LICENSE).

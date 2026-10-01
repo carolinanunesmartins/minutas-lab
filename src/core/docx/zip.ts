@@ -17,7 +17,8 @@ export type DocxInputErrorCode =
   | 'ENTRY_TOO_LARGE'
   | 'TOTAL_UNCOMPRESSED_TOO_LARGE'
   | 'MISSING_DOCUMENT_XML'
-  | 'MALFORMED_XML';
+  | 'MALFORMED_XML'
+  | 'UNSAFE_CONTENT';
 
 export class DocxInputError extends Error {
   readonly code: DocxInputErrorCode;
@@ -28,6 +29,9 @@ export class DocxInputError extends Error {
     this.code = code;
   }
 }
+
+/** Path traversal / absolute / backslash names, macros and ActiveX controls (SPEC.md §9). */
+const UNSAFE_ENTRY_NAME = /(^|\/)\.\.(\/|$)|^\/|\\|vbaProject|(^|\/)activeX\//i;
 
 const ZIP_LOCAL_FILE_SIGNATURE = [0x50, 0x4b, 0x03, 0x04];
 
@@ -52,6 +56,10 @@ export function readDocxArchive(bytes: Uint8Array): DocxArchive {
 
   const filter = (file: UnzipFileInfo): boolean => {
     entryCount += 1;
+    if (UNSAFE_ENTRY_NAME.test(file.name)) {
+      violation ??= new DocxInputError('UNSAFE_CONTENT', `Entry "${file.name}" is not allowed in a .docx.`);
+      return false;
+    }
     if (entryCount > DOCX_LIMITS.maxEntries) {
       violation ??= new DocxInputError('TOO_MANY_ENTRIES', `Archive has more than ${DOCX_LIMITS.maxEntries} entries.`);
       return false;

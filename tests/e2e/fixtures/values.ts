@@ -3,7 +3,7 @@
 // and real calendar dates to pass validation, not just any non-empty string).
 export const CPCV_DEMO_VALUES: Record<string, string> = {
   vendedor_nome: 'Maria Exemplo Silva',
-  vendedor_estado_civil: 'solteira, maior',
+  vendedor_estado_civil: 'Solteiro(a), maior',
   vendedor_freguesia_naturalidade: 'Santa Maria dos Olivais',
   vendedor_concelho_naturalidade: 'Lisboa',
   vendedor_nif: '252601815',
@@ -14,7 +14,7 @@ export const CPCV_DEMO_VALUES: Record<string, string> = {
   vendedor_iban: 'PT50999946281948219935123',
   vendedor_banco: 'Banco Exemplo',
   comprador_nome: 'João Teste Costa',
-  comprador_estado_civil: 'solteiro, maior',
+  comprador_estado_civil: 'Solteiro(a), maior',
   comprador_freguesia_naturalidade: 'São João Baptista',
   comprador_concelho_naturalidade: 'Tomar',
   comprador_nif: '259083011',

@@ -2,18 +2,75 @@ import { zipSync } from 'fflate';
 import { W_NS } from './ooxml';
 import { replaceTagsInParagraph } from './replace';
 import type { DocxDocument } from './read';
-import { resolveNumbering } from '../numbering/resolve';
+import { isBlockMarkerParagraph, resolveNumbering } from '../numbering/resolve';
 import type { BlockValues } from '../numbering/resolve';
 import { eurosToWords, numberToWords } from '../validators/extenso';
 import { formatEurPt, parseEurPt } from '../formats/eur';
 import { parseIntPt } from '../formats/int';
 import { parseTemplate } from '../tags/parse';
 import { findEscapeSpans, findTagSpans } from '../tags/tokenize';
-import type { ParagraphNode, RawParagraph, TagModifier, TagType } from '../tags/types';
-import type { TagReplacement } from './replace';
+import type { ClassifiedParagraph, ParagraphNode, RawParagraph, TagModifier, TagType } from '../tags/types';
+import type { AnchorOptions, TagReplacement } from './replace';
 
 export interface ShadingOptions {
   activeFieldId?: string;
+  /**
+   * Live-preview only: wrap each value run in a `fld_<id>_<n>` bookmark so the
+   * UI can map preview text <-> form input. Never set for draft/final downloads.
+   */
+  anchors?: boolean;
+}
+
+/** Bookmark-name prefix the preview UI looks for (`fld_<fieldId>_<occurrence>`). */
+export const FIELD_ANCHOR_PREFIX = 'fld_';
+/** Bookmark-name prefix for a conditional block's first visible paragraph (`blk_<blockId>`). */
+export const BLOCK_ANCHOR_PREFIX = 'blk_';
+
+/**
+ * For each `{{#id}}` / `{{#se id}}` block: the paragraph a preview should jump
+ * to when that toggle changes — its first visible paragraph (either branch), or,
+ * when the whole block is currently hidden, the first visible paragraph after
+ * where it sat, so switching it off still shows where the clause disappeared.
+ */
+function computeBlockAnchorTargets(paragraphs: ClassifiedParagraph[], visible: boolean[]): Map<number, string[]> {
+  const stack: string[] = [];
+  const openIndex = new Map<string, number>();
+  const contentIndices = new Map<string, number[]>();
+  paragraphs.forEach((paragraph, i) => {
+    const marker = isBlockMarkerParagraph(paragraph);
+    if (marker) {
+      if (marker.kind === 'blockOpen' || marker.kind === 'condOpen') {
+        stack.push(marker.id);
+        if (!openIndex.has(marker.id)) openIndex.set(marker.id, i);
+      } else if (marker.kind === 'blockClose' || marker.kind === 'condClose') {
+        stack.pop();
+      }
+      return;
+    }
+    for (const id of stack) contentIndices.set(id, [...(contentIndices.get(id) ?? []), i]);
+  });
+
+  const targets = new Map<number, string[]>();
+  for (const [id, open] of openIndex) {
+    let target = (contentIndices.get(id) ?? []).find((i) => visible[i]);
+    if (target === undefined) target = visible.findIndex((v, i) => i > open && v);
+    if (target !== undefined && target >= 0) targets.set(target, [...(targets.get(target) ?? []), id]);
+  }
+  return targets;
+}
+
+function insertParagraphBookmarks(paragraph: Element, entries: { id: number; name: string }[]): void {
+  const doc = paragraph.ownerDocument;
+  const first = Array.from(paragraph.childNodes).find((n) => !(n.nodeType === 1 && (n as Element).localName === 'pPr')) ?? null;
+  for (const { id, name } of entries) {
+    const start = doc.createElementNS(W_NS, 'w:bookmarkStart');
+    start.setAttributeNS(W_NS, 'w:id', String(id));
+    start.setAttributeNS(W_NS, 'w:name', name);
+    const end = doc.createElementNS(W_NS, 'w:bookmarkEnd');
+    end.setAttributeNS(W_NS, 'w:id', String(id));
+    paragraph.insertBefore(start, first);
+    paragraph.insertBefore(end, first);
+  }
 }
 
 // Warm highlighter-pen family, on brand with the app chrome's brass accent
@@ -66,7 +123,7 @@ function buildParagraphReplacements(
         const isEmpty = raw.length === 0;
         const text_ = isEmpty ? `[${t.id}]` : renderValue(raw, t.type, t.modifier);
         const shadeFill = isEmpty ? SHADE_EMPTY : t.id === shading.activeFieldId ? SHADE_ACTIVE : SHADE_FILLED;
-        replacements.push({ start: span.start, end: span.end, value: text_, shadeFill });
+        replacements.push({ start: span.start, end: span.end, value: text_, shadeFill, fieldId: t.id });
       } else {
         replacements.push({ start: span.start, end: span.end, value: renderValue(raw, t.type, t.modifier) });
       }
@@ -103,7 +160,7 @@ function appendDisclaimerParagraph(documentXmlDoc: Document, text: string): void
   }
 }
 
-function rezip(archive: ReadonlyMap<string, Uint8Array>, documentXmlDoc: Document): Uint8Array {
+export function rezip(archive: ReadonlyMap<string, Uint8Array>, documentXmlDoc: Document): Uint8Array {
   const serialized = new XMLSerializer().serializeToString(documentXmlDoc);
   const files: Record<string, Uint8Array> = {};
   for (const [name, data] of archive) {
@@ -153,6 +210,27 @@ export function buildDocx(input: BuildDocxInput): Uint8Array {
 
   const numbering = resolveNumbering(classified, blockValues);
 
+  let anchorOptions: AnchorOptions | undefined;
+  if (shading?.anchors) {
+    // Start above any bookmark ids the template already uses.
+    let maxId = 0;
+    for (const el of Array.from(doc.documentXmlDoc.getElementsByTagNameNS(W_NS, 'bookmarkStart'))) {
+      maxId = Math.max(maxId, Number(el.getAttributeNS(W_NS, 'id')) || 0);
+    }
+    let nextId = maxId + 1;
+    const occurrences = new Map<string, number>();
+    anchorOptions = {
+      nextBookmarkId: () => nextId++,
+      nameFor: (fieldId) => {
+        const n = occurrences.get(fieldId) ?? 0;
+        occurrences.set(fieldId, n + 1);
+        return `${FIELD_ANCHOR_PREFIX}${fieldId}_${n}`;
+      },
+    };
+  }
+
+  const blockAnchorTargets = anchorOptions ? computeBlockAnchorTargets(classified, numbering.visible) : undefined;
+
   doc.paragraphs.forEach((docxParagraph, i) => {
     if (!numbering.visible[i]) {
       docxParagraph.element.parentNode?.removeChild(docxParagraph.element);
@@ -161,7 +239,14 @@ export function buildDocx(input: BuildDocxInput): Uint8Array {
     const classifiedParagraph = classified[i];
     if (!classifiedParagraph) return;
     const replacements = buildParagraphReplacements(i, docxParagraph.text, classifiedParagraph.nodes, numbering, values, shading);
-    replaceTagsInParagraph(docxParagraph, replacements);
+    replaceTagsInParagraph(docxParagraph, replacements, anchorOptions);
+    const blockIds = blockAnchorTargets?.get(i);
+    if (anchorOptions && blockIds) {
+      insertParagraphBookmarks(
+        docxParagraph.element,
+        blockIds.map((id) => ({ id: anchorOptions.nextBookmarkId(), name: `${BLOCK_ANCHOR_PREFIX}${id}` })),
+      );
+    }
   });
 
   appendDisclaimerParagraph(doc.documentXmlDoc, disclaimerText);
