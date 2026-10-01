@@ -267,7 +267,15 @@ test.describe('landing page', () => {
     await expect(page.getByText(/Preenche \d+ sítios do documento de uma só vez/).first()).toBeVisible();
   });
 
-  test('explains why this beats editing in Word', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Porquê isto em vez de editar no Word?' })).toBeVisible();
+  test('keeps the value claims to one short line each', async ({ page }) => {
+    await expect(page.getByText('Preenche uma vez')).toBeVisible();
+    await expect(page.getByText('Valida NIF, IBAN e datas')).toBeVisible();
+  });
+
+  test('the sample is the primary action', async ({ page }) => {
+    const sample = page.getByRole('button', { name: /Experimentar com uma minuta de exemplo/ });
+    const file = page.locator('button', { hasText: 'Escolher ficheiro .docx' });
+    const [a, b] = await Promise.all([sample.boundingBox(), file.boundingBox()]);
+    expect(a && b && a.height > b.height && a.y < b.y).toBe(true);
   });
 });

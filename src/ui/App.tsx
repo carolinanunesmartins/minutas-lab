@@ -321,55 +321,41 @@ function App() {
 
   if (state === 'empty') {
     return (
-      <main className="flex min-h-screen flex-col items-center gap-12 px-6 py-12 sm:py-16">
-        <header className="flex max-w-xl flex-col items-center gap-3 text-center">
+      <main className="flex min-h-screen flex-col items-center gap-14 px-6 py-14 sm:py-20">
+        <header className="flex flex-col items-center gap-3 text-center">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
-          <p className="text-base text-white/80">{messages.importTagline}</p>
-          <p className="text-xs leading-relaxed text-white/50">{messages.privacyNote}</p>
+          <p className="max-w-md text-base text-white/70">{messages.importTagline}</p>
         </header>
 
         <ImportPanel onUse={setSelected} />
 
-        <section aria-labelledby="why-heading" className="w-full max-w-3xl">
-          <h2 id="why-heading" className="font-display text-lg font-semibold text-white">
-            {messages.whyTitle}
-          </h2>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-            {[
-              [messages.why1Title, messages.why1Text],
-              [messages.why2Title, messages.why2Text],
-              [messages.why3Title, messages.why3Text],
-              [messages.why4Title, messages.why4Text],
-            ].map(([title, text]) => (
-              <li key={title} className="border-l-2 border-brass-500/60 pl-3">
-                <p className="text-sm font-semibold text-white/90">{title}</p>
-                <p className="mt-0.5 text-sm text-white/65">{text}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <ul className="flex max-w-xl flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/60">
+          {[messages.why1Title, messages.why2Title, messages.why3Title, messages.why4Title].map((claim) => (
+            <li key={claim} className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-brass-500" />
+              {claim}
+            </li>
+          ))}
+        </ul>
 
-        <section aria-labelledby="demo-heading" className="w-full max-w-3xl border-t border-line pt-8">
-          <h2 id="demo-heading" className="font-display text-base font-semibold text-white/70">
+        <section aria-labelledby="demo-heading" className="flex w-full max-w-xl flex-col items-center gap-3 text-center">
+          <h2 id="demo-heading" className="text-xs font-medium uppercase tracking-[0.18em] text-white/65">
             {messages.pickTemplateTitle}
           </h2>
-          <p className="mt-1 text-xs text-white/50">{messages.pickTemplateHint}</p>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+          <ul className="flex flex-wrap justify-center gap-2">
             {TEMPLATE_MANIFEST.map((entry) => (
               <li key={entry.slug}>
                 <button
                   type="button"
                   onClick={() => setSelected(entry)}
-                  className="flex min-h-11 w-full items-center gap-3 rounded border border-line px-3 py-2 text-left text-sm text-white/80 transition-colors duration-150 ease-out-quart hover:border-line-strong hover:bg-white/5 hover:text-white active:scale-[0.99]"
+                  className="min-h-11 rounded-full border border-line px-4 py-2 text-sm text-white/70 transition-colors duration-150 ease-out-quart hover:border-line-strong hover:bg-white/5 hover:text-white sm:min-h-0"
                 >
-                  <span aria-hidden="true" className="w-12 shrink-0 font-mono text-[10px] uppercase tracking-wider text-brass-400">
-                    {entry.code}
-                  </span>
-                  <span>{entry.title}</span>
+                  {entry.title}
                 </button>
               </li>
             ))}
           </ul>
+          <p className="text-xs text-white/60">{messages.privacyNote}</p>
         </section>
       </main>
     );

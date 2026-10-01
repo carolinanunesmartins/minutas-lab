@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Minimal landing page: the sample minuta is the single primary call to action; file import is a compact secondary row; value claims are one short line each; the bundled templates are small "modelos de demonstração" pills. Far less copy (hero steps, long hints and the "why not Word" paragraphs removed). Low-contrast text raised to pass axe.
+
 ### Added (making the value clear)
 - Landing page: "Experimentar com uma minuta de exemplo" (built-in sample, `fixtures/sample-minuta-lacunas.docx`), a "Porquê isto em vez de editar no Word?" section, and "Abrir minuta já criada" to reopen a downloaded `.docx` + `.json`.
 - Import review: a summary of what was found (blanks, fields, repeated blanks filled at once, validated fields), an explanation of what each field type validates, and a limits note.

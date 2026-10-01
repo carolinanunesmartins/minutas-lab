@@ -195,28 +195,22 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
   const includedCount = fields.filter((f) => !excluded.has(f.key)).length;
 
   return (
-    <section
-      className="animate-rise-in w-full max-w-3xl rounded-lg border border-brass-500/40 bg-ink-900 p-5 shadow-[0_0_0_1px_rgba(201,154,92,0.08),0_20px_60px_-30px_rgba(201,154,92,0.35)] sm:p-8"
-      aria-labelledby="import-heading"
-    >
-      <h2 id="import-heading" className="font-display text-2xl font-semibold text-white sm:text-3xl">
+    <section className="animate-rise-in flex w-full max-w-xl flex-col items-center gap-6" aria-labelledby="import-heading">
+      <h2 id="import-heading" className="sr-only">
         {messages.importTitle}
       </h2>
-      <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/70">{messages.importHint}</p>
 
-      <ol className="mt-5 grid gap-3 sm:grid-cols-3">
-        {[messages.importStep1, messages.importStep2, messages.importStep3].map((step, i) => (
-          <li key={step} className="flex items-start gap-3 text-sm text-white/80">
-            <span
-              aria-hidden="true"
-              className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-brass-400 font-mono text-xs text-brass-300"
-            >
-              {i + 1}
-            </span>
-            <span>{step}</span>
-          </li>
-        ))}
-      </ol>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <button
+          type="button"
+          onClick={() => void handleSample()}
+          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-lg text-center bg-brass-500 px-8 py-4 font-display text-lg font-semibold text-brass-ink shadow-[0_10px_40px_-10px_rgba(201,154,92,0.6)] transition-[transform,background-color] duration-150 ease-out-quart hover:bg-brass-400 active:scale-[0.98] sm:text-xl"
+        >
+          {messages.importSample}
+          <span aria-hidden="true">→</span>
+        </button>
+        <p className="text-sm text-white/65">{messages.importSampleHint}</p>
+      </div>
 
       <input
         ref={fileInputRef}
@@ -248,22 +242,14 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
             setProblems([{ code: 'WRONG_TYPE', message: messages.importWrongType }]);
           }
         }}
-        className={`mt-6 flex flex-col items-center gap-3 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors duration-150 ease-out-quart ${
-          dragging ? 'border-brass-400 bg-brass-500/10' : 'border-line-strong bg-ink-950/40'
+        className={`flex w-full flex-col items-center gap-3 rounded-lg border border-dashed px-5 py-5 text-center transition-colors duration-150 ease-out-quart sm:flex-row sm:justify-between sm:text-left ${
+          dragging ? 'border-brass-400 bg-brass-500/10' : 'border-line-strong'
         }`}
       >
-        <p className="font-display text-lg text-white">{messages.importDropTitle}</p>
-        <button type="button" onClick={() => fileInputRef.current?.click()} className={buttonPrimary}>
+        <p className="text-sm text-white/70">{messages.importDropTitle}</p>
+        <button type="button" onClick={() => fileInputRef.current?.click()} className={buttonSecondary}>
           {messages.importChooseFile}
         </button>
-        <p className="font-mono text-xs text-white/50">{messages.importExample}</p>
-        <div className="mt-1 flex flex-col items-center gap-1">
-          <button type="button" onClick={() => void handleSample()} className={buttonSecondary}>
-            {messages.importSample}
-          </button>
-          <p className="max-w-md text-xs text-white/50">{messages.importSampleHint}</p>
-        </div>
-        <p className="text-xs text-white/50">{messages.importLocalOnly}</p>
       </div>
 
       <input
@@ -278,12 +264,14 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
           e.target.value = '';
         }}
       />
-      <p className="mt-3 text-center text-xs text-white/50">
-        <button type="button" onClick={() => reopenInputRef.current?.click()} className="underline underline-offset-2 hover:text-white">
-          {messages.importReopen}
-        </button>
-        <span className="mt-0.5 block">{messages.importReopenHint}</span>
-      </p>
+      <button
+        type="button"
+        onClick={() => reopenInputRef.current?.click()}
+        title={messages.importReopenHint}
+        className="min-h-11 text-xs text-white/60 underline underline-offset-2 hover:text-white sm:min-h-0"
+      >
+        {messages.importReopen}
+      </button>
 
       {status === 'reading' && <p className="mt-3 text-sm text-white/70">{messages.importReading}</p>}
 
@@ -322,7 +310,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
                 <strong>{fields.filter((f) => f.type !== 'text').length}</strong> {messages.importSummaryTyped}
               </li>
             </ul>
-            <p className="mt-2 text-xs text-white/55">{messages.importLimits}</p>
+            <p className="mt-2 text-xs text-white/65">{messages.importLimits}</p>
           </div>
 
           <label htmlFor="import-title" className="block text-xs font-medium text-white/70">
@@ -344,7 +332,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
                       <input type="checkbox" checked={!off} onChange={() => toggleExcluded(f.key)} />
                       {messages.importInclude}
                     </label>
-                    <span className="font-mono text-[11px] text-white/40">
+                    <span className="font-mono text-[11px] text-white/60">
                       {count} {count === 1 ? messages.importOccurrence : messages.importOccurrences}
                     </span>
                   </div>
@@ -381,7 +369,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
                           </option>
                         ))}
                       </select>
-                      <span className="mt-1 block text-[11px] text-white/45">{TYPE_HINTS[f.type]}</span>
+                      <span className="mt-1 block text-[11px] text-white/60">{TYPE_HINTS[f.type]}</span>
                     </label>
                     <label className="text-xs text-white/60">
                       {messages.importGroupField}
@@ -417,7 +405,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
               {messages.importDownload}
             </button>
           </div>
-          {includedCount === 0 && <p className="mt-2 text-xs text-white/50">{messages.importNoFields}</p>}
+          {includedCount === 0 && <p className="mt-2 text-xs text-white/60">{messages.importNoFields}</p>}
         </div>
       )}
     </section>
