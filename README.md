@@ -19,7 +19,7 @@ Everything runs locally in the browser. There is no backend, no database, no ana
 ### Install
 
 ```bash
-git clone <repository-url> minutas-lab
+git clone https://github.com/carolinanunesmartins/minutas-lab.git
 cd minutas-lab
 npm ci
 ```
