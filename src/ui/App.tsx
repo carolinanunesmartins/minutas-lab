@@ -8,9 +8,8 @@ import type { Meta } from '../core/template/meta';
 import { validateTemplateValues } from '../core/template/validate';
 import type { ValidationResult } from '../core/template/validate';
 import { BuildClient } from './buildClient';
-import { buttonGhost, buttonPrimary, buttonSecondary } from './buttonStyles';
+import { buttonCta, buttonGhost, buttonPrimary, buttonQuiet, buttonSecondary } from './buttonStyles';
 import { dummyValuesFor } from './dummyData';
-import { parseDraft, saveJson, serializeDraft } from './draft';
 import { fieldIssueMessage, ruleIssueMessage } from './issueMessages';
 import { Form } from './Form';
 import { ImportPanel } from './ImportPanel';
@@ -57,7 +56,6 @@ function App() {
   // Bumped on every blocked download so the error summary takes focus each time.
   const [blockedCount, setBlockedCount] = useState(0);
   const errorSummaryRef = useRef<HTMLElement>(null);
-  const draftInputRef = useRef<HTMLInputElement>(null);
   // Values as of the last export/download: leaving with anything different from this loses work.
   const savedSnapshotRef = useRef('{}');
 
@@ -207,36 +205,6 @@ function App() {
 
   function markSaved(): void {
     savedSnapshotRef.current = JSON.stringify(valuesRef.current);
-  }
-
-  function handleExportDraft(): void {
-    if (!loaded) return;
-    saveJson(serializeDraft(loaded.meta.id, loaded.meta.version, valuesRef.current), `${loaded.meta.id}-dados.json`);
-    markSaved();
-    announce(messages.draftSaved);
-  }
-
-  async function handleImportDraft(file: File | undefined): Promise<void> {
-    if (!file || !loaded) return;
-    const known = new Set(loaded.groups.flatMap((g) => g.fields).map((f) => f.id));
-    if (file.size > 512 * 1024) {
-      announce(messages.draftErrors['too-large']);
-      return;
-    }
-    const result = parseDraft(await file.text(), loaded.meta.id, known);
-    if (!result.ok) {
-      announce(messages.draftErrors[result.error]);
-      return;
-    }
-    const next = { ...initialValues(loaded.meta), ...result.values };
-    valuesRef.current = next;
-    setValues(next);
-    setTouchedFields(new Set());
-    setAttemptedDownload(false);
-    setLastEditedFieldId(undefined);
-    markSaved();
-    buildPreview(undefined);
-    announce(result.ignored > 0 ? `${messages.draftImported} (${result.ignored} ${messages.draftIgnored})` : messages.draftImported);
   }
 
   function announce(message: string): void {
@@ -454,40 +422,44 @@ function App() {
       >
         {messages.skipToForm}
       </a>
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass-400">{messages.appTitle}</p>
-          <h1 className="font-display text-lg font-semibold text-white">{loaded.meta.title}</h1>
-          <p className="text-xs text-white/60">
-            {messages.templateVersion} {loaded.meta.version}
-          </p>
+      <header className="border-b border-line px-4 py-3 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass-400">{messages.appTitle}</p>
+            <h1 className="font-display text-lg font-semibold text-white">{loaded.meta.title}</h1>
+            <p className="text-xs text-white/60">
+              {messages.templateVersion} {loaded.meta.version}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="button" onClick={() => void handleDownloadDraft()} className={buttonSecondary}>
+              {messages.downloadDraft}
+            </button>
+            <button
+              type="button"
+              aria-disabled={!canDownloadFinal}
+              title={canDownloadFinal ? undefined : messages.downloadDisabledReason}
+              onClick={() => {
+                if (!canDownloadFinal) {
+                  setAttemptedDownload(true);
+                  setBlockedCount((c) => c + 1);
+                  return;
+                }
+                setReviewOpen(true);
+              }}
+              className={`${buttonCta} ${canDownloadFinal ? '' : 'cursor-not-allowed opacity-50'}`}
+            >
+              {messages.downloadFinal}
+            </button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="-ml-2 mt-1 flex flex-wrap items-center gap-x-1">
           {hasExampleData && (
-            <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
+            <button type="button" onClick={handleFillDummy} className={buttonQuiet} title={messages.fillDummyHint}>
               {messages.fillDummy}
             </button>
           )}
-          <button type="button" onClick={handleExportDraft} className={buttonSecondary} title={messages.draftSaveHint}>
-            {messages.draftSave}
-          </button>
-          <button type="button" onClick={() => draftInputRef.current?.click()} className={buttonSecondary}>
-            {messages.draftOpen}
-          </button>
-          <input
-            ref={draftInputRef}
-            type="file"
-            accept="application/json,.json"
-            className="sr-only"
-            tabIndex={-1}
-            aria-label={messages.draftOpen}
-            data-testid="draft-input"
-            onChange={(e) => {
-              void handleImportDraft(e.target.files?.[0]);
-              e.target.value = '';
-            }}
-          />
-          <button type="button" onClick={handleChangeTemplate} className={buttonSecondary}>
+          <button type="button" onClick={handleChangeTemplate} className={buttonQuiet}>
             {messages.changeTemplate}
           </button>
         </div>
@@ -596,35 +568,23 @@ function App() {
         </section>
       </div>
 
-      <footer className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-ink-950 px-4 py-3 sm:px-6">
-        {attemptedDownload && !canDownloadFinal && (
-          <p role="alert" className="mr-auto text-xs text-rubric-400">
-            {summaryEntries.length} {messages.fieldsToFix}
-          </p>
-        )}
-        <p role="status" aria-live="polite" className="mr-auto text-xs text-brass-300 empty:hidden">
-          {statusMessage}
-        </p>
-        <button type="button" onClick={() => void handleDownloadDraft()} className={buttonSecondary}>
-          {messages.downloadDraft}
-        </button>
-        <button
-          type="button"
-          aria-disabled={!canDownloadFinal}
-          title={canDownloadFinal ? undefined : messages.downloadDisabledReason}
-          onClick={() => {
-            if (!canDownloadFinal) {
-              setAttemptedDownload(true);
-              setBlockedCount((c) => c + 1);
-              return;
-            }
-            setReviewOpen(true);
-          }}
-          className={`${buttonPrimary} ${canDownloadFinal ? '' : 'cursor-not-allowed opacity-50'}`}
-        >
-          {messages.downloadFinal}
-        </button>
-      </footer>
+      <p role="status" aria-live="polite" className="sr-only">
+        {statusMessage}
+      </p>
+      {((attemptedDownload && !canDownloadFinal) || statusMessage) && (
+        <footer className="flex flex-wrap items-center gap-3 border-t border-line bg-ink-950 px-4 py-2 sm:px-6">
+          {attemptedDownload && !canDownloadFinal && (
+            <p role="alert" className="text-xs text-rubric-400">
+              {summaryEntries.length} {messages.fieldsToFix}
+            </p>
+          )}
+          {statusMessage && (
+            <p aria-hidden="true" className="text-xs text-brass-300">
+              {statusMessage}
+            </p>
+          )}
+        </footer>
+      )}
 
       {reviewOpen && (
         <div

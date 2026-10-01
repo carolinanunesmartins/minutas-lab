@@ -13,9 +13,8 @@ import { findSensitive, looksFilled } from '../core/import/safeguard';
 import { TAG_TYPES } from '../core/tags/types';
 import type { TagType } from '../core/tags/types';
 import { buttonPrimary, buttonSecondary } from './buttonStyles';
-import { saveDocx } from './download';
+import { saveDocx, saveJson } from './download';
 import sampleUrl from '../../fixtures/sample-minuta-lacunas.docx?url';
-import { saveJson } from './draft';
 import { messages } from './messages.pt';
 import type { TemplateManifestEntry } from './templateManifest';
 
