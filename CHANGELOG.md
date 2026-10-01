@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security
+- Dev toolchain upgraded to clear all `npm audit` findings (6 in dev dependencies, 2 critical, 1 high; production dependencies were already clean): vite 5 to 7.3, vitest 2 to 4.1, @vitest/coverage-v8 to 4.1, @vitejs/plugin-react 4 to 5.2 (this also pulls esbuild to 0.28). Node engines are now `^20.19.0 || >=22.12.0` (vite 7). The slow lint:templates CLI test got a 120 s timeout.
+
 ### Changed
 - UI copy pass (pt-PT): shorter, more direct wording, no em dashes, "pré-visualização" instead of "preview", "Aparece em N sítios do documento" on repeated fields, clearer errors and importer messages.
 - Landing: a small contract excerpt shows the product idea (the same value appears in several places and lights up once on load); removed the arrow on the main button and the card stagger; hover effects only where hover exists; the review block eases in; the sample button shows a busy state while reading; entrance animation 420 ms to 300 ms.
