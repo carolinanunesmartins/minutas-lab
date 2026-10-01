@@ -207,10 +207,10 @@ export function ImportPanel({ onUse, children }: ImportPanelProps) {
         <button
           type="button"
           onClick={() => void handleSample()}
-          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-lg text-center bg-brass-500 px-8 py-4 font-display text-lg font-semibold text-brass-ink shadow-[0_10px_40px_-10px_rgba(201,154,92,0.6)] transition-[transform,background-color] duration-150 ease-out-quart hover:bg-brass-400 active:scale-[0.98] sm:text-xl"
+          disabled={status === 'reading'}
+          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-lg text-center bg-brass-500 px-8 py-4 font-display text-lg font-semibold text-brass-ink shadow-[0_10px_40px_-10px_rgba(201,154,92,0.6)] transition-[transform,background-color] duration-150 ease-out-quart hover:bg-brass-400 active:scale-[0.98] disabled:cursor-wait disabled:opacity-70 disabled:active:scale-100 sm:text-xl"
         >
           {messages.importSample}
-          <span aria-hidden="true">→</span>
         </button>
         <p className="text-sm text-white/65">{messages.importSampleHint}</p>
       </div>
@@ -287,7 +287,7 @@ export function ImportPanel({ onUse, children }: ImportPanelProps) {
       )}
 
       {status === 'ready' && analysis && (
-        <div className="mt-4">
+        <div className="animate-rise-in mt-4 w-full">
           {analysis.looksFilled && (
             <p role="alert" className="mb-3 rounded border border-rubric-400 p-2 text-xs text-rubric-400">
               {messages.importFilledWarning}

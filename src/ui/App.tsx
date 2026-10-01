@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { readDocx } from '../core/docx/read';
 import { parseTemplate } from '../core/tags/parse';
 import { collectFieldCounts, collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
@@ -325,6 +326,34 @@ function App() {
         <header className="flex flex-col items-center gap-3 text-center">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
           <p className="max-w-md text-base text-white/70">{messages.importTagline}</p>
+          <p
+            aria-hidden="true"
+            className="mt-4 max-w-sm rounded-sm border border-paper-line bg-paper px-5 py-4 text-left font-display text-[15px] leading-relaxed text-paper-ink shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)]"
+          >
+            {messages.heroDocA}
+            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
+              {messages.heroDocSeller}
+            </span>
+            {messages.heroDocB}
+            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
+              {messages.heroDocBuyer}
+            </span>
+            {messages.heroDocC}
+            <span className="echo" style={{ '--echo-delay': '1300ms' } as CSSProperties}>
+              {messages.heroDocPrice}
+            </span>
+            {messages.heroDocD}
+            <br />
+            {messages.heroDocE}
+            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
+              {messages.heroDocSeller}
+            </span>
+            {messages.heroDocF}
+            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
+              {messages.heroDocBuyer}
+            </span>
+            {messages.heroDocG}
+          </p>
         </header>
 
         <ImportPanel onUse={setSelected}>
@@ -528,7 +557,7 @@ function App() {
                       className="text-left text-sm text-white/90 underline decoration-rubric-400/60 underline-offset-2 hover:decoration-rubric-400"
                     >
                       {e.label}
-                      {e.label ? ' — ' : ''}
+                      {e.label ? ': ' : ''}
                       {e.text}
                     </button>
                   </li>
@@ -631,7 +660,7 @@ function App() {
                             }}
                           >
                             {messages.reviewChange}
-                            <span className="sr-only"> — {f.label}</span>
+                            <span className="sr-only">: {f.label}</span>
                           </button>
                         </span>
                       </li>

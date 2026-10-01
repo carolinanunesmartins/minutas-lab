@@ -95,9 +95,9 @@ test('ticking a checkbox adds its clause to the preview at once and scrolls to i
   expect(await preview.evaluate((el) => el.scrollTop)).toBe(0);
 
   const checkbox = page.getByLabel('Existem ónus ou encargos sobre o imóvel?');
-  await expect(page.getByText('Cláusula não incluída na minuta').first()).toBeVisible();
+  await expect(page.getByText('Cláusula não incluída').first()).toBeVisible();
   await checkbox.check(); // no blur: the change itself must refresh the preview
-  await expect(page.getByText(/Cláusula incluída na minuta/).first()).toBeVisible();
+  await expect(page.getByText('Cláusula incluída').first()).toBeVisible();
   await expect.poll(async () => (await preview.textContent())?.length ?? 0, { timeout: 5000 }).toBeGreaterThan(before);
   await expect(preview.locator('[data-blocks~="onus"]')).toBeAttached();
   await expect.poll(() => preview.evaluate((el) => el.scrollTop), { timeout: 5000 }).toBeGreaterThan(300);
@@ -228,7 +228,7 @@ test('the example-data button is not offered for an imported template', async ({
 });
 
 test('a field that appears several times says so, and one value fills them all in the preview', async ({ page }) => {
-  await expect(page.getByText(/Preenche \d+ sítios do documento de uma só vez/).first()).toBeVisible();
+  await expect(page.getByText(/Aparece em \d+ sítios do documento/).first()).toBeVisible();
   await page.locator('#field-vendedor_nome').fill('Zacarias Teste Unico');
   await page.locator('#field-vendedor_nome').blur();
   await expect
@@ -243,11 +243,11 @@ test.describe('landing page', () => {
 
   test('the sample minuta shows what the importer found, in numbers', async ({ page }) => {
     await page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' }).click();
-    await expect(page.getByText('O que a aplicação encontrou')).toBeVisible();
-    await expect(page.getByText('repetições preenchidas de uma só vez')).toBeVisible();
+    await expect(page.getByText('O que encontrámos')).toBeVisible();
+    await expect(page.getByText('repetições, preenchidas de uma vez')).toBeVisible();
     await expect(page.getByText('campos com validação automática')).toBeVisible();
     await expect(page.getByText(/Verifica o dígito de controlo do NIF/).first()).toBeVisible();
-    await expect(page.getByText(/Limites desta versão/)).toBeVisible();
+    await expect(page.getByText(/Nesta versão: só campos simples/)).toBeVisible();
   });
 
   test('a created minuta can be saved and opened again without importing it', async ({ page }, testInfo) => {
@@ -264,7 +264,7 @@ test.describe('landing page', () => {
     await page.reload();
     await page.locator('input[type=file][multiple]').setInputFiles(downloads);
     await expect(page.locator('#field-prestador_nome')).toBeVisible();
-    await expect(page.getByText(/Preenche \d+ sítios do documento de uma só vez/).first()).toBeVisible();
+    await expect(page.getByText(/Aparece em \d+ sítios do documento/).first()).toBeVisible();
   });
 
   test('keeps the value claims to one short line each', async ({ page }) => {

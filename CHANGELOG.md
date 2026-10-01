@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+- UI copy pass (pt-PT): shorter, more direct wording, no em dashes, "pré-visualização" instead of "preview", "Aparece em N sítios do documento" on repeated fields, clearer errors and importer messages.
+- Landing: a small contract excerpt shows the product idea (the same value appears in several places and lights up once on load); removed the arrow on the main button and the card stagger; hover effects only where hover exists; the review block eases in; the sample button shows a busy state while reading; entrance animation 420 ms to 300 ms.
+
+### Changed
 - Minimal landing page: the sample minuta is the single primary call to action; file import is a compact secondary row; value claims are one short line each; the bundled templates are small "modelos de demonstração" pills. Far less copy (hero steps, long hints and the "why not Word" paragraphs removed). Low-contrast text raised to pass axe.
 
 ### Added (making the value clear)
