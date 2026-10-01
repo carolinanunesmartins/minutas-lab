@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- "Preencher com dados de exemplo" button is now available in every build (was dev/`?teste` only): fills all fields with fictitious data for the four templates, asks before replacing typed values, and does not trigger the unsaved-data warning. e2e tests cover filling, downloading and the confirmation.
+
 ### Removed (ADR-0009)
 - All LLM features (extraction panel, LLM refinement in the import panel, `src/llm/`, LLM eval and the `eval`/`eval:record`/`eval:live` scripts) and the Anthropic origin from the CSP: the API key is a paid product and does not fit a free MVP. The blank-minuta importer is unchanged and fully deterministic.
 

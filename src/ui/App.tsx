@@ -21,9 +21,6 @@ import { messages } from './messages.pt';
 import { TEMPLATE_MANIFEST } from './templateManifest';
 import type { TemplateManifestEntry } from './templateManifest';
 
-// Test-data button: dev builds, or any build opened with ?teste in the URL.
-const SHOW_TEST_TOOLS = import.meta.env.DEV || new URLSearchParams(window.location.search).has('teste');
-
 type AppState = 'empty' | 'loading' | 'error' | 'ready';
 
 interface LoadedTemplate {
@@ -266,13 +263,20 @@ function App() {
     setActiveFieldId(id);
   }
 
-  // Test aid: fills every field with synthetic valid data, then refreshes the preview.
+  // Demo aid: fills every field with fictitious, format-valid data, then refreshes the preview.
   function handleFillDummy(): void {
     if (!loaded) return;
-    const dummy = { ...initialValues(loaded.meta), ...dummyValuesFor(loaded.meta.id) };
+    const defaults = initialValues(loaded.meta);
+    // Only what the user typed counts: template defaults are not "their" data.
+    const hasTypedValues = Object.entries(valuesRef.current).some(([id, v]) => v.trim() !== '' && v !== defaults[id]);
+    if (hasTypedValues && !window.confirm(messages.fillDummyConfirm)) return;
+    const dummy = { ...defaults, ...dummyValuesFor(loaded.meta.id) };
     valuesRef.current = dummy;
     setValues(dummy);
+    // Sample data is not the user's work: leaving the page afterwards needs no warning.
+    savedSnapshotRef.current = JSON.stringify(dummy);
     buildPreview(undefined);
+    announce(messages.fillDummyDone);
   }
 
   function handleChangeTemplate(): void {
@@ -413,11 +417,9 @@ function App() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {SHOW_TEST_TOOLS && (
-            <button type="button" onClick={handleFillDummy} className={buttonSecondary}>
-              {messages.fillDummy}
-            </button>
-          )}
+          <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
+            {messages.fillDummy}
+          </button>
           <button type="button" onClick={handleExportDraft} className={buttonSecondary} title={messages.draftSaveHint}>
             {messages.draftSave}
           </button>
