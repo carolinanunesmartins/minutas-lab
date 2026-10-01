@@ -12,6 +12,8 @@ export interface FieldDescriptor {
   group?: string;
   /** Closed set of choices (<=10) — rendered as a <select>. */
   options?: string[];
+  /** How many times the value appears in the document text (one input, many places). */
+  occurrences?: number;
 }
 
 export interface FieldGroup {
@@ -25,6 +27,7 @@ export function buildFieldGroups(
   fieldTypes: ReadonlyMap<string, TagType>,
   meta: Meta,
   ungroupedLabel: string,
+  occurrences?: ReadonlyMap<string, number>,
 ): FieldGroup[] {
   const descriptors: FieldDescriptor[] = [...usedIds].map((id) => {
     const fieldMeta = meta.fields[id];
@@ -37,6 +40,7 @@ export function buildFieldGroups(
       ...(type !== undefined && { type }),
       ...(fieldMeta?.group !== undefined && { group: fieldMeta.group }),
       ...(fieldMeta?.options !== undefined && { options: fieldMeta.options }),
+      ...(occurrences?.get(id) !== undefined && { occurrences: occurrences.get(id) as number }),
     };
   });
 

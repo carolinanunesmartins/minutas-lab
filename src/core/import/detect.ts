@@ -34,11 +34,23 @@ export interface DetectResult {
   blanks: Blank[];
   /** Instruction brackets skipped as choices (MVP: not converted). */
   skippedChoices: number;
+  /** Underscore/dot runs skipped because they are signature lines. */
+  skippedSignatures: number;
+}
+
+/**
+ * A run of underscores/dots that is the whole paragraph (or only has an "assinatura"
+ * caption next to it) is a signature line, not a value to fill in.
+ */
+function isSignatureLine(text: string, raw: string): boolean {
+  const rest = text.replace(raw, '').trim();
+  return rest === '' || /assina/i.test(rest);
 }
 
 export function detectBlanks(paragraphTexts: readonly string[]): DetectResult {
   const blanks: Blank[] = [];
   let skippedChoices = 0;
+  let skippedSignatures = 0;
 
   paragraphTexts.forEach((text, paraIndex) => {
     const found: Omit<Blank, 'left' | 'right'>[] = [];
@@ -57,6 +69,10 @@ export function detectBlanks(paragraphTexts: readonly string[]): DetectResult {
           continue;
         }
         taken.push([start, end]);
+        if ((kind === 'underscore' || kind === 'dots') && isSignatureLine(text, m[0])) {
+          skippedSignatures += 1;
+          continue;
+        }
         found.push({ paraIndex, start, end, raw: m[0], kind, label });
       }
     }
@@ -71,5 +87,5 @@ export function detectBlanks(paragraphTexts: readonly string[]): DetectResult {
     }
   });
 
-  return { blanks, skippedChoices };
+  return { blanks, skippedChoices, skippedSignatures };
 }

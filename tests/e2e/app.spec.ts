@@ -66,9 +66,10 @@ test('final download review screen appears once all fields are validly filled', 
 
 test('focusing an input scrolls the preview to that field, even while it is still empty', async ({ page }) => {
   const preview = page.locator('.docx-preview-pane[data-active="true"]').first();
-  await expect(preview.locator('[data-field="preco_total"]').first()).toBeAttached({ timeout: 5000 });
+  // foro_comarca appears once, in the last clause (other fields now also appear in the summary at the top).
+  await expect(preview.locator('[data-field="foro_comarca"]').first()).toBeAttached({ timeout: 5000 });
   expect(await preview.evaluate((el) => el.scrollTop)).toBe(0);
-  await page.locator('#field-preco_total').focus();
+  await page.locator('#field-foro_comarca').focus();
   await expect.poll(() => preview.evaluate((el) => el.scrollTop), { timeout: 5000 }).toBeGreaterThan(500);
 });
 
@@ -216,7 +217,7 @@ test('example data asks before replacing what was already typed', async ({ page 
 
 test('the example-data button is not offered for an imported template', async ({ page }) => {
   await page.getByRole('button', { name: 'Escolher outra minuta' }).click();
-  await page.locator('input[type=file]').setInputFiles({
+  await page.locator('input[type=file]:not([multiple])').setInputFiles({
     name: 'minuta.docx',
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     buffer: await (await import('node:fs/promises')).readFile('fixtures/blank-minuta.docx'),
@@ -224,4 +225,49 @@ test('the example-data button is not offered for an imported template', async ({
   await page.getByRole('button', { name: 'Usar esta minuta' }).click();
   await expect(page.getByRole('heading', { name: 'minuta' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Preencher com dados de exemplo' })).toHaveCount(0);
+});
+
+test('a field that appears several times says so, and one value fills them all in the preview', async ({ page }) => {
+  await expect(page.getByText(/Preenche \d+ sítios do documento de uma só vez/).first()).toBeVisible();
+  await page.locator('#field-vendedor_nome').fill('Zacarias Teste Unico');
+  await page.locator('#field-vendedor_nome').blur();
+  await expect
+    .poll(async () => (await page.locator('.docx-wrapper').first().innerText()).split('Zacarias Teste Unico').length - 1, { timeout: 8000 })
+    .toBeGreaterThanOrEqual(5);
+});
+
+test.describe('landing page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByRole('button', { name: 'Escolher outra minuta' }).click();
+  });
+
+  test('the sample minuta shows what the importer found, in numbers', async ({ page }) => {
+    await page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' }).click();
+    await expect(page.getByText('O que a aplicação encontrou')).toBeVisible();
+    await expect(page.getByText('repetições preenchidas de uma só vez')).toBeVisible();
+    await expect(page.getByText('campos com validação automática')).toBeVisible();
+    await expect(page.getByText(/Verifica o dígito de controlo do NIF/).first()).toBeVisible();
+    await expect(page.getByText(/Limites desta versão/)).toBeVisible();
+  });
+
+  test('a created minuta can be saved and opened again without importing it', async ({ page }, testInfo) => {
+    await page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' }).click();
+    const downloads: string[] = [];
+    page.on('download', async (d) => {
+      const target = testInfo.outputPath(d.suggestedFilename());
+      await d.saveAs(target);
+      downloads.push(target);
+    });
+    await page.getByRole('button', { name: /Descarregar minuta/ }).click();
+    await expect.poll(() => downloads.length, { timeout: 8000 }).toBe(2);
+
+    await page.reload();
+    await page.locator('input[type=file][multiple]').setInputFiles(downloads);
+    await expect(page.locator('#field-prestador_nome')).toBeVisible();
+    await expect(page.getByText(/Preenche \d+ sítios do documento de uma só vez/).first()).toBeVisible();
+  });
+
+  test('explains why this beats editing in Word', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Porquê isto em vez de editar no Word?' })).toBeVisible();
+  });
 });

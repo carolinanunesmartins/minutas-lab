@@ -4,12 +4,16 @@ import { detectBlanks } from '../core/import/detect';
 import { generateTemplate } from '../core/import/generate';
 import type { GenerateProblem } from '../core/import/generate';
 import { inferFields } from '../core/import/infer';
+import { parseTemplate } from '../core/tags/parse';
+import { collectUsedFieldIds } from '../core/template/fields';
+import { loadTemplateMeta } from '../core/template/meta';
 import type { InferredBlank, InferredField } from '../core/import/infer';
 import { findSensitive, looksFilled } from '../core/import/safeguard';
 import { TAG_TYPES } from '../core/tags/types';
 import type { TagType } from '../core/tags/types';
 import { buttonPrimary, buttonSecondary } from './buttonStyles';
 import { saveDocx } from './download';
+import sampleUrl from '../../fixtures/sample-minuta-lacunas.docx?url';
 import { saveJson } from './draft';
 import { messages } from './messages.pt';
 import type { TemplateManifestEntry } from './templateManifest';
@@ -26,6 +30,17 @@ interface Analysis {
   skippedChoices: number;
   looksFilled: boolean;
 }
+
+const TYPE_HINTS: Record<TagType, string> = {
+  text: messages.typeHint_text,
+  nif: messages.typeHint_nif,
+  nipc: messages.typeHint_nipc,
+  iban: messages.typeHint_iban,
+  cc: messages.typeHint_cc,
+  data: messages.typeHint_data,
+  eur: messages.typeHint_eur,
+  int: messages.typeHint_int,
+};
 
 const inputStyles =
   'w-full rounded border border-line bg-ink-900 px-2 py-1 text-sm text-white transition-colors duration-150 ease-out-quart focus:border-brass-400';
@@ -49,12 +64,59 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
   const [title, setTitle] = useState('');
   const [problems, setProblems] = useState<GenerateProblem[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const reopenInputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File): Promise<void> {
     setStatus('reading');
     setProblems([]);
     try {
-      const bytes = new Uint8Array(await file.arrayBuffer());
+      analyze(new Uint8Array(await file.arrayBuffer()), file.name);
+    } catch {
+      showReadError();
+    }
+  }
+
+  async function handleSample(): Promise<void> {
+    setStatus('reading');
+    setProblems([]);
+    try {
+      const response = await fetch(sampleUrl);
+      analyze(new Uint8Array(await response.arrayBuffer()), 'minuta-de-exemplo.docx');
+    } catch {
+      showReadError();
+    }
+  }
+
+  function showReadError(): void {
+    setAnalysis(null);
+    setStatus('error');
+    setProblems([{ code: 'READ_ERROR', message: messages.importReadError }]);
+  }
+
+  /** Opens a minuta created here before: its .docx (with {{tags}}) plus its .json (field labels, groups, options). */
+  async function handleReopen(files: FileList): Promise<void> {
+    setProblems([]);
+    try {
+      const list = Array.from(files);
+      const docx = list.find((f) => /\.docx$/i.test(f.name));
+      const json = list.find((f) => /\.json$/i.test(f.name));
+      if (!docx || !json) throw new Error('need both files');
+      const bytes = new Uint8Array(await docx.arrayBuffer());
+      const metaRaw: unknown = JSON.parse(await json.text());
+      const doc = readDocx(bytes);
+      const { paragraphs, errors } = parseTemplate(doc.paragraphs.map((p) => ({ location: 'body' as const, text: p.text })));
+      const { meta, errors: metaErrors } = loadTemplateMeta(metaRaw, collectUsedFieldIds(paragraphs));
+      if (errors.length > 0 || metaErrors.length > 0 || !meta) throw new Error('invalid template');
+      onUse({ slug: meta.id, title: meta.title, code: messages.importCustomCode, docxUrl: '', docxBytes: bytes.slice().buffer, metaRaw: meta });
+    } catch {
+      setAnalysis(null);
+      setStatus('error');
+      setProblems([{ code: 'REOPEN_ERROR', message: messages.importReopenError }]);
+    }
+  }
+
+  function analyze(bytes: Uint8Array, fileName: string): void {
+    try {
       const doc = readDocx(bytes);
       const texts = doc.paragraphs.map((p) => p.text);
       const { blanks, skippedChoices } = detectBlanks(texts);
@@ -74,12 +136,10 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
       });
       setFields(inferred.fields);
       setExcluded(new Set());
-      setTitle(file.name.replace(/\.docx$/i, ''));
+      setTitle(fileName.replace(/\.docx$/i, ''));
       setStatus('ready');
     } catch {
-      setAnalysis(null);
-      setStatus('error');
-      setProblems([{ code: 'READ_ERROR', message: messages.importReadError }]);
+      showReadError();
     }
   }
 
@@ -197,8 +257,33 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
           {messages.importChooseFile}
         </button>
         <p className="font-mono text-xs text-white/50">{messages.importExample}</p>
+        <div className="mt-1 flex flex-col items-center gap-1">
+          <button type="button" onClick={() => void handleSample()} className={buttonSecondary}>
+            {messages.importSample}
+          </button>
+          <p className="max-w-md text-xs text-white/50">{messages.importSampleHint}</p>
+        </div>
         <p className="text-xs text-white/50">{messages.importLocalOnly}</p>
       </div>
+
+      <input
+        ref={reopenInputRef}
+        type="file"
+        multiple
+        accept=".docx,.json,application/json,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        className="sr-only"
+        aria-label={messages.importReopen}
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) void handleReopen(e.target.files);
+          e.target.value = '';
+        }}
+      />
+      <p className="mt-3 text-center text-xs text-white/50">
+        <button type="button" onClick={() => reopenInputRef.current?.click()} className="underline underline-offset-2 hover:text-white">
+          {messages.importReopen}
+        </button>
+        <span className="mt-0.5 block">{messages.importReopenHint}</span>
+      </p>
 
       {status === 'reading' && <p className="mt-3 text-sm text-white/70">{messages.importReading}</p>}
 
@@ -221,6 +306,25 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
             </p>
           )}
 
+          <div className="mb-4 rounded-md border border-brass-500/30 bg-brass-500/[0.06] p-3">
+            <h3 className="font-display text-sm font-semibold text-brass-300">{messages.importSummaryHeading}</h3>
+            <ul className="mt-2 grid gap-1 text-sm text-white/85 sm:grid-cols-2">
+              <li>
+                <strong>{analysis.blanks.length}</strong> {messages.importSummaryBlanks}
+              </li>
+              <li>
+                <strong>{fields.length}</strong> {messages.importSummaryFields}
+              </li>
+              <li>
+                <strong>{Math.max(0, analysis.blanks.length - fields.length)}</strong> {messages.importSummaryRepeats}
+              </li>
+              <li>
+                <strong>{fields.filter((f) => f.type !== 'text').length}</strong> {messages.importSummaryTyped}
+              </li>
+            </ul>
+            <p className="mt-2 text-xs text-white/55">{messages.importLimits}</p>
+          </div>
+
           <label htmlFor="import-title" className="block text-xs font-medium text-white/70">
             {messages.importTemplateTitle}
           </label>
@@ -241,7 +345,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
                       {messages.importInclude}
                     </label>
                     <span className="font-mono text-[11px] text-white/40">
-                      {count} {messages.importOccurrences}
+                      {count} {count === 1 ? messages.importOccurrence : messages.importOccurrences}
                     </span>
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2">
@@ -277,6 +381,7 @@ export function ImportPanel({ onUse }: ImportPanelProps) {
                           </option>
                         ))}
                       </select>
+                      <span className="mt-1 block text-[11px] text-white/45">{TYPE_HINTS[f.type]}</span>
                     </label>
                     <label className="text-xs text-white/60">
                       {messages.importGroupField}

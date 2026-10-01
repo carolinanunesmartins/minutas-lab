@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added (making the value clear)
+- Landing page: "Experimentar com uma minuta de exemplo" (built-in sample, `fixtures/sample-minuta-lacunas.docx`), a "Porquê isto em vez de editar no Word?" section, and "Abrir minuta já criada" to reopen a downloaded `.docx` + `.json`.
+- Import review: a summary of what was found (blanks, fields, repeated blanks filled at once, validated fields), an explanation of what each field type validates, and a limits note.
+- Form: fields that appear more than once in the document say so ("Preenche N sítios do documento de uma só vez").
+- Templates (cpcv, arrendamento, empreitada, procuração): added a summary block, declaration/identification/payment/communications clauses and named signature blocks that reuse existing fields (no new inputs), so one value fills 3 to 6 places. The four `template.docx` are now all built with `scripts/build-template-docx.ts` (the CPCV changes visual style to match the others).
+- Importer: signature lines (`____`) are no longer taken for blanks; nearest-role detection, payee detection ("IBAN para receber…"), and generic parties (prestador, cliente, fornecedor). `npm run eval:import` is 100% on 526 occurrences (was 294).
+
 ### Changed
 - Landing page is now import-first: a large drop zone (drag and drop or file picker) with a three-step explanation leads the page; the four bundled templates move to a quieter "modelos de demonstração" section. The "fill with example data" button is hidden on imported templates (no example data exists for them).
 

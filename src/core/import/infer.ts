@@ -61,9 +61,15 @@ const ROLES: Role[] = [
   { key: 'mandatario', label: 'Mandatário', re: /mandatario|procurador/ },
   { key: 'dono_obra', label: 'Dono da obra', re: /dono da obra|dono de obra/ },
   { key: 'empreiteiro', label: 'Empreiteiro', re: /empreiteiro/ },
+  { key: 'prestador', label: 'Prestador', re: /prestador/ },
+  { key: 'cliente', label: 'Cliente', re: /cliente/ },
+  { key: 'fornecedor', label: 'Fornecedor', re: /fornecedor/ },
 ];
 
-const IMOVEL_RE = /imovel|fracao|predio|artigo matricial|matriz|descricao predial|conservatoria/;
+const PAYEE_HINT = /receber/;
+const PAYEE_ROLES = ['senhorio', 'vendedor', 'empreiteiro', 'prestador', 'fornecedor'];
+
+const IMOVEL_RE = /imovel|locado|fracao|predio|artigo matricial|matriz|descricao predial|conservatoria/;
 
 interface Rule {
   re: RegExp;
@@ -119,6 +125,18 @@ function leftWords(left: string): string {
   return afterPunct.trim().split(/\s+/).slice(-4).join(' ');
 }
 
+/** The role mentioned closest to the end of `normText` (the nearest mention wins). */
+function findNearestRole(normText: string): Role | undefined {
+  let best: { role: Role; at: number } | undefined;
+  for (const role of ROLES) {
+    const all = new RegExp(role.re.source, 'g');
+    for (const m of normText.matchAll(all)) {
+      if (!best || m.index >= best.at) best = { role, at: m.index };
+    }
+  }
+  return best?.role;
+}
+
 function findRole(normText: string): Role | undefined {
   return ROLES.find((r) => r.re.test(normText));
 }
@@ -153,6 +171,7 @@ export function inferFields(blanks: readonly Blank[]): InferResult {
   const byQuestion = new Map<string, string>();
   const out: InferredBlank[] = [];
   let currentRole: Role | undefined;
+  const seenRoles = new Set<string>();
   let unnamed = 0;
   let prev: { blank: Blank; fieldKey: string; type: TagType } | undefined;
 
@@ -168,9 +187,15 @@ export function inferFields(blanks: readonly Blank[]): InferResult {
     if (labelRole) {
       currentRole = labelRole;
     } else {
-      const leftRole = findRole(normalize(blank.left).slice(-40));
+      const leftRole = findNearestRole(normalize(blank.left));
       if (leftRole) currentRole = leftRole;
     }
+    // "IBAN para receber a renda": the payee is the party that gets paid (landlord, seller, contractor), when one was seen.
+    if (!labelRole && PAYEE_HINT.test(normHint)) {
+      const payee = PAYEE_ROLES.find((k) => seenRoles.has(k));
+      if (payee) currentRole = ROLES.find((r) => r.key === payee);
+    }
+    if (currentRole) seenRoles.add(currentRole.key);
 
     // "[valor por extenso]": same field as the amount it spells out, `extenso` modifier.
     if (/extenso/.test(normHint)) {

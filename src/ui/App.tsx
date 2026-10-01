@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { readDocx } from '../core/docx/read';
 import { parseTemplate } from '../core/tags/parse';
-import { collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
+import { collectFieldCounts, collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
 import { loadTemplateMeta } from '../core/template/meta';
 import type { Meta } from '../core/template/meta';
 import { validateTemplateValues } from '../core/template/validate';
@@ -83,7 +83,7 @@ function App() {
         const usedIds = collectUsedFieldIds(paragraphs);
         const { meta } = loadTemplateMeta(selected.metaRaw, usedIds);
         if (!meta) throw new Error('invalid template.meta.json');
-        const groups = buildFieldGroups(usedIds, fieldTypes, meta, messages.groupUnlabeled);
+        const groups = buildFieldGroups(usedIds, fieldTypes, meta, messages.groupUnlabeled, collectFieldCounts(paragraphs));
         if (cancelled) return;
         setLoaded({ templateBytes, groups, meta });
         setValues(initialValues(meta));
@@ -329,6 +329,25 @@ function App() {
         </header>
 
         <ImportPanel onUse={setSelected} />
+
+        <section aria-labelledby="why-heading" className="w-full max-w-3xl">
+          <h2 id="why-heading" className="font-display text-lg font-semibold text-white">
+            {messages.whyTitle}
+          </h2>
+          <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+            {[
+              [messages.why1Title, messages.why1Text],
+              [messages.why2Title, messages.why2Text],
+              [messages.why3Title, messages.why3Text],
+              [messages.why4Title, messages.why4Text],
+            ].map(([title, text]) => (
+              <li key={title} className="border-l-2 border-brass-500/60 pl-3">
+                <p className="text-sm font-semibold text-white/90">{title}</p>
+                <p className="mt-0.5 text-sm text-white/65">{text}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section aria-labelledby="demo-heading" className="w-full max-w-3xl border-t border-line pt-8">
           <h2 id="demo-heading" className="font-display text-base font-semibold text-white/70">

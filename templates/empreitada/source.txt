@@ -1,4 +1,10 @@
 CONTRATO DE EMPREITADA
+**QUADRO-RESUMO**
+Dono da Obra: {{dono_obra_nome}}, NIF {{dono_obra_nif:nif}}.
+Empreiteiro: {{empreiteiro_nome}}, NIPC {{empreiteiro_nipc:nipc}}, alvará n.º {{empreiteiro_alvara}}.
+Obra: {{obra_descricao}}, em {{obra_local}}, freguesia de {{obra_freguesia}}, concelho de {{obra_concelho}}.
+Preço: {{preco_total:eur}} ({{preco_total:eur|extenso}}).
+Prazo: {{prazo_dias:int}} ({{prazo_dias:int|extenso}}) dias, a contar de {{data_inicio:data}}.
 ENTRE:
 **{{dono_obra_nome}}**, {{dono_obra_estado_civil}}, contribuinte fiscal n.º {{dono_obra_nif:nif}}, com residência em {{dono_obra_morada}}, doravante designado por **Dono da Obra**;
 E
@@ -56,6 +62,13 @@ CLÁUSULA {{cl}}
 {{pt}}. O Empreiteiro garante a boa execução dos trabalhos e responde pelos defeitos da Obra que se manifestem no prazo de {{garantia_anos:int}} anos a contar da receção definitiva, nos termos gerais do regime da empreitada.
 {{pt}}. Identificado um defeito abrangido pela garantia, o Empreiteiro obriga-se a proceder à sua reparação em prazo razoável, a acordar entre as Partes, contado da respetiva comunicação.
 CLÁUSULA {{cl}}
+(Declarações das Partes)
+{{pt}}. O Dono da Obra, {{dono_obra_nome}}, contribuinte fiscal n.º {{dono_obra_nif:nif}}, declara que tem legitimidade para ordenar a execução da Obra descrita na {{ref:cl_obra}}, a realizar em {{obra_local}}, e que paga ao Empreiteiro o preço de {{preco_total:eur}} ({{preco_total:eur|extenso}}).
+{{pt}}. O Empreiteiro, {{empreiteiro_nome}}, NIPC n.º {{empreiteiro_nipc:nipc}}, titular do alvará n.º {{empreiteiro_alvara}}, declara que dispõe dos meios e da habilitação necessários para executar a Obra no prazo de {{prazo_dias:int}} dias a contar de {{data_inicio:data}}.
+CLÁUSULA {{cl}}
+(Domicílio convencionado)
+{{pt}}. Para efeitos deste contrato, o Dono da Obra, {{dono_obra_nome}}, fixa domicílio em {{dono_obra_morada}} e o Empreiteiro, {{empreiteiro_nome}}, em {{empreiteiro_morada}}, sendo aí válidas as comunicações enviadas por carta registada.
+CLÁUSULA {{cl}}
 (Comunicações)
 Sem prejuízo das comunicações que a lei ou este contrato exijam por carta registada, as demais podem ser feitas para os seguintes endereços eletrónicos: Dono da Obra, {{dono_obra_email}}; Empreiteiro, {{empreiteiro_email}}.
 CLÁUSULA {{cl}}
@@ -66,8 +79,10 @@ Depois de o lerem e por estarem de acordo com o seu conteúdo, as Partes assinam
 {{contrato_local}}, {{contrato_data:data}}
 O Dono da Obra
 ---
+{{dono_obra_nome}}
 O Empreiteiro
 ---
+{{empreiteiro_nome}}
 === CAMPOS ===
 dono_obra_nome | texto | sim | Nome do dono da obra
 dono_obra_estado_civil | texto | sim | Estado civil (e regime de bens, se casado)
@@ -103,7 +118,7 @@ foro_comarca | texto | sim | Comarca do foro
 contrato_local | texto | sim | Local de assinatura
 contrato_data | data | sim | Data de assinatura
 === ÂNCORAS ===
-cl_obra | Cláusula do Objeto | não referida por outras (reservada)
+cl_obra | Cláusula do Objeto | referida nas Declarações das Partes
 prazo_execucao | Cláusula do Prazo de execução | referida na Penalização por atraso
 === PONTOS A VALIDAR POR JURISTA ===
 1. Regime da empreitada (Código Civil, arts. 1207.º e ss.): confirmar formulação das cláusulas de receção provisória/definitiva e articulação com o prazo de garantia.
@@ -113,3 +128,4 @@ prazo_execucao | Cláusula do Prazo de execução | referida na Penalização po
 5. Direção técnica e alvará: confirmar categorias e classes de alvará exigidas em função do valor/tipo de obra.
 6. Suspensão/resolução do contrato por incumprimento: cláusula não incluída nesta minuta — confirmar se deve ser acrescentada.
 7. Dono da obra pessoa coletiva: esta minuta assume Dono da Obra pessoa singular; se for pessoa coletiva, adaptar campos (NIPC em vez de NIF, representação).
+8. Quadro-resumo e cláusulas de declarações/identificação foram acrescentados para repetir os mesmos dados em vários pontos do texto (um só campo preenchido várias vezes); avaliar se se mantêm, ou se são redundantes para o caso concreto.
