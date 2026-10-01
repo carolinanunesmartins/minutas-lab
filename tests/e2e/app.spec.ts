@@ -146,24 +146,6 @@ test('on a phone the sticky preview can be hidden and shown again', async ({ pag
   await expect(body).toBeVisible();
 });
 
-test('data can be saved to a JSON file and loaded back', async ({ page }, testInfo) => {
-  await fillField(page, 'vendedor_nome', 'Maria Exemplo Silva');
-  await fillField(page, 'vendedor_nif', '252601815');
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Guardar dados (.json)' }).click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('cpcv-dados.json');
-  const file = testInfo.outputPath('cpcv-dados.json');
-  await download.saveAs(file);
-
-  await fillField(page, 'vendedor_nome', 'Outra Pessoa');
-  await fillField(page, 'vendedor_nif', '');
-  await page.getByTestId('draft-input').setInputFiles(file);
-  await expect(page.getByText('Dados carregados do ficheiro.')).toBeVisible();
-  await expect(page.locator('#field-vendedor_nome')).toHaveValue('Maria Exemplo Silva');
-  await expect(page.locator('#field-vendedor_nif')).toHaveValue('252601815');
-});
-
 test('the preview fits its pane width and can be zoomed', async ({ page }) => {
   const zoomOf = (): Promise<number> =>
     page.evaluate(() => Number(document.querySelector<HTMLElement>('.docx-preview-pane[data-active="true"] .docx-wrapper')?.style.zoom));
@@ -272,10 +254,11 @@ test.describe('landing page', () => {
     await expect(page.getByText('Valida NIF, IBAN e datas')).toBeVisible();
   });
 
-  test('the sample is the primary action', async ({ page }) => {
-    const sample = page.getByRole('button', { name: /Experimentar com uma minuta de exemplo/ });
+  test('the demo templates come first, then the import card with the file button as its main action', async ({ page }) => {
+    const template = page.getByRole('button', { name: 'Procuração' });
     const file = page.locator('button', { hasText: 'Escolher ficheiro .docx' });
-    const [a, b] = await Promise.all([sample.boundingBox(), file.boundingBox()]);
-    expect(a && b && a.height > b.height && a.y < b.y).toBe(true);
+    const sample = page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' });
+    const [t, f, x] = await Promise.all([template.boundingBox(), file.boundingBox(), sample.boundingBox()]);
+    expect(t && f && x && t.y < f.y && f.height > x.height).toBe(true);
   });
 });

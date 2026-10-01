@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
 import { readDocx } from '../core/docx/read';
 import { parseTemplate } from '../core/tags/parse';
 import { collectFieldCounts, collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
@@ -8,9 +7,8 @@ import type { Meta } from '../core/template/meta';
 import { validateTemplateValues } from '../core/template/validate';
 import type { ValidationResult } from '../core/template/validate';
 import { BuildClient } from './buildClient';
-import { buttonGhost, buttonPrimary, buttonSecondary } from './buttonStyles';
+import { buttonCta, buttonGhost, buttonPrimary, buttonQuiet, buttonSecondary } from './buttonStyles';
 import { dummyValuesFor } from './dummyData';
-import { parseDraft, saveJson, serializeDraft } from './draft';
 import { fieldIssueMessage, ruleIssueMessage } from './issueMessages';
 import { Form } from './Form';
 import { ImportPanel } from './ImportPanel';
@@ -57,7 +55,6 @@ function App() {
   // Bumped on every blocked download so the error summary takes focus each time.
   const [blockedCount, setBlockedCount] = useState(0);
   const errorSummaryRef = useRef<HTMLElement>(null);
-  const draftInputRef = useRef<HTMLInputElement>(null);
   // Values as of the last export/download: leaving with anything different from this loses work.
   const savedSnapshotRef = useRef('{}');
 
@@ -209,36 +206,6 @@ function App() {
     savedSnapshotRef.current = JSON.stringify(valuesRef.current);
   }
 
-  function handleExportDraft(): void {
-    if (!loaded) return;
-    saveJson(serializeDraft(loaded.meta.id, loaded.meta.version, valuesRef.current), `${loaded.meta.id}-dados.json`);
-    markSaved();
-    announce(messages.draftSaved);
-  }
-
-  async function handleImportDraft(file: File | undefined): Promise<void> {
-    if (!file || !loaded) return;
-    const known = new Set(loaded.groups.flatMap((g) => g.fields).map((f) => f.id));
-    if (file.size > 512 * 1024) {
-      announce(messages.draftErrors['too-large']);
-      return;
-    }
-    const result = parseDraft(await file.text(), loaded.meta.id, known);
-    if (!result.ok) {
-      announce(messages.draftErrors[result.error]);
-      return;
-    }
-    const next = { ...initialValues(loaded.meta), ...result.values };
-    valuesRef.current = next;
-    setValues(next);
-    setTouchedFields(new Set());
-    setAttemptedDownload(false);
-    setLastEditedFieldId(undefined);
-    markSaved();
-    buildPreview(undefined);
-    announce(result.ignored > 0 ? `${messages.draftImported} (${result.ignored} ${messages.draftIgnored})` : messages.draftImported);
-  }
-
   function announce(message: string): void {
     setStatusMessage(message);
     window.setTimeout(() => setStatusMessage(''), 4000);
@@ -322,63 +289,35 @@ function App() {
 
   if (state === 'empty') {
     return (
-      <main className="flex min-h-screen flex-col items-center gap-14 px-6 py-14 sm:py-20">
-        <header className="flex flex-col items-center gap-3 text-center">
+      <main className="flex min-h-screen flex-col items-center gap-10 px-6 py-12 sm:py-16">
+        <header className="flex flex-col items-center gap-2 text-center">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
           <p className="max-w-md text-base text-white/70">{messages.importTagline}</p>
-          <p
-            aria-hidden="true"
-            className="mt-4 max-w-sm rounded-sm border border-paper-line bg-paper px-5 py-4 text-left font-display text-[15px] leading-relaxed text-paper-ink shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)]"
-          >
-            {messages.heroDocA}
-            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
-              {messages.heroDocSeller}
-            </span>
-            {messages.heroDocB}
-            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
-              {messages.heroDocBuyer}
-            </span>
-            {messages.heroDocC}
-            <span className="echo" style={{ '--echo-delay': '1300ms' } as CSSProperties}>
-              {messages.heroDocPrice}
-            </span>
-            {messages.heroDocD}
-            <br />
-            {messages.heroDocE}
-            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
-              {messages.heroDocSeller}
-            </span>
-            {messages.heroDocF}
-            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
-              {messages.heroDocBuyer}
-            </span>
-            {messages.heroDocG}
-          </p>
         </header>
 
-        <ImportPanel onUse={setSelected}>
-          <section aria-labelledby="demo-heading" className="flex w-full flex-col gap-3">
-            <h2 id="demo-heading" className="text-center font-display text-lg font-semibold text-white">
-              {messages.pickTemplateTitle}
-            </h2>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {TEMPLATE_MANIFEST.map((entry) => (
-                <li key={entry.slug}>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(entry)}
-                    className="group flex min-h-20 w-full flex-col items-start justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-900 px-4 py-3 text-left transition-[transform,border-color,background-color] duration-150 ease-out-quart hover:-translate-y-0.5 hover:border-brass-400 hover:bg-ink-800 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
-                  >
-                    <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-400">
-                      {entry.code}
-                    </span>
-                    <span className="font-display text-base font-semibold leading-snug text-white">{entry.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </ImportPanel>
+        <section aria-labelledby="demo-heading" className="flex w-full max-w-2xl flex-col gap-3">
+          <h2 id="demo-heading" className="text-center font-display text-xl font-semibold text-white">
+            {messages.pickTemplateTitle}
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {TEMPLATE_MANIFEST.map((entry) => (
+              <li key={entry.slug}>
+                <button
+                  type="button"
+                  onClick={() => setSelected(entry)}
+                  className="group flex min-h-20 w-full flex-col items-start justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-900 px-4 py-3 text-left transition-[transform,border-color,background-color] duration-150 ease-out-quart hover:-translate-y-0.5 hover:border-brass-400 hover:bg-ink-800 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+                >
+                  <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-400">
+                    {entry.code}
+                  </span>
+                  <span className="font-display text-base font-semibold leading-snug text-white">{entry.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <ImportPanel onUse={setSelected} />
 
         <ul className="flex max-w-xl flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/60">
           {[messages.why1Title, messages.why2Title, messages.why3Title, messages.why4Title].map((claim) => (
@@ -454,40 +393,44 @@ function App() {
       >
         {messages.skipToForm}
       </a>
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass-400">{messages.appTitle}</p>
-          <h1 className="font-display text-lg font-semibold text-white">{loaded.meta.title}</h1>
-          <p className="text-xs text-white/60">
-            {messages.templateVersion} {loaded.meta.version}
-          </p>
+      <header className="border-b border-line px-4 py-3 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass-400">{messages.appTitle}</p>
+            <h1 className="font-display text-lg font-semibold text-white">{loaded.meta.title}</h1>
+            <p className="text-xs text-white/60">
+              {messages.templateVersion} {loaded.meta.version}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="button" onClick={() => void handleDownloadDraft()} className={buttonSecondary}>
+              {messages.downloadDraft}
+            </button>
+            <button
+              type="button"
+              aria-disabled={!canDownloadFinal}
+              title={canDownloadFinal ? undefined : messages.downloadDisabledReason}
+              onClick={() => {
+                if (!canDownloadFinal) {
+                  setAttemptedDownload(true);
+                  setBlockedCount((c) => c + 1);
+                  return;
+                }
+                setReviewOpen(true);
+              }}
+              className={`${buttonCta} ${canDownloadFinal ? '' : 'cursor-not-allowed opacity-80'}`}
+            >
+              {messages.downloadFinal}
+            </button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="-ml-2 mt-1 flex flex-wrap items-center gap-x-1">
           {hasExampleData && (
-            <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
+            <button type="button" onClick={handleFillDummy} className={buttonQuiet} title={messages.fillDummyHint}>
               {messages.fillDummy}
             </button>
           )}
-          <button type="button" onClick={handleExportDraft} className={buttonSecondary} title={messages.draftSaveHint}>
-            {messages.draftSave}
-          </button>
-          <button type="button" onClick={() => draftInputRef.current?.click()} className={buttonSecondary}>
-            {messages.draftOpen}
-          </button>
-          <input
-            ref={draftInputRef}
-            type="file"
-            accept="application/json,.json"
-            className="sr-only"
-            tabIndex={-1}
-            aria-label={messages.draftOpen}
-            data-testid="draft-input"
-            onChange={(e) => {
-              void handleImportDraft(e.target.files?.[0]);
-              e.target.value = '';
-            }}
-          />
-          <button type="button" onClick={handleChangeTemplate} className={buttonSecondary}>
+          <button type="button" onClick={handleChangeTemplate} className={buttonQuiet}>
             {messages.changeTemplate}
           </button>
         </div>
@@ -596,35 +539,23 @@ function App() {
         </section>
       </div>
 
-      <footer className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-ink-950 px-4 py-3 sm:px-6">
-        {attemptedDownload && !canDownloadFinal && (
-          <p role="alert" className="mr-auto text-xs text-rubric-400">
-            {summaryEntries.length} {messages.fieldsToFix}
-          </p>
-        )}
-        <p role="status" aria-live="polite" className="mr-auto text-xs text-brass-300 empty:hidden">
-          {statusMessage}
-        </p>
-        <button type="button" onClick={() => void handleDownloadDraft()} className={buttonSecondary}>
-          {messages.downloadDraft}
-        </button>
-        <button
-          type="button"
-          aria-disabled={!canDownloadFinal}
-          title={canDownloadFinal ? undefined : messages.downloadDisabledReason}
-          onClick={() => {
-            if (!canDownloadFinal) {
-              setAttemptedDownload(true);
-              setBlockedCount((c) => c + 1);
-              return;
-            }
-            setReviewOpen(true);
-          }}
-          className={`${buttonPrimary} ${canDownloadFinal ? '' : 'cursor-not-allowed opacity-50'}`}
-        >
-          {messages.downloadFinal}
-        </button>
-      </footer>
+      <p role="status" aria-live="polite" className="sr-only">
+        {statusMessage}
+      </p>
+      {((attemptedDownload && !canDownloadFinal) || statusMessage) && (
+        <footer className="flex flex-wrap items-center gap-3 border-t border-line bg-ink-950 px-4 py-2 sm:px-6">
+          {attemptedDownload && !canDownloadFinal && (
+            <p role="alert" className="text-xs text-rubric-400">
+              {summaryEntries.length} {messages.fieldsToFix}
+            </p>
+          )}
+          {statusMessage && (
+            <p aria-hidden="true" className="text-xs text-brass-300">
+              {statusMessage}
+            </p>
+          )}
+        </footer>
+      )}
 
       {reviewOpen && (
         <div

@@ -95,19 +95,6 @@
   }
 }
 
-/* Landing specimen: the same value lights up everywhere it appears, once, as the page loads. */
-@keyframes echo-on {
-  from { background-color: transparent; }
-  to { background-color: oklch(0.88 0.09 80 / 0.7); }
-}
-.echo {
-  border-radius: 2px;
-  padding: 0 2px;
-  background-color: oklch(0.88 0.09 80 / 0.7);
-  animation: echo-on 450ms var(--ease-out-quart) both;
-  animation-delay: var(--echo-delay, 0ms);
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

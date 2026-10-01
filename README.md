@@ -69,7 +69,7 @@ npm run test:e2e   # end-to-end + accessibility (axe)
 
 **Download and keep your data**
 - Final download (blocked while there are validation errors, with a review screen) or draft download (always available, empty fields highlighted and marked "RASCUNHO"). The preview and the download come from the same document.
-- Save the form data to a JSON file and load it back later. Nothing is stored in the browser between visits.
+- Nothing is stored in the browser between visits: download the document before you leave.
 
 **Create your own template**
 - Try it in seconds with the built-in sample minuta, no file needed. The review step tells you what it found (blanks, fields, repeated blanks filled at once, fields with automatic validation).
@@ -123,7 +123,7 @@ To report a vulnerability see [`SECURITY.md`](./SECURITY.md).
 
 ## Tech stack
 
-React 18 · TypeScript (strict) · Vite · Tailwind CSS · `docx-preview` (rendering) · `fflate` (zip) · `zod` · Vitest + fast-check · Playwright + axe-core.
+React 18 · TypeScript (strict) · Vite · Tailwind CSS · `docx-preview` (rendering) · `fflate` (zip) · Vitest + fast-check · Playwright + axe-core.
 
 ## Project layout
 

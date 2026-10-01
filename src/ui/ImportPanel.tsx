@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import type { ReactNode } from 'react';
 import { readDocx } from '../core/docx/read';
 import { detectBlanks } from '../core/import/detect';
 import { generateTemplate } from '../core/import/generate';
@@ -12,18 +11,15 @@ import type { InferredBlank, InferredField } from '../core/import/infer';
 import { findSensitive, looksFilled } from '../core/import/safeguard';
 import { TAG_TYPES } from '../core/tags/types';
 import type { TagType } from '../core/tags/types';
-import { buttonPrimary, buttonSecondary } from './buttonStyles';
-import { saveDocx } from './download';
+import { buttonCta, buttonPrimary, buttonSecondary } from './buttonStyles';
+import { saveDocx, saveJson } from './download';
 import sampleUrl from '../../fixtures/sample-minuta-lacunas.docx?url';
-import { saveJson } from './draft';
 import { messages } from './messages.pt';
 import type { TemplateManifestEntry } from './templateManifest';
 
 interface ImportPanelProps {
   /** Hands the generated template to the normal fill-in flow (never persisted). */
   onUse: (entry: TemplateManifestEntry) => void;
-  /** Rendered right under the sample call to action (the demo templates). */
-  children?: ReactNode;
 }
 
 interface Analysis {
@@ -58,7 +54,7 @@ function slugify(s: string): string {
   return slug || 'minuta';
 }
 
-export function ImportPanel({ onUse, children }: ImportPanelProps) {
+export function ImportPanel({ onUse }: ImportPanelProps) {
   const [dragging, setDragging] = useState(false);
   const [status, setStatus] = useState<'idle' | 'reading' | 'error' | 'ready'>('idle');
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -198,24 +194,13 @@ export function ImportPanel({ onUse, children }: ImportPanelProps) {
   const includedCount = fields.filter((f) => !excluded.has(f.key)).length;
 
   return (
-    <section className="animate-rise-in flex w-full max-w-2xl flex-col items-center gap-8" aria-labelledby="import-heading">
-      <h2 id="import-heading" className="sr-only">
+    <section
+      className="flex w-full max-w-2xl flex-col items-center gap-5 rounded-xl border border-brass-500/50 bg-ink-900 p-6 shadow-[0_0_0_1px_rgba(201,154,92,0.08),0_24px_70px_-34px_rgba(201,154,92,0.45)] sm:p-8"
+      aria-labelledby="import-heading"
+    >
+      <h2 id="import-heading" className="text-center font-display text-2xl font-semibold text-white">
         {messages.importTitle}
       </h2>
-
-      <div className="flex flex-col items-center gap-2 text-center">
-        <button
-          type="button"
-          onClick={() => void handleSample()}
-          disabled={status === 'reading'}
-          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-lg text-center bg-brass-500 px-8 py-4 font-display text-lg font-semibold text-brass-ink shadow-[0_10px_40px_-10px_rgba(201,154,92,0.6)] transition-[transform,background-color] duration-150 ease-out-quart hover:bg-brass-400 active:scale-[0.98] disabled:cursor-wait disabled:opacity-70 disabled:active:scale-100 sm:text-xl"
-        >
-          {messages.importSample}
-        </button>
-        <p className="text-sm text-white/65">{messages.importSampleHint}</p>
-      </div>
-
-      {children}
 
       <input
         ref={fileInputRef}
@@ -247,15 +232,27 @@ export function ImportPanel({ onUse, children }: ImportPanelProps) {
             setProblems([{ code: 'WRONG_TYPE', message: messages.importWrongType }]);
           }
         }}
-        className={`flex w-full flex-col items-center gap-3 rounded-lg border border-dashed px-5 py-5 text-center transition-colors duration-150 ease-out-quart sm:flex-row sm:justify-between sm:text-left ${
-          dragging ? 'border-brass-400 bg-brass-500/10' : 'border-line-strong'
+        className={`flex w-full flex-col items-center gap-4 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors duration-150 ease-out-quart ${
+          dragging ? 'border-brass-400 bg-brass-500/10' : 'border-line-strong bg-ink-950/40'
         }`}
       >
-        <p className="text-sm text-white/70">{messages.importDropTitle}</p>
-        <button type="button" onClick={() => fileInputRef.current?.click()} className={buttonSecondary}>
+        <p className="font-display text-lg text-white">{messages.importDropTitle}</p>
+        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={status === 'reading'} className={buttonCta}>
           {messages.importChooseFile}
         </button>
       </div>
+
+      <p className="text-center text-sm text-white/65">
+        {messages.importNoFile}{' '}
+        <button
+          type="button"
+          onClick={() => void handleSample()}
+          disabled={status === 'reading'}
+          className="min-h-11 font-medium text-brass-300 underline underline-offset-2 hover:text-brass-400 disabled:cursor-wait disabled:opacity-70 sm:min-h-0"
+        >
+          {messages.importSample}
+        </button>
+      </p>
 
       <input
         ref={reopenInputRef}

@@ -11,3 +11,14 @@ export function saveDocx(bytes: ArrayBuffer, filename: string): void {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+export function saveJson(text: string, filename: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
