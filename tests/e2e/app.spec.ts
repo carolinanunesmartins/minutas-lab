@@ -254,10 +254,11 @@ test.describe('landing page', () => {
     await expect(page.getByText('Valida NIF, IBAN e datas')).toBeVisible();
   });
 
-  test('the sample is the primary action', async ({ page }) => {
-    const sample = page.getByRole('button', { name: /Experimentar com uma minuta de exemplo/ });
+  test('the demo templates come first, then the import card with the file button as its main action', async ({ page }) => {
+    const template = page.getByRole('button', { name: 'Procuração' });
     const file = page.locator('button', { hasText: 'Escolher ficheiro .docx' });
-    const [a, b] = await Promise.all([sample.boundingBox(), file.boundingBox()]);
-    expect(a && b && a.height > b.height && a.y < b.y).toBe(true);
+    const sample = page.getByRole('button', { name: 'Experimentar com uma minuta de exemplo' });
+    const [t, f, x] = await Promise.all([template.boundingBox(), file.boundingBox(), sample.boundingBox()]);
+    expect(t && f && x && t.y < f.y && f.height > x.height).toBe(true);
   });
 });

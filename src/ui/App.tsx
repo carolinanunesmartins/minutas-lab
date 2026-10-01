@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
 import { readDocx } from '../core/docx/read';
 import { parseTemplate } from '../core/tags/parse';
 import { collectFieldCounts, collectFieldTypes, collectUsedFieldIds } from '../core/template/fields';
@@ -290,63 +289,35 @@ function App() {
 
   if (state === 'empty') {
     return (
-      <main className="flex min-h-screen flex-col items-center gap-14 px-6 py-14 sm:py-20">
-        <header className="flex flex-col items-center gap-3 text-center">
+      <main className="flex min-h-screen flex-col items-center gap-10 px-6 py-12 sm:py-16">
+        <header className="flex flex-col items-center gap-2 text-center">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{messages.appTitle}</h1>
           <p className="max-w-md text-base text-white/70">{messages.importTagline}</p>
-          <p
-            aria-hidden="true"
-            className="mt-4 max-w-sm rounded-sm border border-paper-line bg-paper px-5 py-4 text-left font-display text-[15px] leading-relaxed text-paper-ink shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)]"
-          >
-            {messages.heroDocA}
-            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
-              {messages.heroDocSeller}
-            </span>
-            {messages.heroDocB}
-            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
-              {messages.heroDocBuyer}
-            </span>
-            {messages.heroDocC}
-            <span className="echo" style={{ '--echo-delay': '1300ms' } as CSSProperties}>
-              {messages.heroDocPrice}
-            </span>
-            {messages.heroDocD}
-            <br />
-            {messages.heroDocE}
-            <span className="echo" style={{ '--echo-delay': '500ms' } as CSSProperties}>
-              {messages.heroDocSeller}
-            </span>
-            {messages.heroDocF}
-            <span className="echo" style={{ '--echo-delay': '900ms' } as CSSProperties}>
-              {messages.heroDocBuyer}
-            </span>
-            {messages.heroDocG}
-          </p>
         </header>
 
-        <ImportPanel onUse={setSelected}>
-          <section aria-labelledby="demo-heading" className="flex w-full flex-col gap-3">
-            <h2 id="demo-heading" className="text-center font-display text-lg font-semibold text-white">
-              {messages.pickTemplateTitle}
-            </h2>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {TEMPLATE_MANIFEST.map((entry) => (
-                <li key={entry.slug}>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(entry)}
-                    className="group flex min-h-20 w-full flex-col items-start justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-900 px-4 py-3 text-left transition-[transform,border-color,background-color] duration-150 ease-out-quart hover:-translate-y-0.5 hover:border-brass-400 hover:bg-ink-800 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
-                  >
-                    <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-400">
-                      {entry.code}
-                    </span>
-                    <span className="font-display text-base font-semibold leading-snug text-white">{entry.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </ImportPanel>
+        <section aria-labelledby="demo-heading" className="flex w-full max-w-2xl flex-col gap-3">
+          <h2 id="demo-heading" className="text-center font-display text-xl font-semibold text-white">
+            {messages.pickTemplateTitle}
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {TEMPLATE_MANIFEST.map((entry) => (
+              <li key={entry.slug}>
+                <button
+                  type="button"
+                  onClick={() => setSelected(entry)}
+                  className="group flex min-h-20 w-full flex-col items-start justify-center gap-1.5 rounded-lg border border-line-strong bg-ink-900 px-4 py-3 text-left transition-[transform,border-color,background-color] duration-150 ease-out-quart hover:-translate-y-0.5 hover:border-brass-400 hover:bg-ink-800 focus-visible:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+                >
+                  <span aria-hidden="true" className="font-mono text-[11px] uppercase tracking-wider text-brass-400">
+                    {entry.code}
+                  </span>
+                  <span className="font-display text-base font-semibold leading-snug text-white">{entry.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <ImportPanel onUse={setSelected} />
 
         <ul className="flex max-w-xl flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/60">
           {[messages.why1Title, messages.why2Title, messages.why3Title, messages.why4Title].map((claim) => (
@@ -447,7 +418,7 @@ function App() {
                 }
                 setReviewOpen(true);
               }}
-              className={`${buttonCta} ${canDownloadFinal ? '' : 'cursor-not-allowed opacity-50'}`}
+              className={`${buttonCta} ${canDownloadFinal ? '' : 'cursor-not-allowed opacity-80'}`}
             >
               {messages.downloadFinal}
             </button>
