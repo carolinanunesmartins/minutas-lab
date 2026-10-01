@@ -1,7 +1,7 @@
 # ADR-0004: LLM behind a provider interface, with quote grounding and a replay mode
 
 ## Status
-Accepted
+Superseded by ADR-0009 (the LLM features were removed from the MVP; kept for history)
 
 ## Context
 M6 adds optional LLM-assisted extraction: the user pastes text, the model proposes values for the current template's fields. AGENTS.md §4 rule 3 is explicit that the LLM never writes clauses — it only proposes field values, which the SPEC.md §10 review flow may or may not accept. Two more constraints shape the design:

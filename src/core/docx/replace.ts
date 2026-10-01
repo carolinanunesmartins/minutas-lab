@@ -11,12 +11,21 @@ export interface TagReplacement {
   value: string;
   /** Preview/draft-only highlight: hex fill (e.g. "FFF59D"), applied via w:shd. Never set for final downloads. */
   shadeFill?: string;
+  /** Value-tag field id; with `anchors` set, the run is wrapped in a bookmark named for it. */
+  fieldId?: string;
+}
+
+/** Preview-only: how to name/number the bookmarks that mark each value run (see build.ts). */
+export interface AnchorOptions {
+  nextBookmarkId: () => number;
+  nameFor: (fieldId: string) => string;
 }
 
 interface Segment {
   text: string;
   rPr: Element | null;
   shadeFill?: string;
+  fieldId?: string;
 }
 
 function emitRange(paragraph: DocxParagraph, from: number, to: number, out: Segment[]): void {
@@ -64,7 +73,11 @@ function buildRun(doc: Document, text: string, rPr: Element | null, shadeFill: s
  *
  * `replacements` must be sorted by `start` and non-overlapping.
  */
-export function replaceTagsInParagraph(paragraph: DocxParagraph, replacements: TagReplacement[]): void {
+export function replaceTagsInParagraph(
+  paragraph: DocxParagraph,
+  replacements: TagReplacement[],
+  anchors?: AnchorOptions,
+): void {
   if (replacements.length === 0 || paragraph.runs.length === 0) return;
 
   const doc = paragraph.element.ownerDocument;
@@ -73,7 +86,12 @@ export function replaceTagsInParagraph(paragraph: DocxParagraph, replacements: T
   for (const r of replacements) {
     emitRange(paragraph, pos, r.start, segments);
     const rPr = firstOverlappingRPr(paragraph, r.start, r.end);
-    segments.push(r.shadeFill ? { text: r.value, rPr, shadeFill: r.shadeFill } : { text: r.value, rPr });
+    segments.push({
+      text: r.value,
+      rPr,
+      ...(r.shadeFill !== undefined && { shadeFill: r.shadeFill }),
+      ...(anchors && r.fieldId !== undefined && { fieldId: r.fieldId }),
+    });
     pos = r.end;
   }
   emitRange(paragraph, pos, paragraph.text.length, segments);
@@ -87,7 +105,20 @@ export function replaceTagsInParagraph(paragraph: DocxParagraph, replacements: T
   }
   for (const segment of segments) {
     if (segment.text.length === 0) continue;
-    paragraph.element.insertBefore(buildRun(doc, segment.text, segment.rPr, segment.shadeFill), insertBefore);
+    const run = buildRun(doc, segment.text, segment.rPr, segment.shadeFill);
+    if (anchors && segment.fieldId !== undefined) {
+      const id = String(anchors.nextBookmarkId());
+      const start = doc.createElementNS(W_NS, 'w:bookmarkStart');
+      start.setAttributeNS(W_NS, 'w:id', id);
+      start.setAttributeNS(W_NS, 'w:name', anchors.nameFor(segment.fieldId));
+      const end = doc.createElementNS(W_NS, 'w:bookmarkEnd');
+      end.setAttributeNS(W_NS, 'w:id', id);
+      paragraph.element.insertBefore(start, insertBefore);
+      paragraph.element.insertBefore(run, insertBefore);
+      paragraph.element.insertBefore(end, insertBefore);
+    } else {
+      paragraph.element.insertBefore(run, insertBefore);
+    }
   }
 }
 

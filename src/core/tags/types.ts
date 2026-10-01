@@ -75,3 +75,7 @@ export interface ParseResult {
 }
 
 export const ID_PATTERN = /^[a-z][a-z0-9_]*$/;
+
+/** Ids that would resolve to Object.prototype members when used as `values[id]`. */
+export const RESERVED_IDS: ReadonlySet<string> = new Set(['constructor', 'prototype', 'valueof', 'tostring']);
+export const isValidFieldId = (id: string): boolean => ID_PATTERN.test(id) && !RESERVED_IDS.has(id) && !(id in Object.prototype);

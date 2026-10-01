@@ -28,8 +28,10 @@ test('keyboard navigation reaches the download buttons', async ({ page }) => {
   await page.getByRole('button', { name: CPCV_TITLE }).click();
   await page.locator('#field-vendedor_nome').focus();
   await page.keyboard.press('Tab');
+  // The next field could be a plain input, a <select> (closed-choice fields
+  // like estado civil), or a native date input — all still form controls.
   const active = await page.evaluate(() => document.activeElement?.tagName);
-  expect(active).toBe('INPUT');
+  expect(['INPUT', 'SELECT']).toContain(active);
 
   await expect(page.getByRole('button', { name: 'Descarregar rascunho' })).toBeVisible();
   await page.getByRole('button', { name: 'Descarregar rascunho' }).focus();

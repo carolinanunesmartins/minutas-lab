@@ -1,7 +1,6 @@
 import { humanizeFieldId } from '../core/template/fields';
 import type { Meta } from '../core/template/meta';
 import type { TagType } from '../core/tags/types';
-import type { ExtractFieldSpec } from '../llm/types';
 
 export interface FieldDescriptor {
   id: string;
@@ -11,6 +10,8 @@ export interface FieldDescriptor {
   /** undefined = boolean block/condition toggle (no `{{id:type}}` tag exists for it). */
   type?: TagType;
   group?: string;
+  /** Closed set of choices (<=10) — rendered as a <select>. */
+  options?: string[];
 }
 
 export interface FieldGroup {
@@ -35,6 +36,7 @@ export function buildFieldGroups(
       required: fieldMeta?.required ?? false,
       ...(type !== undefined && { type }),
       ...(fieldMeta?.group !== undefined && { group: fieldMeta.group }),
+      ...(fieldMeta?.options !== undefined && { options: fieldMeta.options }),
     };
   });
 
@@ -53,21 +55,4 @@ export function buildFieldGroups(
   }
 
   return ungrouped.fields.length > 0 ? [...groups, ungrouped] : groups;
-}
-
-/** Value-typed fields only (block/condition booleans have no `type` and aren't LLM-extractable). */
-export function toExtractFieldSpecs(groups: FieldGroup[]): ExtractFieldSpec[] {
-  const specs: ExtractFieldSpec[] = [];
-  for (const group of groups) {
-    for (const field of group.fields) {
-      if (field.type === undefined) continue;
-      specs.push({
-        id: field.id,
-        label: field.label,
-        type: field.type,
-        ...(field.help !== undefined && { help: field.help }),
-      });
-    }
-  }
-  return specs;
 }

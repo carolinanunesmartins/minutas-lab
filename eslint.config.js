@@ -45,7 +45,6 @@ export default tseslint.config(
         {
           patterns: [
             { group: ['../ui/*', '../../ui/*', '**/src/ui/*'], message: 'src/core must not import from src/ui.' },
-            { group: ['../llm/*', '../../llm/*', '**/src/llm/*'], message: 'src/core must not import from src/llm.' },
           ],
         },
       ],

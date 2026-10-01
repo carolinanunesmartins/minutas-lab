@@ -69,6 +69,38 @@ describe('buildDocx — shading (preview/draft only)', () => {
     expect(shades).toContain('F4F1E9'); // filled (preco, not active)
   });
 
+  it('wraps each value run in a fld_<id>_<n> bookmark only when anchors are requested', () => {
+    const bookmarkNames = (bytes: Uint8Array): string[] =>
+      Array.from(readDocx(bytes).documentXmlDoc.getElementsByTagNameNS(W_NS, 'bookmarkStart')).map((el) =>
+        el.getAttributeNS(W_NS, 'name') ?? '',
+      );
+    const body = '<w:p><w:r><w:t>{{nome}} e {{nome}} e {{preco:eur}}</w:t></w:r></w:p>';
+    const values = { nome: 'Ana' };
+
+    const anchored = buildDocx({ doc: readDocx(tinyDocx(body)), values, disclaimerText: 'D.', shading: { anchors: true } });
+    expect(bookmarkNames(anchored)).toEqual(['fld_nome_0', 'fld_nome_1', 'fld_preco_0']);
+    const ends = readDocx(anchored).documentXmlDoc.getElementsByTagNameNS(W_NS, 'bookmarkEnd');
+    expect(ends.length).toBe(3);
+
+    const shadedOnly = buildDocx({ doc: readDocx(tinyDocx(body)), values, disclaimerText: 'D.', shading: {} });
+    expect(bookmarkNames(shadedOnly)).toEqual([]);
+    const final = buildDocx({ doc: readDocx(tinyDocx(body)), values, disclaimerText: 'D.' });
+    expect(bookmarkNames(final)).toEqual([]);
+  });
+
+  it('anchors each conditional block on its first visible paragraph, or on what follows it when hidden', () => {
+    const para = (t: string): string => `<w:p><w:r><w:t>${t}</w:t></w:r></w:p>`;
+    const body = para('Antes') + para('{{#extra}}') + para('Cláusula extra') + para('{{/extra}}') + para('Depois');
+    const anchorParagraphs = (values: Record<string, string>): string[] => {
+      const rebuilt = readDocx(buildDocx({ doc: readDocx(tinyDocx(body)), values, disclaimerText: 'D.', shading: { anchors: true } }));
+      return rebuilt.paragraphs
+        .filter((p) => p.element.getElementsByTagNameNS(W_NS, 'bookmarkStart').length > 0)
+        .map((p) => `${p.text}@${p.element.getElementsByTagNameNS(W_NS, 'bookmarkStart')[0]?.getAttributeNS(W_NS, 'name')}`);
+    };
+    expect(anchorParagraphs({ extra: 'true' })).toEqual(['Cláusula extra@blk_extra']);
+    expect(anchorParagraphs({})).toEqual(['Depois@blk_extra']);
+  });
+
   it('appends a draft note in addition to the disclaimer', () => {
     const doc = readDocx(tinyDocx(BODY));
     const bytes = buildDocx({

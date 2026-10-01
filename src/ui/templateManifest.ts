@@ -13,6 +13,8 @@ export interface TemplateManifestEntry {
   /** Short filing reference shown on the template picker card (e.g. a cartório dossier tab). */
   code: string;
   docxUrl: string;
+  /** Imported (in-memory) templates carry their bytes instead of a URL. */
+  docxBytes?: ArrayBuffer;
   metaRaw: unknown;
 }
 

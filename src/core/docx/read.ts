@@ -1,4 +1,5 @@
 import { DocxInputError, readDocxArchive } from './zip';
+import { sanitizeArchive } from './sanitize';
 import type { DocxArchive } from './zip';
 import { findParagraphs, type DocxParagraph } from './runmap';
 import { W_NS } from './ooxml';
@@ -34,6 +35,7 @@ function parseXml(bytes: Uint8Array): Document {
 /** Bounded-read a .docx and extract its body run-maps and header/footer text. */
 export function readDocx(bytes: Uint8Array): DocxDocument {
   const archive = readDocxArchive(bytes);
+  sanitizeArchive(archive);
 
   const documentXmlBytes = archive.get(DOCUMENT_XML_PATH);
   if (!documentXmlBytes) {

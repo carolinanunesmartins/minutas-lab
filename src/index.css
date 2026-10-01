@@ -105,3 +105,95 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Preview text that belongs to a form field (see Preview.tsx tagFieldRuns):
+   clicking it jumps to that input. */
+.docx-preview-pane [data-field] {
+  cursor: pointer;
+  border-radius: 2px;
+  transition: outline-color 120ms ease-out;
+  outline: 1.5px solid transparent;
+  outline-offset: 1px;
+}
+.docx-preview-pane [data-field]:hover {
+  outline-color: var(--brass-600);
+}
+
+/* A conditional clause the user just switched on/off in the form (Preview.tsx scrollToField). */
+@keyframes block-flash {
+  from { background-color: oklch(0.86 0.08 80 / 0.55); }
+  to { background-color: transparent; }
+}
+.docx-preview-pane p.block-flash {
+  animation: block-flash 1600ms ease-out;
+}
+
+/* Preview only (the downloaded .docx is untouched): give each contract clause
+   room to breathe. Preview.tsx marks the "CLÁUSULA X" line and the "(Título)"
+   line under it (the templates don't share a Word style for them). */
+.docx-preview-pane p.clause-start {
+  margin-top: 2.25rem;
+}
+.docx-preview-pane p.clause-title {
+  margin-bottom: 0.75rem;
+}
+
+/* Empty values are also marked by a dashed underline, not just yellow (WCAG 1.4.1). */
+.docx-preview-pane [data-field][data-empty='true'] {
+  text-decoration: underline dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+@media (forced-colors: active) {
+  .docx-preview-pane [data-field] {
+    outline: 1px solid CanvasText;
+  }
+}
+
+/* Print: only the document. Hide the form, header and footer, and let the
+   preview flow across pages instead of scrolling inside its pane. */
+@media print {
+  main > header,
+  main > footer,
+  section[aria-labelledby='form-heading'],
+  section[aria-labelledby='preview-heading'] > div:first-child,
+  #preview-body [role='group'],
+  .docx-preview-pane[data-active='false'] {
+    display: none !important;
+  }
+  html,
+  body,
+  main {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  section[aria-labelledby='preview-heading'],
+  #preview-body,
+  #preview-body > div,
+  #preview-body > div > div {
+    position: static !important;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+  .docx-preview-pane {
+    position: static !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+  }
+  .docx-preview-pane .docx-wrapper {
+    zoom: 1 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+  .docx-preview-pane .docx-wrapper > section.docx {
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+}

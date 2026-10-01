@@ -3,7 +3,7 @@
 Language: English. Read order for any agent: this file → `SPEC.md` → `ROADMAP.md` (pick the first milestone with status `todo` whose dependencies are `done`).
 
 ## 1. What this is
-Browser-only web app. User picks a Portuguese legal contract template (DOCX with `{{tags}}`), fills a validated form, sees a live Word-like preview, downloads the complete DOCX. Optional LLM-assisted extraction of field values from pasted text (proposals only, never auto-applied). No backend, no database, no analytics.
+Browser-only web app. User picks a Portuguese legal contract template (DOCX with `{{tags}}`), fills a validated form, sees a live Word-like preview, downloads the complete DOCX. Upload of a minuta with blanks that is converted into a tagged template (deterministic, no AI). No backend, no database, no analytics.
 
 ## 2. Commands (must exist after M0; keep names stable)
 | Command | Purpose |
@@ -14,18 +14,17 @@ Browser-only web app. User picks a Portuguese legal contract template (DOCX with
 | `npm run test:cov` | unit tests with coverage |
 | `npm run test:e2e` | Playwright + axe |
 | `npm run lint:templates` | validates every `templates/*/template.docx` + `template.meta.json` |
-| `npm run eval` | LLM eval with ReplayProvider (offline, deterministic) |
-| `npm run eval:record` / `eval:live` | **HUMAN-run only**, need `LLM_API_KEY`. Agents never run these |
+| `npm run eval:import` | blank-minuta importer round-trip on the shipped templates (must be 100%) |
+| `npm run check:policy` | repo policy guard (no `.docx` outside `templates/`/`fixtures/`, no env files, no key-like strings) |
 
 ## 3. Layout
 ```
 .github/{workflows,ISSUE_TEMPLATE,dependabot.yml,PULL_REQUEST_TEMPLATE.md,CODEOWNERS}
 docs/{adr/,architecture.md,templates.md}
-eval/{cases/,recordings/,report.md}
 fixtures/        synthetic .docx/.json used by tests (allowed to contain .docx)
 templates/<slug>/{template.docx,template.meta.json}
 src/core/        pure TS: tags, numbering, validators, extenso, formats, docx read/write. NO DOM, NO fetch
-src/llm/         provider interface, adapters, prompts/extract.v1.md, grounding, replay
+src/core/import/ blank-minuta importer: detect, infer, generate, safeguard
 src/workers/     docx build worker
 src/ui/          React components, messages.pt.ts
 tests/{unit,property,e2e}/
@@ -33,12 +32,12 @@ Root files: AGENTS.md CLAUDE.md SPEC.md ROADMAP.md README.md SECURITY.md CONTRIB
 ```
 
 ## 4. Hard rules (violating any = PR rejected)
-1. Client-side only. No server code, no telemetry, no third-party runtime requests except the configured LLM origin.
+1. Client-side only. No server code, no telemetry, no third-party runtime requests.
 2. No real personal data anywhere. `.docx` files exist only under `templates/` and `fixtures/`. `private/` is gitignored. Never commit third-party (law-firm) material.
-3. The LLM never writes clauses at runtime. It only proposes field values.
-4. LLM output is untrusted: Zod-validate, ground with quote check, never auto-apply, never render as HTML.
-5. API key lives in memory only (never localStorage, URL, logs, repo). Agents never see or request a key.
-6. `src/core` must not import from `src/ui` or `src/llm` (ESLint `no-restricted-imports`).
+3. No AI/LLM or other paid service at runtime in the MVP (ADR-0009). Contract text is never generated, only filled in.
+4. Anything derived from an uploaded file is untrusted: size-bound, sanitise, validate, never render as HTML.
+5. No secrets anywhere: the app never asks for API keys, and agents never see or request credentials.
+6. `src/core` must not import from `src/ui` (ESLint `no-restricted-imports`).
 7. Every inserted value is XML-escaped; uploads pass the input guard (SPEC §9) before any parsing.
 8. GitHub Actions pinned by full commit SHA; workflow `permissions:` least-privilege; no `pull_request_target`.
 9. No compliance/legal-validity claims in UI or docs ("formato válido", never "NIF válido"; preview labelled approximate).
