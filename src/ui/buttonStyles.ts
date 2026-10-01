@@ -10,3 +10,9 @@ export const buttonSecondary = `${base} border border-line px-4 py-2 text-sm tex
 export const buttonGhost = `${base} px-2 py-1 text-xs text-white/60 hover:text-white`;
 
 export const buttonSecondaryOnPaper = `${base} border border-paper-line px-3 py-1.5 text-xs text-paper-ink hover:bg-paper-dim disabled:opacity-40`;
+
+/** The one action the screen is for: bigger and louder than everything else around it. */
+export const buttonCta = `${base} bg-brass-500 px-7 py-3 text-base font-semibold text-brass-ink shadow-[0_8px_30px_-10px_rgba(201,154,92,0.65)] transition-[transform,background-color] hover:bg-brass-400 disabled:bg-ink-700 disabled:text-white/40`;
+
+/** Quiet utility actions (text only, small): present, but they never compete with the main one. */
+export const buttonQuiet = `${base} px-2 py-1 text-xs text-white/60 underline-offset-2 hover:text-white hover:underline`;

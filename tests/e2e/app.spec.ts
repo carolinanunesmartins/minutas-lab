@@ -146,24 +146,6 @@ test('on a phone the sticky preview can be hidden and shown again', async ({ pag
   await expect(body).toBeVisible();
 });
 
-test('data can be saved to a JSON file and loaded back', async ({ page }, testInfo) => {
-  await fillField(page, 'vendedor_nome', 'Maria Exemplo Silva');
-  await fillField(page, 'vendedor_nif', '252601815');
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Guardar dados (.json)' }).click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('cpcv-dados.json');
-  const file = testInfo.outputPath('cpcv-dados.json');
-  await download.saveAs(file);
-
-  await fillField(page, 'vendedor_nome', 'Outra Pessoa');
-  await fillField(page, 'vendedor_nif', '');
-  await page.getByTestId('draft-input').setInputFiles(file);
-  await expect(page.getByText('Dados carregados do ficheiro.')).toBeVisible();
-  await expect(page.locator('#field-vendedor_nome')).toHaveValue('Maria Exemplo Silva');
-  await expect(page.locator('#field-vendedor_nif')).toHaveValue('252601815');
-});
-
 test('the preview fits its pane width and can be zoomed', async ({ page }) => {
   const zoomOf = (): Promise<number> =>
     page.evaluate(() => Number(document.querySelector<HTMLElement>('.docx-preview-pane[data-active="true"] .docx-wrapper')?.style.zoom));

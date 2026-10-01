@@ -12,5 +12,5 @@ Remove the LLM code path entirely: `src/llm/`, the extraction panel, the LLM sec
 ## Consequences
 - The app makes no third-party network request at runtime; `connect-src` is `'self'`.
 - The importer's quality gate is `npm run eval:import` (100% round-trip on the shipped templates).
-- `zod` stays as a runtime dependency (draft JSON validation in `src/ui/draft.ts`).
+- `zod` was removed later together with the save/open JSON feature (its only user), so the runtime dependencies are `docx-preview`, `fflate`, `@xmldom/xmldom`, React.
 - If an AI feature returns later, it should come back as a new ADR, ideally with a free/local option, and re-introduce a provider interface, output validation and a replay-based eval.

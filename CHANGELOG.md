@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Working screen: "Descarregar minuta" is now the large primary action at the top right (with "Descarregar rascunho" next to it); the utility actions (fill with example data, choose another template) are small quiet text buttons. The download buttons moved up from the footer; the footer only appears for status or error messages.
+
+### Removed
+- "Guardar dados (.json)" and "Abrir dados guardados" and their code (`src/ui/draft.ts`, tests, strings); `zod` dependency (no longer used).
+
 ### Security
 - Dev toolchain upgraded to clear all `npm audit` findings (6 in dev dependencies, 2 critical, 1 high; production dependencies were already clean): vite 5 to 7.3, vitest 2 to 4.1, @vitest/coverage-v8 to 4.1, @vitejs/plugin-react 4 to 5.2 (this also pulls esbuild to 0.28). Node engines are now `^20.19.0 || >=22.12.0` (vite 7). The slow lint:templates CLI test got a 120 s timeout.
 
