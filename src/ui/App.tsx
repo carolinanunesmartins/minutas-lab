@@ -371,6 +371,8 @@ function App() {
     );
   }
 
+  // Only the bundled templates have example data; imported ones don't.
+  const hasExampleData = Object.keys(dummyValuesFor(loaded.meta.id)).length > 0;
   const canDownloadFinal = !validation.hasBlockingError;
   const requiredFields = loaded.groups.flatMap((g) => g.fields).filter((f) => f.required && f.type !== undefined);
   const requiredFilled = requiredFields.filter((f) => (values[f.id] ?? '').trim() !== '').length;
@@ -417,9 +419,11 @@ function App() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
-            {messages.fillDummy}
-          </button>
+          {hasExampleData && (
+            <button type="button" onClick={handleFillDummy} className={buttonSecondary} title={messages.fillDummyHint}>
+              {messages.fillDummy}
+            </button>
+          )}
           <button type="button" onClick={handleExportDraft} className={buttonSecondary} title={messages.draftSaveHint}>
             {messages.draftSave}
           </button>

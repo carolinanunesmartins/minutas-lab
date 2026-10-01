@@ -213,3 +213,16 @@ test('example data asks before replacing what was already typed', async ({ page 
   await page.getByRole('button', { name: 'Preencher com dados de exemplo' }).click();
   await expect(page.locator('#field-vendedor_nome')).toHaveValue('Maria Exemplo Silva');
 });
+
+test('the example-data button is not offered for an imported template', async ({ page }) => {
+  await page.getByRole('button', { name: 'Escolher outra minuta' }).click();
+  await page.getByRole('button', { name: /Importar minuta com lacunas/i }).click();
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'minuta.docx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    buffer: await (await import('node:fs/promises')).readFile('fixtures/blank-minuta.docx'),
+  });
+  await page.getByRole('button', { name: 'Usar esta minuta' }).click();
+  await expect(page.getByRole('heading', { name: 'minuta' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Preencher com dados de exemplo' })).toHaveCount(0);
+});

@@ -53,7 +53,20 @@ const SPLIT_RUNS_BODY = `
     </w:tbl>
 `;
 
+// M8: a minuta with blanks (brackets split across runs, a date blank, a table cell) for the importer.
+const BLANK_MINUTA_BODY = `
+    <w:p><w:r><w:t xml:space="preserve">Entre [Nome do Vendedor], NIF [Contribuinte do vendedor], válido até __/__/_____,</w:t></w:r></w:p>
+    <w:p><w:r><w:t xml:space="preserve">e [Nome do Com</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">prador], residente em [Morada do comprador].</w:t></w:r></w:p>
+    <w:tbl>
+      <w:tr>
+        <w:tc><w:p><w:r><w:t xml:space="preserve">Preço: [preço] euros ([preço por extenso]).</w:t></w:r></w:p></w:tc>
+      </w:tr>
+    </w:tbl>
+`;
+
 const out = join(process.cwd(), 'fixtures');
 mkdirSync(out, { recursive: true });
 writeFileSync(join(out, 'split-runs.docx'), buildDocx(SPLIT_RUNS_BODY));
 console.log('wrote fixtures/split-runs.docx');
+writeFileSync(join(out, 'blank-minuta.docx'), buildDocx(BLANK_MINUTA_BODY));
+console.log('wrote fixtures/blank-minuta.docx');
